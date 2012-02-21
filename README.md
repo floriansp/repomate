@@ -8,5 +8,5 @@ It features:
 * Multiple system architectures
 * Multiple staging environments
 * Version history
-* WWW Gui
+* Web Gui
 * A collection of awesome commandline scripts
