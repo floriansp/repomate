@@ -1,5 +1,5 @@
-﻿---
-global:
-	pool: /var/lib/repomate/pool
-	archive: /var/lib/repomate/archive
-	dists: /var/lib/repomate/dists
+﻿--- 
+global: 
+  archive: /var/lib/repomate/archive
+  dists: /var/lib/repomate/dists
+  pool: /var/lib/repomate/pool
