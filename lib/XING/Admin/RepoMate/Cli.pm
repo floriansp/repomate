@@ -16,13 +16,13 @@ has '_repomate' => (
     isa => 'XING::Admin::RepoMate',
 );
 
-# has 'setup' => (
-#     cmd_flag      => 'setup',
-#     documentation => 'Creates the initial directory structure',
-#     is            => 'ro',
-#     isa           => 'Str',
-#     traits        => [qw(Getopt)],
-# );
+has 'addpool' => (
+    cmd_flag      => 'addpool',
+    documentation => 'Add a pool e.g. etch, lenny, stable',
+    is            => 'ro',
+    isa           => 'Str',
+    traits        => [qw(Getopt)],
+);
 
 sub start {
     my ($self) = @_;

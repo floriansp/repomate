@@ -11,8 +11,10 @@ has '_config' => (
             name              => "repomate",
             path              => "$FindBin::Bin/../etc/",
             quiet_deprecation => 1,
+            default => { 'global' => { 'basepath' => '/var/lib/repomate/' } },
         )->get;
     },
+
     is   => 'rw',
     isa  => 'HashRef',
     lazy => 1,
