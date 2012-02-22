@@ -4,18 +4,70 @@ use Moose;
 with qw(XING::Admin::RepoMate::Roles::Config);
 use vars qw($VERSION);
 use File::Path qw(make_path remove_tree);
+use File::Find::Rule;
 use Data::Dumper;
 
 our $VERSION = '0.01000';
 
-has 'directories' => (
+has 'pools' => (
     auto_deref => 1,
     is         => 'ro',
-    isa        => 'ArrayRef[Str]',
-    builder    => 'b_directories'
+    isa        => 'HashRef[Str]',
+    builder    => 'read_pools'
 );
 
-sub b_directories {
+sub read_pools {
+    my ($self) = @_;
+
+    my $pooldir = $self->config->{'global'}{'basepath'} . "/pool/";
+    my %pools   = ();
+    my @dirs =
+      File::Find::Rule->maxdepth(1)->mindepth(1)->directory->in($pooldir);
+
+    foreach my $dir (@dirs) {
+        my ($poolname) = $dir =~ /.*\/(.*)$/;
+        $pools{$poolname} = $dir;
+    }
+
+    return \%pools;
+}
+
+sub list_pools {
+    my ($self) = @_;
+
+    my %pools = %{ $self->pools };
+
+    foreach my $poolname ( keys %pools ) {
+        print "Name: $poolname, Path: $pools{$poolname}\n";
+    }
+}
+
+sub add_pool {
+    my ( $self, $poolname ) = @_;
+
+    my $pooldir = $self->config->{'global'}{'basepath'} . "/pool/" . $poolname;
+
+    die "Pool already exists!" if ( -d $pooldir );
+
+    $pooldir = [$pooldir] unless ref $pooldir eq 'ARRAY';
+
+    $self->makedir($pooldir);
+}
+
+sub del_pool {
+    my ( $self, $poolname ) = @_;
+
+    my %pools   = %{ $self->pools };
+    my $pooldir = $pools{$poolname};
+
+    die "Pool does not exist!" unless $pooldir;
+    die "Pool is not empty" if $self->checkdir($pooldir) != 0;
+    $pooldir = [$pooldir] unless ref $pooldir eq 'ARRAY';
+
+    $self->removedir($pooldir);
+}
+
+sub setup_base {
     my ($self) = @_;
 
     my @dirs     = ();
@@ -26,13 +78,22 @@ sub b_directories {
         push( @dirs, $basepath . "/" . $subdir );
     }
 
-    return \@dirs;
+    $self->makedir( \@dirs );
 }
 
-sub setup_dirs {
-    my ($self) = @_;
+sub checkdir {
+    my ( $self, $dir ) = @_;
 
-    foreach my $dir ( @{ $self->directories } ) {
+    my @files = <$dir/*>;
+    my $size = $#files + 1;
+
+    warn Dumper $size;
+}
+
+sub makedir {
+    my ( $self, $dirs ) = @_;
+
+    foreach my $dir ( @{$dirs} ) {
         make_path(
             "$dir",
             {
@@ -40,6 +101,13 @@ sub setup_dirs {
                 mode    => 0755,
             }
         );
+    }
+}
+
+sub removedir {
+    my ( $self, $dirs ) = @_;
+    foreach my $dir ( @{$dirs} ) {
+        remove_tree( "$dir", { verbose => 1, } );
     }
 }
 
