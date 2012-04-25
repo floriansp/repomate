@@ -34,25 +34,22 @@ class Pool
   end
 
   def alloweddistributions
-    distributions = Array.new
+    distributions = []
     @config.get[:distributions].each do |name|
-      distributions.push(name) unless distributions.include?(name)
+      distributions << name unless distributions.include?(name)
     end
     distributions
   end
 
   def activedistributions
     distributiondir = Dir.glob(File.join(@config.get[:rootdir], "*", "*"))
-    distributions   = Array.new
+    distributions   = []
 
     distributiondir.each do |name|
       basename = File.basename(name)
-      distributions.push(basename) unless distributions.include?(basename)
+      distributions << basename unless distributions.include?(basename)
     end
     distributions
   end
 end
 
-# push -> <<
-# config initialize
-# array-new -> []

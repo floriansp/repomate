@@ -23,15 +23,13 @@ class RepoMate
     FileUtils.copy(fullname, stagefullname)
   end
 
-  def unstage
-    #publish
-
-    save
+  def publish
+    save_checkpoint
 
     pool.activedistributions.each do |distname|
-      debs = File.join(pool.stagedir(distname), "*.deb")
+      debfiles = File.join(pool.stagedir(distname), "*.deb")
 
-      Dir.glob(debs) do |fullname|
+      Dir.glob(debfiles) do |fullname|
         package         = Package.new(fullname, distname)
         archivefullname = File.join(pool.archivedir(distname), package.newbasename)
 
@@ -41,12 +39,11 @@ class RepoMate
     end
   end
 
-  def save
-
+  def save_checkpoint
     File.open(@config.get[:redolog], 'a') do |file|
       pool.activedistributions.each do |distname|
-        debs = File.join(pool.productiondir(distname), "*.deb")
-        Dir.glob(debs) do |fullname|
+        debfiles = File.join(pool.productiondir(distname), "*.deb")
+        Dir.glob(debfiles) do |fullname|
           basename = File.basename(fullname)
           file.puts "#{DateTime.now} #{distname} #{basename}"
         end
@@ -54,13 +51,13 @@ class RepoMate
     end
   end
 
-  def load
+  def load_checkpoint
     unless File.exists?(@config.get[:redolog])
       puts "We can't restore because we don't have checkpoints"
       exit 1
     end
 
-    puts "*** Restore production links to a date below. ***
+    puts "\n*** Restore production links to a date below. ***
 Remember: If you need to restore, the last entry might be the one you want!
 Everything between the last two \"unstage (-u) commands\" will be lost if you proceed!\n\n"
 
@@ -70,7 +67,7 @@ Everything between the last two \"unstage (-u) commands\" will be lost if you pr
 
     File.open(@config.get[:redolog], 'r') do |file|
       while (line = file.gets)
-        dates.push(line.split[0]) unless dates.include?(line.split[0])
+        dates << line.split[0] unless dates.include?(line.split[0])
       end
     end
 
@@ -85,7 +82,7 @@ Everything between the last two \"unstage (-u) commands\" will be lost if you pr
       puts "#{num}) #{ddate}"
     end
 
-    printf "\n%s","Enter number or [q|quit] to abord: "
+    puts "\nEnter number or [q|quit] to abord: "
     input  = STDIN.gets
     number = input.to_i
 
@@ -97,13 +94,13 @@ Everything between the last two \"unstage (-u) commands\" will be lost if you pr
       exit 0
     else
       pool.activedistributions.each do |distname|
-        debs = File.join(pool.productiondir(distname), "*.deb")
-        Dir.glob(debs) do |fullname|
+        debfiles = File.join(pool.productiondir(distname), "*.deb")
+        Dir.glob(debfiles) do |fullname|
           File.unlink fullname
         end
       end
 
-      printf "\n%s\n", "Restoring..."
+      puts "\nRestoring...\n"
 
       File.open(@config.get[:redolog], 'r') do |file|
         while (line = file.gets)
@@ -126,22 +123,20 @@ Everything between the last two \"unstage (-u) commands\" will be lost if you pr
     pool.activedistributions.each do |distname|
       packages    = File.join(pool.productiondir(distname), "Packages")
       packages_gz = File.join(pool.productiondir(distname), "Packages.gz")
-      debs        = File.join(pool.productiondir(distname), "*.deb")
+      debfiles    = File.join(pool.productiondir(distname), "*.deb")
 
       File.unlink(packages_gz) if File.exists?(packages_gz)
 
-      Dir.glob(debs) do |fullname|
+      Dir.glob(debfiles) do |fullname|
         package = Package.new(fullname, distname)
 
         File.open(packages, 'a') do |file|
           package.controlfile.each do |key, value|
-            #file.printf "%s: %s\n", key, value
             file.puts "#{key}: #{value}"
           end
-          file.printf "%s: %s\n", "MD5sum", Digest::MD5.file(fullname).to_s
-          file.printf "%s: %s\n", "SHA1", Digest::SHA1.file(fullname).to_s
-          file.printf "%s: %s\n\n", "SHA256", Digest::SHA256.new(256).file(fullname).to_s
-          # puts -> \n\n
+          file.puts "MD5sum: #{Digest::MD5.file(fullname).to_s}"
+          file.puts "SHA1: #{Digest::SHA1.file(fullname).to_s}"
+          file.puts "SHA256: #{Digest::SHA256.new(256).file(fullname).to_s}\n\n"
         end
       end
       if File.exists?(packages)
@@ -163,32 +158,36 @@ Everything between the last two \"unstage (-u) commands\" will be lost if you pr
     [$1,$2]
   end
 
-  def link(fullname_a, productiondir, distname)
-    package_a    = Package.new(fullname_a, distname)
-    versions_a   = versions(package_a.controlfile['Version'])
-    debs         = "#{productiondir}/#{package_a.controlfile['Package']}*.deb"
-    prodfullname = File.join(productiondir, package_a.newbasename)
+  def link(source_fullname, destinationdir, distname)
+    source_package        = Package.new(source_fullname, distname)
+    source_version        = versions(source_package.controlfile['Version'])
+    debfiles              = "#{destinationdir}/#{source_package.controlfile['Package']}*.deb"
 
-    Dir.glob(debs) do |fullname_b|
-      package_b  = Package.new(fullname_b, distname)
-      versions_b = versions(package_b.controlfile['Version'])
-      if versions_a[0] == versions_b[0] && versions_a[1] > versions_b[1]
-        puts "Package: #{package_b.newbasename} replaced with #{package_a.newbasename}."
-        File.unlink(fullname_b)
-      elsif versions_a[0] > versions_b[0]
-        puts "Package: #{package_b.newbasename} replaced with #{package_a.newbasename}."
-        File.unlink(fullname_b)
-      elsif versions_a[0] == versions_b[0] && versions_a[1] == versions_b[1]
-        puts "Package: #{package_a.newbasename} already exists with same version numbers"
+    Dir.glob(debfiles) do |destination_fullname|
+
+      destination_package = Package.new(destination_fullname, distname)
+
+      destination_version = versions(destination_package.controlfile['Version'])
+      if source_version[0] == destination_version[0] && source_version[1] > destination_version[1]
+        puts "Package: #{destination_package.newbasename} replaced with #{source_package.newbasename}."
+        File.unlink(destination_fullname)
+        File.symlink(source_fullname, destination_fullname)
+      elsif source_version[0] > destination_version[0]
+        puts "Package: #{destination_package.newbasename} replaced with #{source_package.newbasename}."
+        File.unlink(destination_fullname)
+        File.symlink(source_fullname, destination_fullname)
+      elsif source_version[0] == destination_version[0] && source_version[1] == destination_version[1]
+        puts "Package: #{source_package.newbasename} already exists with same version numbers"
       else
         puts "something else happend"
       end
     end
 
-    unless File.exists?(prodfullname)
-      puts "Package: #{package_a.newbasename} linked to production/#{distname}"
+    destination_fullname = File.join(destinationdir, source_package.newbasename)
+    unless File.exists?(destination_fullname)
+      puts "Package: #{source_package.newbasename} linked to production/#{distname}"
 
-      File.symlink(fullname_a, prodfullname)
+      File.symlink(source_fullname, destination_fullname)
     end
     scan_packages
   end
