@@ -153,8 +153,6 @@ class RepoMate
     s = version.gsub(/\./, "")
     s =~ %r{(\d+).*(\d+)}
 
-    p [$1,$2]
-
     [$1,$2]
   end
 
