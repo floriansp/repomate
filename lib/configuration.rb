@@ -4,7 +4,7 @@ class Configuration
   attr_reader :get
 
   def initialize
-    @configfile = File.realpath("../etc/config.yml")
+    @configfile = File.dirname(File.expand_path(__FILE__)) + '/../etc/config.yml'
   end
 
   def get

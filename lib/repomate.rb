@@ -12,37 +12,40 @@ class RepoMate
     @config = Configuration.new
   end
 
-  def stage(fullname, distname)
-    package       = Package.new(fullname, distname)
-    stagefullname = File.join(pool.stagedir(distname), package.newbasename)
+  def stage(source_fullname, distname)
+    package              = Package.new(source_fullname, distname)
+    destination_fullname = File.join(pool.stage_dir(distname), package.newbasename)
 
     pool.setup(distname)
 
     puts "Package: #{package.newbasename} moved to stage/#{distname}"
 
-    FileUtils.copy(fullname, stagefullname)
+    FileUtils.copy(source_fullname, destination_fullname)
   end
 
   def publish
     save_checkpoint
 
-    pool.activedistributions.each do |distname|
-      debfiles = File.join(pool.stagedir(distname), "*.deb")
+    pool.active_distributions.each do |distname|
+      debfiles = File.join(pool.stage_dir(distname), "*.deb")
 
-      Dir.glob(debfiles) do |fullname|
-        package         = Package.new(fullname, distname)
-        archivefullname = File.join(pool.archivedir(distname), package.newbasename)
+      Dir.glob(debfiles) do |source_fullname|
+        package              = Package.new(source_fullname, distname)
+        destination_fullname = File.join(pool.archive_dir(distname), package.newbasename)
 
-        FileUtils.move(fullname, archivefullname)
-        link(archivefullname, pool.productiondir(distname), distname)
+        FileUtils.move(source_fullname, destination_fullname)
+
+        source_fullname = destination_fullname
+
+        link(source_fullname, pool.production_dir(distname), distname)
       end
     end
   end
 
   def save_checkpoint
     File.open(@config.get[:redolog], 'a') do |file|
-      pool.activedistributions.each do |distname|
-        debfiles = File.join(pool.productiondir(distname), "*.deb")
+      pool.active_distributions.each do |distname|
+        debfiles = File.join(pool.production_dir(distname), "*.deb")
         Dir.glob(debfiles) do |fullname|
           basename = File.basename(fullname)
           file.puts "#{DateTime.now} #{distname} #{basename}"
@@ -93,8 +96,8 @@ Everything between the last two \"unstage (-u) commands\" will be lost if you pr
       STDERR.puts "Invalid number"
       exit 0
     else
-      pool.activedistributions.each do |distname|
-        debfiles = File.join(pool.productiondir(distname), "*.deb")
+      pool.active_distributions.each do |distname|
+        debfiles = File.join(pool.production_dir(distname), "*.deb")
         Dir.glob(debfiles) do |fullname|
           File.unlink fullname
         end
@@ -107,9 +110,9 @@ Everything between the last two \"unstage (-u) commands\" will be lost if you pr
           if line.split[0] == list[number]
             basename        = line.split[2]
             distname        = line.split[1]
-            archivebasename = File.join(pool.archivedir(distname), basename)
+            archivebasename = File.join(pool.archive_dir(distname), basename)
 
-            link(archivebasename, pool.productiondir(distname), distname)
+            link(archivebasename, pool.production_dir(distname), distname)
           end
         end
       end
@@ -118,12 +121,11 @@ Everything between the last two \"unstage (-u) commands\" will be lost if you pr
   end
 
   def scan_packages
-# systemcall md5 usw. oder gem suchen?
-
-    pool.activedistributions.each do |distname|
-      packages    = File.join(pool.productiondir(distname), "Packages")
-      packages_gz = File.join(pool.productiondir(distname), "Packages.gz")
-      debfiles    = File.join(pool.productiondir(distname), "*.deb")
+  # TODO: systemcall or better gem for digest stuff
+    pool.active_distributions.each do |distname|
+      packages    = File.join(pool.production_dir(distname), "Packages")
+      packages_gz = File.join(pool.production_dir(distname), "Packages.gz")
+      debfiles    = File.join(pool.production_dir(distname), "*.deb")
 
       File.unlink(packages_gz) if File.exists?(packages_gz)
 
@@ -151,6 +153,7 @@ Everything between the last two \"unstage (-u) commands\" will be lost if you pr
     @pool ||= Pool.new
   end
 
+  # TODO: find a better way to parse versions
   def versions(version)
     s = version.gsub(/\./, "")
     s =~ %r{(\d+).*(\d+)}
@@ -158,10 +161,10 @@ Everything between the last two \"unstage (-u) commands\" will be lost if you pr
     [$1,$2]
   end
 
-  def link(source_fullname, destinationdir, distname)
-    source_package        = Package.new(source_fullname, distname)
-    source_version        = versions(source_package.controlfile['Version'])
-    debfiles              = "#{destinationdir}/#{source_package.controlfile['Package']}*.deb"
+  def link(source_fullname, destination_dir, distname)
+    source_package = Package.new(source_fullname, distname)
+    source_version = versions(source_package.controlfile['Version'])
+    debfiles       = "#{destination_dir}/#{source_package.controlfile['Package']}*.deb"
 
     Dir.glob(debfiles) do |destination_fullname|
 
@@ -171,11 +174,9 @@ Everything between the last two \"unstage (-u) commands\" will be lost if you pr
       if source_version[0] == destination_version[0] && source_version[1] > destination_version[1]
         puts "Package: #{destination_package.newbasename} replaced with #{source_package.newbasename}."
         File.unlink(destination_fullname)
-        File.symlink(source_fullname, destination_fullname)
       elsif source_version[0] > destination_version[0]
         puts "Package: #{destination_package.newbasename} replaced with #{source_package.newbasename}."
         File.unlink(destination_fullname)
-        File.symlink(source_fullname, destination_fullname)
       elsif source_version[0] == destination_version[0] && source_version[1] == destination_version[1]
         puts "Package: #{source_package.newbasename} already exists with same version numbers"
       else
@@ -183,7 +184,8 @@ Everything between the last two \"unstage (-u) commands\" will be lost if you pr
       end
     end
 
-    destination_fullname = File.join(destinationdir, source_package.newbasename)
+    destination_fullname = File.join(destination_dir, source_package.newbasename)
+
     unless File.exists?(destination_fullname)
       puts "Package: #{source_package.newbasename} linked to production/#{distname}"
 

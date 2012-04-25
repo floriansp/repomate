@@ -7,7 +7,7 @@ class Pool
   end
 
   def setup(distname)
-    if not alloweddistributions.include?(distname)
+    if not allowed_distributions.include?(distname)
       puts "Distname is not configured"
       exit 0
     end
@@ -21,19 +21,19 @@ class Pool
     end
   end
 
-  def archivedir(distname)
+  def archive_dir(distname)
     File.join(@config.get[:rootdir], "archive", distname)
   end
 
-  def stagedir(distname)
+  def stage_dir(distname)
     File.join(@config.get[:rootdir], "stage", distname)
   end
 
-  def productiondir(distname)
+  def production_dir(distname)
     File.join(@config.get[:rootdir], "production", distname)
   end
 
-  def alloweddistributions
+  def allowed_distributions
     distributions = []
     @config.get[:distributions].each do |name|
       distributions << name unless distributions.include?(name)
@@ -41,7 +41,7 @@ class Pool
     distributions
   end
 
-  def activedistributions
+  def active_distributions
     distributiondir = Dir.glob(File.join(@config.get[:rootdir], "*", "*"))
     distributions   = []
 
