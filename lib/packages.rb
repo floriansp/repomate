@@ -22,7 +22,7 @@ class Package
 
   protected
   def check_package
-    unless `file #{@fullname}` =~ /Debian binary package/i
+    unless `file --dereference #{@fullname}` =~ /Debian binary package/i
       puts "File does not exist or is not a Debian package!"
       false
     end
