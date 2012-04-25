@@ -3,6 +3,7 @@
 require 'rubygems'
 require 'slop'
 require 'yaml'
+require_relative '../lib/configuration'
 require_relative '../lib/repomate'
 
 options = Slop.parse do

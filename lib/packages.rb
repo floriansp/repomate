@@ -36,11 +36,13 @@ class Package
     fullname    = File.join(tmpdir, basename)
 
     FileUtils.mkdir_p(tmpdir)
-    raise "Could not untar" unless system "ar -p #{@fullname} #{gzbasename} > #{gzfullname}"
-    raise Errno::ENOENT, "Package file does not exist" unless File.exists?(gzfullname)
-    raise "Could not untar" unless system "tar xfz #{gzfullname} -C #{tmpdir}"
-    controlfile = YAML::load_file(fullname)
-    FileUtils.rm_rf(tmpdir)
-    controlfile
+    begin
+      raise "Could not untar" unless system "ar -p #{@fullname} #{gzbasename} > #{gzfullname}"
+      raise Errno::ENOENT, "Package file does not exist" unless File.exists?(gzfullname)
+      raise "Could not untar" unless system "tar xfz #{gzfullname} -C #{tmpdir}"
+      YAML::load_file(fullname)
+    ensure
+      FileUtils.rm_rf(tmpdir)
+    end
   end
 end
