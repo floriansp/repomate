@@ -1,8 +1,2 @@
-# TODO #
-
-* create/update/delete pools (archs, environments)
-* add packages to pools
-* remove packages from pools
-* move packages from pool to pool
-* move packages to archive / from archive
-* enable / disable packages
+﻿1. Verifiy if distribution is valid (array in configfile?)
+2. Add support for components (main/contrib yada yada)

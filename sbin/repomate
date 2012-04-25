@@ -1,0 +1,33 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'slop'
+require 'yaml'
+require_relative '../lib/repomate'
+
+options = Slop.parse do
+  banner "RepoMate (A simple debian repository management tool)"
+  on :a, :add=, "Add a package to the staging area (full path to file)", :argument => true
+  on :u, :unstage, "Move a package from staging area to production. (No other arguments required)"
+  on :l, :load, "Load production links to a specific date/time."
+  on :s, :save, "Save production links."
+  on :d, :distname=, "Set the name of the distribution.", :argument => true
+  on :h, :help, 'Print this help message', :tail => true do
+    puts help
+    exit
+  end
+end
+
+repomate = RepoMate.new
+
+if options.add? && options.distname?
+  repomate.stage(options[:add], options[:distname])
+elsif options.unstage?
+  repomate.unstage
+elsif options.load?
+  repomate.load
+elsif options.save?
+  repomate.save
+else
+  puts options.help
+end

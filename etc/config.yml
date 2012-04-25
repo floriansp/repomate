@@ -1,0 +1,6 @@
+---
+:rootdir: /Users/florianspeidel/work/repomate/xing
+:redolog: /Users/florianspeidel/work/repomate/redo.log
+:distributions:
+    - lenny
+    - squeeze
