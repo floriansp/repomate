@@ -10,34 +10,6 @@ require_relative 'pool'
 $config = YAML::load_file("../etc/config.yml")
 
 class RepoMate
-  def scan_packages
-    pool    = Pool.new
-
-    pool.distributions.each do |distname|
-      packages    = File.join(pool.productiondir(distname), "Packages")
-      packages_gz = File.join(pool.productiondir(distname), "Packages.gz")
-      debs        = File.join(pool.productiondir(distname), "*.deb")
-
-      File.unlink(packages_gz) if File.exists?(packages_gz)
-
-      Dir.glob(debs) do |fullname|
-        package = Package.new(fullname, distname)
-
-        File.open(packages, 'a') do |file|
-          package.controlfile.each do |key, value|
-            file.printf "%s: %s\n", key, value
-          end
-          file.printf "%s: %s\n", "MD5sum", Digest::MD5.file(fullname).to_s
-          file.printf "%s: %s\n", "SHA1", Digest::SHA1.file(fullname).to_s
-          file.printf "%s: %s\n\n", "SHA256", Digest::SHA256.new(256).file(fullname).to_s
-        end
-      end
-      if File.exists?(packages)
-        raise "Could not gzip" unless system "gzip -9 -f #{packages}"
-      end
-    end
-  end
-
   def stage(fullname, distname)
     pool          = Pool.new
     package       = Package.new(fullname, distname)
@@ -55,7 +27,7 @@ class RepoMate
 
     save
 
-    pool.distributions.each do |distname|
+    pool.activedistributions.each do |distname|
       debs = File.join(pool.stagedir(distname), "*.deb")
 
       Dir.glob(debs) do |fullname|
@@ -73,7 +45,7 @@ class RepoMate
     date = DateTime.now
 
     File.open($config[:redolog], 'a') do |file|
-      pool.distributions.each do |distname|
+      pool.activedistributions.each do |distname|
         debs = File.join(pool.productiondir(distname), "*.deb")
         Dir.glob(debs) do |fullname|
           basename = File.basename(fullname)
@@ -145,6 +117,34 @@ class RepoMate
         end
       end
       scan_packages
+    end
+  end
+
+  def scan_packages
+    pool    = Pool.new
+
+    pool.activedistributions.each do |distname|
+      packages    = File.join(pool.productiondir(distname), "Packages")
+      packages_gz = File.join(pool.productiondir(distname), "Packages.gz")
+      debs        = File.join(pool.productiondir(distname), "*.deb")
+
+      File.unlink(packages_gz) if File.exists?(packages_gz)
+
+      Dir.glob(debs) do |fullname|
+        package = Package.new(fullname, distname)
+
+        File.open(packages, 'a') do |file|
+          package.controlfile.each do |key, value|
+            file.printf "%s: %s\n", key, value
+          end
+          file.printf "%s: %s\n", "MD5sum", Digest::MD5.file(fullname).to_s
+          file.printf "%s: %s\n", "SHA1", Digest::SHA1.file(fullname).to_s
+          file.printf "%s: %s\n\n", "SHA256", Digest::SHA256.new(256).file(fullname).to_s
+        end
+      end
+      if File.exists?(packages)
+        raise "Could not gzip" unless system "gzip -9 -f #{packages}"
+      end
     end
   end
 

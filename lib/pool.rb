@@ -1,18 +1,17 @@
 class Pool
   def initialize
     @category = ["stage", "archive", "production"]
-
-    setup
   end
 
-  def setup(*distname)
+  def setup(distname)
+    if not alloweddistributions.include?(distname)
+      puts "Distname is not configured"
+      exit 0
+    end
+
     @category.each do |name|
-      directory = nil
-      if distname
-        directory = File.join($config[:rootdir], name, distname)
-      else
-        directory = File.join($config[:rootdir], name)
-      end
+      directory = File.join($config[:rootdir], name, distname)
+
       unless Dir.exists?(directory)
         FileUtils.mkdir_p(directory)
       end
@@ -31,7 +30,15 @@ class Pool
     File.join($config[:rootdir], "production", distname)
   end
 
-  def distributions
+  def alloweddistributions
+    distributions = Array.new
+    $config[:distributions].each do |name|
+      distributions.push(name) unless distributions.include?(name)
+    end
+    distributions
+  end
+
+  def activedistributions
     distributiondir = Dir.glob(File.join($config[:rootdir], "*", "*"))
     distributions   = Array.new
 
