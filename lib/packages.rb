@@ -6,11 +6,11 @@ class Package
 
   attr_reader :newbasename, :controlfile
 
-  def initialize(fullname, distname)
-    @config   = Configuration.new
-    @fullname = fullname
-    @distname = distname
-    @basename = File.basename(fullname)
+  def initialize(fullname, suitename)
+    @config    = Configuration.new
+    @fullname  = fullname
+    @suitename = suitename
+    @basename  = File.basename(fullname)
 
     check_package
 

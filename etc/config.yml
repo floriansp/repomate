@@ -2,6 +2,6 @@
 :rootdir: /var/lib/repomate/xing
 :redolog: /var/log/repomate/redo.log
 :dpkg: /usr/bin/dpkg
-:distributions:
+:suites:
     - lenny
     - squeeze

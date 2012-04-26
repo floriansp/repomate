@@ -6,14 +6,14 @@ class Pool
     @category = ["stage", "pool", "production"]
   end
 
-  def setup(distname)
-    if not allowed_distributions.include?(distname)
-      puts "Distname is not configured"
+  def setup(suitename)
+    if not allowed_suites.include?(suitename)
+      puts "suitename is not configured"
       exit 0
     end
 
     @category.each do |name|
-      directory = File.join(@config.get[:rootdir], name, distname)
+      directory = File.join(@config.get[:rootdir], name, suitename)
 
       unless Dir.exists?(directory)
         FileUtils.mkdir_p(directory)
@@ -21,35 +21,35 @@ class Pool
     end
   end
 
-  def pool_dir(distname)
-    File.join(@config.get[:rootdir], "pool", distname)
+  def pool_dir(suitename)
+    File.join(@config.get[:rootdir], "pool", suitename)
   end
 
-  def stage_dir(distname)
-    File.join(@config.get[:rootdir], "stage", distname)
+  def stage_dir(suitename)
+    File.join(@config.get[:rootdir], "stage", suitename)
   end
 
-  def production_dir(distname)
-    File.join(@config.get[:rootdir], "production", distname)
+  def production_dir(suitename)
+    File.join(@config.get[:rootdir], "production", suitename)
   end
 
-  def allowed_distributions
-    distributions = []
-    @config.get[:distributions].each do |name|
-      distributions << name unless distributions.include?(name)
+  def allowed_suites
+    suites = []
+    @config.get[:suites].each do |name|
+      suites << name unless suites.include?(name)
     end
-    distributions
+    suites
   end
 
-  def active_distributions
-    distributiondir = Dir.glob(File.join(@config.get[:rootdir], "*", "*"))
-    distributions   = []
+  def active_suites
+    suitedir = Dir.glob(File.join(@config.get[:rootdir], "*", "*"))
+    suites   = []
 
-    distributiondir.each do |name|
+    suitedir.each do |name|
       basename = File.basename(name)
-      distributions << basename unless distributions.include?(basename)
+      suites << basename unless suites.include?(basename)
     end
-    distributions
+    suites
   end
 end
 

@@ -12,41 +12,41 @@ class RepoMate
     @config = Configuration.new
   end
 
-  def stage(source_fullname, distname)
-    package              = Package.new(source_fullname, distname)
-    destination_fullname = File.join(pool.stage_dir(distname), package.newbasename)
+  def stage(source_fullname, suitename)
+    package              = Package.new(source_fullname, suitename)
+    destination_fullname = File.join(pool.stage_dir(suitename), package.newbasename)
 
-    pool.setup(distname)
+    pool.setup(suitename)
 
-    puts "Package: #{package.newbasename} moved to stage/#{distname}"
+    puts "Package: #{package.newbasename} moved to stage/#{suitename}"
 
     FileUtils.copy(source_fullname, destination_fullname)
   end
 
   def publish
-    pool.active_distributions.each do |distname|
-      debfiles = File.join(pool.stage_dir(distname), "*.deb")
+    pool.active_suites.each do |suitename|
+      debfiles = File.join(pool.stage_dir(suitename), "*.deb")
 
       Dir.glob(debfiles) do |source_fullname|
-        package              = Package.new(source_fullname, distname)
-        destination_fullname = File.join(pool.pool_dir(distname), package.newbasename)
+        package              = Package.new(source_fullname, suitename)
+        destination_fullname = File.join(pool.pool_dir(suitename), package.newbasename)
 
         FileUtils.move(source_fullname, destination_fullname)
 
         source_fullname = destination_fullname
 
-        link(source_fullname, pool.production_dir(distname), distname)
+        link(source_fullname, pool.production_dir(suitename), suitename)
       end
     end
   end
 
   def save_checkpoint
     File.open(@config.get[:redolog], 'a') do |file|
-      pool.active_distributions.each do |distname|
-        debfiles = File.join(pool.production_dir(distname), "*.deb")
+      pool.active_suites.each do |suitename|
+        debfiles = File.join(pool.production_dir(suitename), "*.deb")
         Dir.glob(debfiles) do |fullname|
           basename = File.basename(fullname)
-          file.puts "#{DateTime.now} #{distname} #{basename}"
+          file.puts "#{DateTime.now} #{suitename} #{basename}"
         end
       end
     end
@@ -94,8 +94,8 @@ Everything between the last two \"unstage (-u) commands\" will be lost if you pr
       STDERR.puts "Invalid number"
       exit 0
     else
-      pool.active_distributions.each do |distname|
-        debfiles = File.join(pool.production_dir(distname), "*.deb")
+      pool.active_suites.each do |suitename|
+        debfiles = File.join(pool.production_dir(suitename), "*.deb")
         Dir.glob(debfiles) do |fullname|
           File.unlink fullname
         end
@@ -106,11 +106,11 @@ Everything between the last two \"unstage (-u) commands\" will be lost if you pr
       File.open(@config.get[:redolog], 'r') do |file|
         while (line = file.gets)
           if line.split[0] == list[number]
-            basename        = line.split[2]
-            distname        = line.split[1]
-            poolbasename    = File.join(pool.pool_dir(distname), basename)
+            basename     = line.split[2]
+            suitename    = line.split[1]
+            poolbasename = File.join(pool.pool_dir(suitename), basename)
 
-            link(poolbasename, pool.production_dir(distname), distname)
+            link(poolbasename, pool.production_dir(suitename), suitename)
           end
         end
       end
@@ -120,15 +120,15 @@ Everything between the last two \"unstage (-u) commands\" will be lost if you pr
 
   def scan_packages
   # TODO: systemcall or better gem for digest stuff
-    pool.active_distributions.each do |distname|
-      packages    = File.join(pool.production_dir(distname), "Packages")
-      packages_gz = File.join(pool.production_dir(distname), "Packages.gz")
-      debfiles    = File.join(pool.production_dir(distname), "*.deb")
+    pool.active_suites.each do |suitename|
+      packages    = File.join(pool.production_dir(suitename), "Packages")
+      packages_gz = File.join(pool.production_dir(suitename), "Packages.gz")
+      debfiles    = File.join(pool.production_dir(suitename), "*.deb")
 
       File.unlink(packages_gz) if File.exists?(packages_gz)
 
       Dir.glob(debfiles) do |fullname|
-        package = Package.new(fullname, distname)
+        package = Package.new(fullname, suitename)
 
         File.open(packages, 'a') do |file|
           package.controlfile.each do |key, value|
@@ -145,29 +145,29 @@ Everything between the last two \"unstage (-u) commands\" will be lost if you pr
     end
   end
 
-  def list_packages(*distname)
-    if distname.empty?
-      pool.active_distributions.each do |distname|
-        list_packages_by_dist(distname)
+  def list_packages(*suitename)
+    if suitename.empty?
+      pool.active_suites.each do |suitename|
+        list_packages_by_suite(suitename)
       end
     else
-      list_packages_by_dist(distname)
+      list_packages_by_suite(suitename)
     end
   end
 
-  def list_packages_by_dist(distname)
-    debfiles = File.join(pool.pool_dir(distname), "*.deb")
+  def list_packages_by_suite(suitename)
+    debfiles = File.join(pool.pool_dir(suitename), "*.deb")
 
-    puts "Active packages in #{distname}:"
+    puts "Active packages in #{suitename}:"
 
     Dir.glob(debfiles) do |source_fullname|
-      package = Package.new(source_fullname, distname)
+      package = Package.new(source_fullname, suitename)
 
       basename     = package.controlfile['Package']
       version      = package.controlfile['Version']
       description  = package.controlfile['Description']
 
-      printf "%s%50s%15s\n", basename, version, distname
+      printf "%s%50s%15s\n", basename, version, suitename
     end
   end
 
@@ -177,8 +177,8 @@ Everything between the last two \"unstage (-u) commands\" will be lost if you pr
     @pool ||= Pool.new
   end
 
-  def link(source_fullname, destination_dir, distname)
-    source_package = Package.new(source_fullname, distname)
+  def link(source_fullname, destination_dir, suitename)
+    source_package = Package.new(source_fullname, suitename)
     source_version = source_package.controlfile['Version']
     debfiles       = "#{destination_dir}/#{source_package.controlfile['Package']}*.deb"
     action         = 1
@@ -187,7 +187,7 @@ Everything between the last two \"unstage (-u) commands\" will be lost if you pr
     raise "dpkg is not installed" unless File.exists?(dpkg)
 
     Dir.glob(debfiles) do |destination_fullname|
-      destination_package = Package.new(destination_fullname, distname)
+      destination_package = Package.new(destination_fullname, suitename)
       destination_version = destination_package.controlfile['Version']
 
       if system("#{dpkg} --compare-versions #{source_version} gt #{destination_version}")
@@ -206,7 +206,7 @@ Everything between the last two \"unstage (-u) commands\" will be lost if you pr
       save_checkpoint
 
       destination_fullname = File.join(destination_dir, source_package.newbasename)
-      puts "Package: #{source_package.newbasename} linked to production/#{distname}"
+      puts "Package: #{source_package.newbasename} linked to production/#{suitename}"
 
       File.symlink(source_fullname, destination_fullname)
 
