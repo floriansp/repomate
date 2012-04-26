@@ -1,11 +1,7 @@
 ---
 :rootdir: /var/lib/repomate/xing
 :redolog: /var/log/repomate/redo.log
-:ar: /usr/bin/ar
-:tar: /bin/tar
-:gzip: /bin/gzip
 :dpkg: /usr/bin/dpkg
-:file: /usr/bin/file
 :distributions:
     - lenny
     - squeeze

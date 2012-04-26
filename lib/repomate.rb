@@ -142,8 +142,34 @@ Everything between the last two \"unstage (-u) commands\" will be lost if you pr
         end
       end
       if File.exists?(packages)
-        raise "Could not gzip" unless system "#{@config.get[:gzip]} -9 -c #{packages} >> #{packages_gz}"
+        raise "Could not gzip" unless system "gzip -9 -c #{packages} >> #{packages_gz}"
       end
+    end
+  end
+
+  def list_packages(*distname)
+    if distname.empty?
+      pool.active_distributions.each do |distname|
+        list_packages_by_dist(distname)
+      end
+    else
+      list_packages_by_dist(distname)
+    end
+  end
+
+  def list_packages_by_dist(distname)
+    debfiles = File.join(pool.pool_dir(distname), "*.deb")
+
+    puts "Active packages in #{distname}:"
+
+    Dir.glob(debfiles) do |source_fullname|
+      package = Package.new(source_fullname, distname)
+
+      basename     = package.controlfile['Package']
+      version      = package.controlfile['Version']
+      description  = package.controlfile['Description']
+
+      printf "%s%50s%15s\n", basename, version, distname
     end
   end
 
@@ -158,20 +184,21 @@ Everything between the last two \"unstage (-u) commands\" will be lost if you pr
     source_version = source_package.controlfile['Version']
     debfiles       = "#{destination_dir}/#{source_package.controlfile['Package']}*.deb"
     action         = 1
+    dpkg           = @config.get[:dpkg]
 
-    raise "dpkg is not installed" unless File.exists?(@config.get[:dpkg])
+    raise "dpkg is not installed" unless File.exists?(dpkg)
 
     Dir.glob(debfiles) do |destination_fullname|
       destination_package = Package.new(destination_fullname, distname)
       destination_version = destination_package.controlfile['Version']
 
-      if system("#{@config.get[:dpkg]} --compare-versions #{source_version} gt #{destination_version}")
+      if system("#{dpkg} --compare-versions #{source_version} gt #{destination_version}")
         puts "Package: #{destination_package.newbasename} replaced with #{source_package.newbasename}."
         File.unlink(destination_fullname)
-      elsif system("#{@config.get[:dpkg]} --compare-versions #{source_version} eq #{destination_version}")
+      elsif system("#{dpkg} --compare-versions #{source_version} eq #{destination_version}")
         puts "Package: #{source_package.newbasename} already exists with same version."
         action = nil
-      elsif system("#{@config.get[:dpkg]} --compare-versions #{source_version} lt #{destination_version}")
+      elsif system("#{dpkg} --compare-versions #{source_version} lt #{destination_version}")
         puts "Package: #{source_package.newbasename} already exists with higher version."
         action = nil
       end
