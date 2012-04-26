@@ -142,7 +142,7 @@ Everything between the last two \"unstage (-u) commands\" will be lost if you pr
         end
       end
       if File.exists?(packages)
-        raise "Could not gzip" unless system "gzip -9 -f #{packages}"
+        raise "Could not gzip" unless system "#{@config.get[:gzip]} -9 -c #{packages} >> #{packages_gz}"
       end
     end
   end
