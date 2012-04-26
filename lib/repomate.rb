@@ -37,7 +37,7 @@ class RepoMate
 
         source_fullname = destination_fullname
 
-        link(source_fullname, pool.production_dir(distname), distname)
+        link(source_fullname, pool.pool_dir(distname), distname)
       end
     end
   end
@@ -45,7 +45,7 @@ class RepoMate
   def save_checkpoint
     File.open(@config.get[:redolog], 'a') do |file|
       pool.active_distributions.each do |distname|
-        debfiles = File.join(pool.production_dir(distname), "*.deb")
+        debfiles = File.join(pool.pool_dir(distname), "*.deb")
         Dir.glob(debfiles) do |fullname|
           basename = File.basename(fullname)
           file.puts "#{DateTime.now} #{distname} #{basename}"
@@ -97,7 +97,7 @@ Everything between the last two \"unstage (-u) commands\" will be lost if you pr
       exit 0
     else
       pool.active_distributions.each do |distname|
-        debfiles = File.join(pool.production_dir(distname), "*.deb")
+        debfiles = File.join(pool.pool_dir(distname), "*.deb")
         Dir.glob(debfiles) do |fullname|
           File.unlink fullname
         end
@@ -112,7 +112,7 @@ Everything between the last two \"unstage (-u) commands\" will be lost if you pr
             distname        = line.split[1]
             archivebasename = File.join(pool.archive_dir(distname), basename)
 
-            link(archivebasename, pool.production_dir(distname), distname)
+            link(archivebasename, pool.pool_dir(distname), distname)
           end
         end
       end
@@ -123,9 +123,9 @@ Everything between the last two \"unstage (-u) commands\" will be lost if you pr
   def scan_packages
   # TODO: systemcall or better gem for digest stuff
     pool.active_distributions.each do |distname|
-      packages    = File.join(pool.production_dir(distname), "Packages")
-      packages_gz = File.join(pool.production_dir(distname), "Packages.gz")
-      debfiles    = File.join(pool.production_dir(distname), "*.deb")
+      packages    = File.join(pool.pool_dir(distname), "Packages")
+      packages_gz = File.join(pool.pool_dir(distname), "Packages.gz")
+      debfiles    = File.join(pool.pool_dir(distname), "*.deb")
 
       File.unlink(packages_gz) if File.exists?(packages_gz)
 
