@@ -2,7 +2,7 @@
 :rootdir: /var/lib/repomate/xing
 :redolog: /var/log/repomate/redo.log
 :ar: /usr/bin/ar
-:tar: /usr/bin/tar
+:tar: /bin/tar
 :dpkg: /usr/bin/dpkg
 :file: /usr/bin/file
 :distributions:
