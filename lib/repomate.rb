@@ -24,8 +24,6 @@ class RepoMate
   end
 
   def publish
-    save_checkpoint
-
     pool.active_distributions.each do |distname|
       debfiles = File.join(pool.stage_dir(distname), "*.deb")
 
@@ -205,6 +203,8 @@ Everything between the last two \"unstage (-u) commands\" will be lost if you pr
     end
 
     if not action.nil?
+      save_checkpoint
+
       destination_fullname = File.join(destination_dir, source_package.newbasename)
       puts "Package: #{source_package.newbasename} linked to production/#{distname}"
 

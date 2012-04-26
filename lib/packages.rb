@@ -19,7 +19,6 @@ class Package
     @version      = @controlfile['Version']
     @architecture = @controlfile['Architecture']
     @newbasename  = "#{@name}-#{@version}_#{@architecture}.deb"
-
   end
 
   protected
