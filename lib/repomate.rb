@@ -153,44 +153,35 @@ Everything between the last two \"unstage (-u) commands\" will be lost if you pr
     @pool ||= Pool.new
   end
 
-  # TODO: find a better way to parse versions
-  def versions(version)
-    s = version.gsub(/\./, "")
-    s =~ %r{(\d+).*(\d+)}
-
-    [$1,$2]
-  end
-
   def link(source_fullname, destination_dir, distname)
     source_package = Package.new(source_fullname, distname)
-    source_version = versions(source_package.controlfile['Version'])
+    source_version = source_package.controlfile['Version']
     debfiles       = "#{destination_dir}/#{source_package.controlfile['Package']}*.deb"
+    action         = 1
 
     Dir.glob(debfiles) do |destination_fullname|
-
       destination_package = Package.new(destination_fullname, distname)
+      destination_version = destination_package.controlfile['Version']
 
-      destination_version = versions(destination_package.controlfile['Version'])
-      if source_version[0] == destination_version[0] && source_version[1] > destination_version[1]
+      if system("dpkg --compare-versions #{source_version} gt #{destination_version}")
         puts "Package: #{destination_package.newbasename} replaced with #{source_package.newbasename}."
         File.unlink(destination_fullname)
-      elsif source_version[0] > destination_version[0]
-        puts "Package: #{destination_package.newbasename} replaced with #{source_package.newbasename}."
-        File.unlink(destination_fullname)
-      elsif source_version[0] == destination_version[0] && source_version[1] == destination_version[1]
-        puts "Package: #{source_package.newbasename} already exists with same version numbers"
-      else
-        puts "something else happend"
+      elsif system("dpkg --compare-versions #{source_version} eq #{destination_version}")
+        puts "Package: #{source_package.newbasename} already exists with same version."
+        action = nil
+      elsif system("dpkg --compare-versions #{source_version} lt #{destination_version}")
+        puts "Package: #{source_package.newbasename} already exists with higher version."
+        action = nil
       end
     end
 
-    destination_fullname = File.join(destination_dir, source_package.newbasename)
-
-    unless File.exists?(destination_fullname)
+    if not action.nil?
+      destination_fullname = File.join(destination_dir, source_package.newbasename)
       puts "Package: #{source_package.newbasename} linked to production/#{distname}"
 
       File.symlink(source_fullname, destination_fullname)
+
+      scan_packages
     end
-    scan_packages
   end
 end
