@@ -8,11 +8,12 @@ require_relative '../lib/repomate'
 
 options = Slop.parse do
   banner "RepoMate (A simple debian repository management tool)"
-  on :a, :add=, "Add a package to the staging area (full path to file)", :argument => true
-  on :p, :publish, "Move a package from staging area to production. (No other arguments required)"
-  on :l, :load, "Load production links to a specific date/time."
-  on :s, :save, "Save production links."
-  on :d, :distname=, "Set the name of the distribution.", :argument => true
+  on :A, :add=, "Add a package to the staging area (full path to file and requires -s)", :argument => true
+  on :P, :publish, "Move a package from staging area to production. (No other arguments required)"
+  on :L, :load, "Load production links to a specific date/time."
+  on :S, :save, "Save production links."
+  on :d, :suitename=, "Set the name of the suite.", :argument => true
+  on :l, :listpackages, "List packages in a suite (requires -s)."
   on :h, :help, 'Print this help message', :tail => true do
     puts help
     exit
@@ -21,14 +22,18 @@ end
 
 repomate = RepoMate.new
 
-if options.add? && options.distname?
-  repomate.stage(options[:add], options[:distname])
+if options.add? && options.suitename?
+  repomate.stage(options[:add], options[:suitename])
 elsif options.publish?
   repomate.publish
 elsif options.load?
   repomate.load_checkpoint
 elsif options.save?
   repomate.save_checkpoint
+elsif options.listpackages? && options.suitename?
+  repomate.list_packages(options[:suitename])
+elsif options.listpackages?
+  repomate.list_packages
 else
   puts options.help
 end
