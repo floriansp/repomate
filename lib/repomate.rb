@@ -159,17 +159,19 @@ Everything between the last two \"unstage (-u) commands\" will be lost if you pr
     debfiles       = "#{destination_dir}/#{source_package.controlfile['Package']}*.deb"
     action         = 1
 
+    raise "dpkg is not installed" unless File.exists?(@config.get[:dpkg])
+
     Dir.glob(debfiles) do |destination_fullname|
       destination_package = Package.new(destination_fullname, distname)
       destination_version = destination_package.controlfile['Version']
 
-      if system("dpkg --compare-versions #{source_version} gt #{destination_version}")
+      if system("#{@config.get[:dpkg]} --compare-versions #{source_version} gt #{destination_version}")
         puts "Package: #{destination_package.newbasename} replaced with #{source_package.newbasename}."
         File.unlink(destination_fullname)
-      elsif system("dpkg --compare-versions #{source_version} eq #{destination_version}")
+      elsif system("#{@config.get[:dpkg]} --compare-versions #{source_version} eq #{destination_version}")
         puts "Package: #{source_package.newbasename} already exists with same version."
         action = nil
-      elsif system("dpkg --compare-versions #{source_version} lt #{destination_version}")
+      elsif system("#{@config.get[:dpkg]} --compare-versions #{source_version} lt #{destination_version}")
         puts "Package: #{source_package.newbasename} already exists with higher version."
         action = nil
       end

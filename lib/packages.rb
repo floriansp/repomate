@@ -1,11 +1,13 @@
 require 'yaml'
 require 'tempfile'
+require_relative 'configuration'
 
 class Package
 
   attr_reader :newbasename, :controlfile
 
   def initialize(fullname, distname)
+    @config   = Configuration.new
     @fullname = fullname
     @distname = distname
     @basename = File.basename(fullname)
@@ -22,6 +24,8 @@ class Package
 
   protected
   def check_package
+    raise "file is not installed" unless File.exists?(@config.get[:file])
+
     unless `file --dereference #{@fullname}` =~ /Debian binary package/i
       puts "File does not exist or is not a Debian package!"
       false
@@ -37,9 +41,9 @@ class Package
 
     FileUtils.mkdir_p(tmpdir)
     begin
-      raise "Could not untar" unless system "ar -p #{@fullname} #{gzbasename} > #{gzfullname}"
+      raise "Could not untar" unless system "#{@config.get[:ar]} -p #{@fullname} #{gzbasename} > #{gzfullname}"
       raise Errno::ENOENT, "Package file does not exist" unless File.exists?(gzfullname)
-      raise "Could not untar" unless system "tar xfz #{gzfullname} -C #{tmpdir}"
+      raise "Could not untar" unless system "#{@config.get[:tar]} xfz #{gzfullname} -C #{tmpdir}"
       YAML::load_file(fullname)
     ensure
       FileUtils.rm_rf(tmpdir)
