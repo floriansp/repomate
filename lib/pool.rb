@@ -3,7 +3,7 @@ require_relative 'configuration'
 class Pool
   def initialize
     @config   = Configuration.new
-    @category = ["stage", "archive", "production"]
+    @category = ["stage", "pool", "production"]
   end
 
   def setup(distname)
@@ -21,8 +21,8 @@ class Pool
     end
   end
 
-  def archive_dir(distname)
-    File.join(@config.get[:rootdir], "archive", distname)
+  def pool_dir(distname)
+    File.join(@config.get[:rootdir], "pool", distname)
   end
 
   def stage_dir(distname)

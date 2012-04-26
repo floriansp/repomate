@@ -31,7 +31,7 @@ class RepoMate
 
       Dir.glob(debfiles) do |source_fullname|
         package              = Package.new(source_fullname, distname)
-        destination_fullname = File.join(pool.archive_dir(distname), package.newbasename)
+        destination_fullname = File.join(pool.pool_dir(distname), package.newbasename)
 
         FileUtils.move(source_fullname, destination_fullname)
 
@@ -110,9 +110,9 @@ Everything between the last two \"unstage (-u) commands\" will be lost if you pr
           if line.split[0] == list[number]
             basename        = line.split[2]
             distname        = line.split[1]
-            archivebasename = File.join(pool.archive_dir(distname), basename)
+            poolbasename    = File.join(pool.pool_dir(distname), basename)
 
-            link(archivebasename, pool.production_dir(distname), distname)
+            link(poolbasename, pool.production_dir(distname), distname)
           end
         end
       end
