@@ -83,7 +83,7 @@ Everything between the last two \"unstage (-u) commands\" will be lost if you pr
       STDERR.puts "Invalid number"
       exit 0
     else
-      @repomate.load_checkpoint
+      @repomate.load_checkpoint(number)
     end
   end
 end

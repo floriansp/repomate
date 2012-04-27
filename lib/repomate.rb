@@ -81,7 +81,9 @@ class RepoMate
     end
   end
 
-  def load_checkpoint
+  def load_checkpoint(number)
+    list = list_checkpoints
+
     pool.structure.each do |suitename, components|
       components.each do |component|
         debfiles = File.join(pool.production_dir(suitename, component), "*.deb")
