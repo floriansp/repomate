@@ -162,6 +162,21 @@ class RepoMate
     end
   end
 
+  def get_packages_by_suite(suitename, component)
+    packages = []
+    debfiles = File.join(pool.pool_dir(suitename, component), "*.deb")
+    Dir.glob(debfiles) do |source_fullname|
+      package = Package.new(source_fullname, suitename)
+
+      basename    = package.controlfile['Package']
+      version     = package.controlfile['Version']
+      description = package.controlfile['Description']
+
+      packages << {:basename => basename, :version => version, :description => description}
+    end
+    packages
+  end
+
   protected
 
   def pool

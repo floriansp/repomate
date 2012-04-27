@@ -12,7 +12,7 @@ class Cli
     @config   = Configuration.new
   end
 
-  def list_packages(suitename=nil)
+  def list_packages(suitename=nil, component=nil)
     if suitename.nil?
       @pool.structure.each do |suitename, components|
         components.each do |component|
@@ -25,15 +25,10 @@ class Cli
   end
 
   def list_packages_by_suite(suitename, component)
-    debfiles = File.join(@pool.pool_dir(suitename, component), "*.deb")
-    Dir.glob(debfiles) do |source_fullname|
-      package = Package.new(source_fullname, suitename)
+    packages = @repomate.get_packages_by_suite(suitename, component)
 
-      basename    = package.controlfile['Package']
-      version     = package.controlfile['Version']
-      description = package.controlfile['Description']
-
-      printf "%-50s%-20s%s\n", basename, version, "#{suitename}/#{component}"
+    packages.each do |package|
+      packages.each {|a| printf "%-50s%-20s%s\n", a[:basename], a[:version], "#{suitename}/#{component}"}
     end
   end
 
