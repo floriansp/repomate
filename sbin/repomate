@@ -5,6 +5,7 @@ require 'slop'
 require_relative '../lib/configuration'
 require_relative '../lib/repomate'
 require_relative '../lib/cli'
+require_relative '../lib/server'
 
 options = Slop.parse do
   banner "RepoMate (A simple debian repository management tool)"
@@ -17,6 +18,7 @@ options = Slop.parse do
   on :l, :listpackages, "List packages in a suite"
   on :force, "Force action", :default => false
   on :setup, "Setup directory structure"
+  on :server, "Start Webserver"
   on :h, :help, 'Print this help message', :tail => true do
     puts help
     exit
@@ -54,6 +56,9 @@ elsif options.setup?
   end
   pool = Pool.new
   pool.setup(options[:suitename], options[:component])
+elsif options.server?
+  Server.run!
 else
   puts options.help
 end
+
