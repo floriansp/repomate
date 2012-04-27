@@ -40,7 +40,7 @@ class RepoMate
           printf "\n%s", "\nLink #{package.newbasename} to production => #{suitename}/#{component}? [y|yes|n|no]: "
           input = STDIN.gets unless force
 
-          if force || input =~ /[y|yes]/
+          if force || input =~ /(y|yes)/
             FileUtils.move(source_fullname, destination_fullname)
             source_fullname = destination_fullname
             link(source_fullname, pool.production_dir(suitename, component), suitename)
@@ -171,7 +171,6 @@ Everything between the last two \"unstage (-u) commands\" will be lost if you pr
   end
 
   def scan_packages
-  # TODO: systemcall or better gem for digest stuff
     pool.structure.each do |suitename, components|
       components.each do |component|
         packages    = File.join(pool.production_dir(suitename, component), "Packages")
@@ -199,34 +198,13 @@ Everything between the last two \"unstage (-u) commands\" will be lost if you pr
     end
   end
 
-  def list_packages(*suitename)
-    if suitename.empty?
-      pool.structure.each do |suitename, components|
-        components.each do |component|
-          list_packages_by_suite(suitename, component)
-        end
-      end
-    else
-      list_packages_by_suite(suitename, component)
-    end
-  end
-
-  def list_packages_by_suite(suitename, component)
-    debfiles = File.join(pool.pool_dir(suitename, component), "*.deb")
-    Dir.glob(debfiles) do |source_fullname|
-      package = Package.new(source_fullname, suitename)
-
-      basename     = package.controlfile['Package']
-      version      = package.controlfile['Version']
-      description  = package.controlfile['Description']
-
-      printf "%-50s%-20s%s\n", basename, version, "#{suitename}/#{component}"
-    end
-  end
-
   protected
 
   def pool
     @pool ||= Pool.new
+  end
+
+  def config
+    @config ||= Configuration.new
   end
 end

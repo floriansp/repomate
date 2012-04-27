@@ -2,9 +2,9 @@
 
 require 'rubygems'
 require 'slop'
-require 'yaml'
 require_relative '../lib/configuration'
 require_relative '../lib/repomate'
+require_relative '../lib/cli'
 
 options = Slop.parse do
   banner "RepoMate (A simple debian repository management tool)"
@@ -25,6 +25,8 @@ end
 
 repomate = RepoMate.new
 
+cli = Cli.new
+
 if options.add?
   unless options.suitename?
     puts "Specify a suitename with [-s|--suitname]"
@@ -38,9 +40,9 @@ elsif options.load?
 elsif options.save?
   repomate.save_checkpoint
 elsif options.listpackages? && options.suitename?
-  repomate.list_packages(options[:suitename])
+  cli.list_packages(options[:suitename])
 elsif options.listpackages?
-  repomate.list_packages
+  cli.list_packages
 elsif options.setup?
   unless options.suitename?
     puts "Specify a suitename with [-s|--suitname]"
