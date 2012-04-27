@@ -8,13 +8,13 @@ require_relative '../lib/repomate'
 
 options = Slop.parse do
   banner "RepoMate (A simple debian repository management tool)"
-  on :A, :add=, "Add a package to the staging area (full path to file and requires -s)", :argument => true
-  on :P, :publish, "Move a package from staging area to production. (No other arguments required)"
-  on :L, :load, "Load production links to a specific date/time."
-  on :S, :save, "Save production links."
-  on :s, :suitename=, "Set the name of the suite (lenny/squeeze).", :argument => true
-  on :c, :component=, "Set the name of the component (main/contrib...).", :default => "main"
-  on :l, :listpackages, "List packages in a suite (requires -s)."
+  on :A, :add=, "Add a package to the staging area (full path to file)", :argument => true
+  on :P, :publish, "Move a package from staging area to production"
+  on :L, :load, "Load production links to a specific moment"
+  on :S, :save, "Save production links"
+  on :s, :suitename=, "Set the name of the suite (lenny/squeeze...)", :argument => true
+  on :c, :component=, "Set the name of the component (main/contrib...)", :default => "main"
+  on :l, :listpackages, "List packages in a suite"
   on :setup, "Setup directory structure"
 
   on :h, :help, 'Print this help message', :tail => true do

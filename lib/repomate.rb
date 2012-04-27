@@ -38,7 +38,12 @@ class RepoMate
           source_fullname = destination_fullname
           action          = 1
 
-          link(source_fullname, pool.production_dir(suitename, component), suitename)
+          puts "\nLink #{package.newbasename} to production => #{suitename}/#{component}? [y|yes|n|no]: "
+          input = STDIN.gets
+
+          if input =~ /[y|yes]/
+            link(source_fullname, pool.production_dir(suitename, component), suitename)
+          end
         end
       end
     end
@@ -206,10 +211,7 @@ Everything between the last two \"unstage (-u) commands\" will be lost if you pr
   end
 
   def list_packages_by_suite(suitename, component)
-    debfiles = File.join(pool.pool_dir(suitename), "*.deb")
-
-    puts "Active packages in #{suitename}/#{component}:"
-
+    debfiles = File.join(pool.pool_dir(suitename, component), "*.deb")
     Dir.glob(debfiles) do |source_fullname|
       package = Package.new(source_fullname, suitename)
 
@@ -217,7 +219,7 @@ Everything between the last two \"unstage (-u) commands\" will be lost if you pr
       version      = package.controlfile['Version']
       description  = package.controlfile['Description']
 
-      printf "%s%50s%15s\n", basename, version, suitename
+      printf "%s%50s%20s\n", basename, version, "#{suitename}/#{component}"
     end
   end
 
