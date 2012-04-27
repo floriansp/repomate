@@ -46,6 +46,7 @@ class RepoMate
     source_package = Package.new(source_fullname, suitename)
     source_version = source_package.controlfile['Version']
     debfiles       = "#{destination_dir}/#{source_package.controlfile['Package']}*.deb"
+    component      = destination_dir.split[1]
     action         = 1
     dpkg           = @config.get[:dpkg]
 
@@ -71,7 +72,7 @@ class RepoMate
       save_checkpoint
 
       destination_fullname = File.join(destination_dir, source_package.newbasename)
-      puts "Package: #{source_package.newbasename} linked to production/#{suitename}"
+      puts "Package: #{source_package.newbasename} linked to production => #{suitename}/#{component}"
 
       File.symlink(source_fullname, destination_fullname)
 
