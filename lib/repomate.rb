@@ -86,7 +86,7 @@ class RepoMate
           debfiles = File.join(pool.production_dir(suitename, component), "*.deb")
           Dir.glob(debfiles) do |fullname|
             basename = File.basename(fullname)
-            file.puts "#{DateTime.now} #{suitename}/#{component} #{basename}"
+            file.puts "#{DateTime.now} #{suitename} #{component} #{basename}"
           end
         end
       end
@@ -149,11 +149,12 @@ Everything between the last two \"unstage (-u) commands\" will be lost if you pr
       File.open(@config.get[:redolog], 'r') do |file|
         while (line = file.gets)
           if line.split[0] == list[number]
-            basename     = line.split[2]
-            structure    = line.split[1]
-            poolbasename = File.join(pool.pool_dir(structure), basename)
+            suitename    = line.split[1]
+            component    = line.split[2]
+            basename     = line.split[3]
+            poolbasename = File.join(pool.pool_dir(suitename, component), basename)
 
-            link(poolbasename, pool.production_dir(structure), suitename)
+            link(poolbasename, pool.production_dir(suitename, component), suitename)
           end
         end
       end
@@ -169,7 +170,7 @@ Everything between the last two \"unstage (-u) commands\" will be lost if you pr
         packages_gz = File.join(pool.production_dir(suitename, component), "Packages.gz")
         debfiles    = File.join(pool.production_dir(suitename, component), "*.deb")
 
-        File.unlink(packages_gz) if File.exists?(packages_gz)
+        File.unlink(packages) if File.exists?(packages)
 
         Dir.glob(debfiles) do |fullname|
           package = Package.new(fullname, suitename)
@@ -184,7 +185,7 @@ Everything between the last two \"unstage (-u) commands\" will be lost if you pr
           end
         end
         if File.exists?(packages)
-          raise "Could not gzip" unless system "gzip -9 -c #{packages} >> #{packages_gz}"
+          raise "Could not gzip" unless system "gzip -9 -c #{packages} > #{packages_gz}"
         end
       end
     end
