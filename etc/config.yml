@@ -5,3 +5,5 @@
 :suites:
     - lenny
     - squeeze
+:components:
+    - main

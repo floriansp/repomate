@@ -7,10 +7,14 @@ class Pool
   end
 
   def setup(suitename, component)
-    # if not allowed_suites.include?(suitename)
-    #   puts "suitename is not configured"
-    #   exit 0
-    # end
+    if not allowed_suites.include?(suitename)
+      puts "Suitename is not configured"
+      exit 0
+    end
+    if not allowed_components.include?(component)
+      puts "Component is not configured"
+      exit 0
+    end
 
     @category.each do |name|
       directory = File.join(@config.get[:rootdir], name, suitename, component)
@@ -33,13 +37,21 @@ class Pool
     File.join(@config.get[:rootdir], "production", suitename, component)
   end
 
-  # def allowed_suites
-  #   suites = []
-  #   @config.get[:suites].each do |name|
-  #     suites << name unless suites.include?(name)
-  #   end
-  #   suites
-  # end
+  def allowed_suites
+    suites = []
+    @config.get[:suites].each do |name|
+      suites << name unless suites.include?(name)
+    end
+    suites
+  end
+
+  def allowed_components
+    components = []
+    @config.get[:components].each do |name|
+      components << name unless components.include?(name)
+    end
+    components
+  end
 
   def structure
     structures = {}

@@ -24,6 +24,7 @@ class RepoMate
   end
 
   def publish
+    action = nil
     pool.structure.each do |suitename, components|
       components.each do |component|
         debfiles = File.join(pool.stage_dir(suitename, component), "*.deb")
@@ -35,11 +36,13 @@ class RepoMate
           FileUtils.move(source_fullname, destination_fullname)
 
           source_fullname = destination_fullname
+          action          = 1
 
           link(source_fullname, pool.production_dir(suitename, component), suitename)
         end
       end
     end
+    save_checkpoint if not action.nil?
   end
 
   def link(source_fullname, destination_dir, suitename)
@@ -69,8 +72,6 @@ class RepoMate
     end
 
     if not action.nil?
-      save_checkpoint
-
       destination_fullname = File.join(destination_dir, source_package.newbasename)
       puts "Package: #{source_package.newbasename} linked to production => #{suitename}/#{component}"
 
