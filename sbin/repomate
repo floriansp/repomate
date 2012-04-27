@@ -12,7 +12,8 @@ options = Slop.parse do
   on :P, :publish, "Move a package from staging area to production. (No other arguments required)"
   on :L, :load, "Load production links to a specific date/time."
   on :S, :save, "Save production links."
-  on :d, :suitename=, "Set the name of the suite.", :argument => true
+  on :s, :suitename=, "Set the name of the suite (lenny/squeeze).", :argument => true
+  on :c, :component=, "Set the name of the component (main/contrib...).", :default => "main"
   on :l, :listpackages, "List packages in a suite (requires -s)."
   on :h, :help, 'Print this help message', :tail => true do
     puts help
@@ -23,7 +24,7 @@ end
 repomate = RepoMate.new
 
 if options.add? && options.suitename?
-  repomate.stage(options[:add], options[:suitename])
+  repomate.stage(options[:add], options[:suitename], options[:component])
 elsif options.publish?
   repomate.publish
 elsif options.load?
