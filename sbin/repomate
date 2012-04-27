@@ -2,18 +2,23 @@
 
 require 'rubygems'
 require 'slop'
-require 'yaml'
 require_relative '../lib/configuration'
 require_relative '../lib/repomate'
+require_relative '../lib/cli'
+require_relative '../lib/server'
 
 options = Slop.parse do
   banner "RepoMate (A simple debian repository management tool)"
-  on :A, :add=, "Add a package to the staging area (full path to file and requires -s)", :argument => true
-  on :P, :publish, "Move a package from staging area to production. (No other arguments required)"
-  on :L, :load, "Load production links to a specific date/time."
-  on :S, :save, "Save production links."
-  on :d, :suitename=, "Set the name of the suite.", :argument => true
-  on :l, :listpackages, "List packages in a suite (requires -s)."
+  on :A, :add=, "Add a package to the staging area (full path to file)", :argument => true
+  on :P, :publish, "Move a package from staging area to production"
+  on :L, :load, "Load production links to a specific moment"
+  on :S, :save, "Save production links"
+  on :s, :suitename=, "Set the name of the suite (lenny/squeeze...)", :argument => true
+  on :c, :component=, "Set the name of the component (main/contrib...)", :default => "main"
+  on :l, :listpackages, "List packages in a suite"
+  on :force, "Force action", :default => false
+  on :setup, "Setup directory structure"
+  on :server, "Start Webserver"
   on :h, :help, 'Print this help message', :tail => true do
     puts help
     exit
@@ -22,18 +27,38 @@ end
 
 repomate = RepoMate.new
 
-if options.add? && options.suitename?
-  repomate.stage(options[:add], options[:suitename])
+cli = Cli.new
+
+if options.add?
+  unless options.suitename?
+    puts "Specify a suitename with [-s|--suitname]"
+    exit 0
+  end
+  repomate.stage(options[:add], options[:suitename], options[:component])
 elsif options.publish?
-  repomate.publish
+  cli.publish
 elsif options.load?
-  repomate.load_checkpoint
+  cli.choose_checkpoint
 elsif options.save?
   repomate.save_checkpoint
 elsif options.listpackages? && options.suitename?
-  repomate.list_packages(options[:suitename])
+  cli.list_packages(options[:suitename])
 elsif options.listpackages?
-  repomate.list_packages
+  cli.list_packages
+elsif options.setup?
+  unless options.suitename?
+    puts "Specify a suitename with [-s|--suitname]"
+    exit 0
+  end
+  unless options.component?
+    puts "Specify a component with [-c|--component]"
+    exit 0
+  end
+  pool = Pool.new
+  pool.setup(options[:suitename], options[:component])
+elsif options.server?
+  Server.run!
 else
   puts options.help
 end
+

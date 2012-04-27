@@ -1,13 +1,11 @@
 require 'yaml'
 require 'tempfile'
-require_relative 'configuration'
 
 class Package
 
   attr_reader :newbasename, :controlfile
 
   def initialize(fullname, suitename)
-    @config    = Configuration.new
     @fullname  = fullname
     @suitename = suitename
     @basename  = File.basename(fullname)
@@ -22,6 +20,7 @@ class Package
   end
 
   protected
+
   def check_package
     unless `file --dereference #{@fullname}` =~ /Debian binary package/i
       puts "File does not exist or is not a Debian package!"

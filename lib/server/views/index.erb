@@ -1,0 +1,12 @@
+<h3>Packages in <%= @suitename %> (<%= @component %>)</h3>
+
+<ul class="unstyled">
+	<% @packages.each do |p| %>
+		<li><strong><a href="#"><%= p[:basename] %></a></strong></li>
+		<ul>
+			<li><strong>Version:</strong> <%= p[:version] %></li>
+			<li><strong>Description:</strong> <%= p[:description] %></li>
+		</ul>
+	<% end %>
+</ul>
+
