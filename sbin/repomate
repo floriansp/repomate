@@ -34,9 +34,9 @@ if options.add?
   end
   repomate.stage(options[:add], options[:suitename], options[:component])
 elsif options.publish?
-  repomate.publish(options.force?)
+  cli.publish
 elsif options.load?
-  repomate.load_checkpoint
+  cli.load_checkpoint
 elsif options.save?
   repomate.save_checkpoint
 elsif options.listpackages? && options.suitename?

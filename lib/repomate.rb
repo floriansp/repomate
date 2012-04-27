@@ -23,32 +23,12 @@ class RepoMate
     FileUtils.copy(source_fullname, destination_fullname)
   end
 
-  def publish(force)
-    action = false
-    input  = nil
+  def publish(source_fullname, destination_fullname, suitename, component)
+    FileUtils.move(source_fullname, destination_fullname)
+    source_fullname = destination_fullname
 
-    pool.structure.each do |suitename, components|
-      components.each do |component|
-        debfiles = File.join(pool.stage_dir(suitename, component), "*.deb")
-
-        Dir.glob(debfiles) do |source_fullname|
-          package              = Package.new(source_fullname, suitename)
-          destination_fullname = File.join(pool.pool_dir(suitename, component), package.newbasename)
-
-          action = true
-
-          printf "\n%s", "\nLink #{package.newbasename} to production => #{suitename}/#{component}? [y|yes|n|no]: "
-          input = STDIN.gets unless force
-
-          if force || input =~ /(y|yes)/
-            FileUtils.move(source_fullname, destination_fullname)
-            source_fullname = destination_fullname
-            link(source_fullname, pool.production_dir(suitename, component), suitename)
-          end
-        end
-      end
-    end
-    save_checkpoint if action
+    link(source_fullname, pool.production_dir(suitename, component), suitename)
+    save_checkpoint
   end
 
   def link(source_fullname, destination_dir, suitename)
@@ -102,14 +82,37 @@ class RepoMate
   end
 
   def load_checkpoint
+    pool.structure.each do |suitename, components|
+      components.each do |component|
+        debfiles = File.join(pool.production_dir(suitename, component), "*.deb")
+        Dir.glob(debfiles) do |fullname|
+          File.unlink fullname
+        end
+      end
+    end
+
+    puts "\nRestoring...\n"
+
+    File.open(@config.get[:redolog], 'r') do |file|
+      while (line = file.gets)
+        if line.split[0] == list[number]
+          suitename    = line.split[1]
+          component    = line.split[2]
+          basename     = line.split[3]
+          poolbasename = File.join(pool.pool_dir(suitename, component), basename)
+
+          link(poolbasename, pool.production_dir(suitename, component), suitename)
+        end
+      end
+    end
+    scan_packages
+  end
+
+  def list_checkpoints
     unless File.exists?(@config.get[:redolog])
       puts "We can't restore because we don't have checkpoints"
       exit 1
     end
-
-    puts "\n*** Restore production links to a date below. ***
-Remember: If you need to restore, the last entry might be the one you want!
-Everything between the last two \"unstage (-u) commands\" will be lost if you proceed!\n\n"
 
     order = 0
     dates = []
@@ -126,48 +129,7 @@ Everything between the last two \"unstage (-u) commands\" will be lost if you pr
       list[order] = date
     end
 
-    list.each do |num, date|
-      datetime = DateTime.parse(date)
-      ddate = datetime.strftime("%F %T")
-      puts "#{num}) #{ddate}"
-    end
-
-    printf "\n%s", "\nEnter number or [q|quit] to abord: "
-    input  = STDIN.gets
-    number = input.to_i
-
-    if input =~ /(q|quit)/
-      STDERR.puts "Aborting..."
-      exit 0
-    elsif list[number].nil?
-      STDERR.puts "Invalid number"
-      exit 0
-    else
-      pool.structure.each do |suitename, components|
-        components.each do |component|
-          debfiles = File.join(pool.production_dir(suitename, component), "*.deb")
-          Dir.glob(debfiles) do |fullname|
-            File.unlink fullname
-          end
-        end
-      end
-
-      puts "\nRestoring...\n"
-
-      File.open(@config.get[:redolog], 'r') do |file|
-        while (line = file.gets)
-          if line.split[0] == list[number]
-            suitename    = line.split[1]
-            component    = line.split[2]
-            basename     = line.split[3]
-            poolbasename = File.join(pool.pool_dir(suitename, component), basename)
-
-            link(poolbasename, pool.production_dir(suitename, component), suitename)
-          end
-        end
-      end
-      scan_packages
-    end
+    list
   end
 
   def scan_packages
@@ -202,9 +164,5 @@ Everything between the last two \"unstage (-u) commands\" will be lost if you pr
 
   def pool
     @pool ||= Pool.new
-  end
-
-  def config
-    @config ||= Configuration.new
   end
 end
