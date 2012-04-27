@@ -75,7 +75,7 @@ class RepoMate
 
       File.symlink(source_fullname, destination_fullname)
 
-      # scan_packages
+      scan_packages
     end
   end
 
@@ -157,7 +157,7 @@ Everything between the last two \"unstage (-u) commands\" will be lost if you pr
           end
         end
       end
-      # scan_packages
+      scan_packages
     end
   end
 
