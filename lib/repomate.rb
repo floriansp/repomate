@@ -33,15 +33,14 @@ class RepoMate
           package              = Package.new(source_fullname, suitename)
           destination_fullname = File.join(pool.pool_dir(suitename, component), package.newbasename)
 
-          FileUtils.move(source_fullname, destination_fullname)
+          action = 1
 
-          source_fullname = destination_fullname
-          action          = 1
-
-          puts "\nLink #{package.newbasename} to production => #{suitename}/#{component}? [y|yes|n|no]: "
+          printf "\n%s", "\nLink #{package.newbasename} to production => #{suitename}/#{component}? [y|yes|n|no]: "
           input = STDIN.gets
 
           if input =~ /[y|yes]/
+            FileUtils.move(source_fullname, destination_fullname)
+            source_fullname = destination_fullname
             link(source_fullname, pool.production_dir(suitename, component), suitename)
           end
         end
@@ -131,7 +130,7 @@ Everything between the last two \"unstage (-u) commands\" will be lost if you pr
       puts "#{num}) #{ddate}"
     end
 
-    puts "\nEnter number or [q|quit] to abord: "
+    printf "\n%s", "\nEnter number or [q|quit] to abord: "
     input  = STDIN.gets
     number = input.to_i
 
