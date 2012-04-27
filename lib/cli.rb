@@ -26,10 +26,7 @@ class Cli
 
   def list_packages_by_suite(suitename, component)
     packages = @repomate.get_packages_by_suite(suitename, component)
-
-    packages.each do |package|
-      packages.each {|a| printf "%-50s%-20s%s\n", a[:basename], a[:version], "#{suitename}/#{component}"}
-    end
+    packages.each {|package| printf "%-50s%-20s%s\n", package[:basename], package[:version], "#{suitename}/#{component}"}
   end
 
   def publish
