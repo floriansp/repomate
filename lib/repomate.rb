@@ -87,7 +87,7 @@ Everything between the last two \"unstage (-u) commands\" will be lost if you pr
     input  = STDIN.gets
     number = input.to_i
 
-    if input =~ /[q|quit]/
+    if input =~ /(q|quit)/
       STDERR.puts "Aborting..."
       exit 0
     elsif list[number].nil?
