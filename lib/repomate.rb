@@ -220,7 +220,7 @@ Everything between the last two \"unstage (-u) commands\" will be lost if you pr
       version      = package.controlfile['Version']
       description  = package.controlfile['Description']
 
-      printf "%s%50s%20s\n", basename, version, "#{suitename}/#{component}"
+      printf "%-50s%-20s%s\n", basename, version, "#{suitename}/#{component}"
     end
   end
 
