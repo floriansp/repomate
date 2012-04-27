@@ -46,7 +46,7 @@ class RepoMate
     source_package = Package.new(source_fullname, suitename)
     source_version = source_package.controlfile['Version']
     debfiles       = "#{destination_dir}/#{source_package.controlfile['Package']}*.deb"
-    component      = destination_dir.split[1]
+    component      = File.split(destination_dir)[1]
     action         = 1
     dpkg           = @config.get[:dpkg]
 
