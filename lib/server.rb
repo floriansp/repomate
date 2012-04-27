@@ -1,0 +1,46 @@
+require 'sinatra'
+require_relative 'repomate'
+require_relative 'configuration'
+require_relative 'packages'
+require_relative 'pool'
+require "pp"
+
+class Server < Sinatra::Base
+
+  @config   = Configuration.new
+
+  set :bind, @config.get[:server][:bind]
+  set :port, @config.get[:server][:port]
+
+  set :public_folder, File.expand_path('../server/public', __FILE__)
+  set :views, File.expand_path('../server/views', __FILE__)
+  set :static, true
+  set :layout, true
+
+  get '/' do
+    redirect '/packages/squeeze/main'
+  end
+
+  get '/packages/:suitename/:component' do
+    @pool      = Pool.new
+    @suitename = params[:suitename]
+    @component = params[:component]
+    @packages  = []
+
+    debfiles = File.join(@pool.pool_dir(@suitename, @component), "*.deb")
+
+    Dir.glob(debfiles) do |source_fullname|
+      package = Package.new(source_fullname, @suitename)
+
+      basename    = package.controlfile['Package']
+      version     = package.controlfile['Version']
+      description = package.controlfile['Description']
+
+      @packages.push({:basename => basename, :version => version, :description => description})
+    end
+
+    erb :index
+  end
+
+end
+
