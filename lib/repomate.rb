@@ -82,7 +82,7 @@ class RepoMate
   end
 
   def load_checkpoint(number)
-    list = list_checkpoints
+    list = get_checkpoints
 
     pool.structure.each do |suitename, components|
       components.each do |component|
@@ -110,7 +110,7 @@ class RepoMate
     scan_packages
   end
 
-  def list_checkpoints
+  def get_checkpoints
     unless File.exists?(@config.get[:redolog])
       puts "We can't restore because we don't have checkpoints"
       exit 1

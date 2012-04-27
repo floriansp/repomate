@@ -36,7 +36,7 @@ if options.add?
 elsif options.publish?
   cli.publish
 elsif options.load?
-  cli.load_checkpoint
+  cli.choose_checkpoint
 elsif options.save?
   repomate.save_checkpoint
 elsif options.listpackages? && options.suitename?

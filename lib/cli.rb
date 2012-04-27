@@ -59,12 +59,12 @@ class Cli
     end
   end
 
-  def load_checkpoint
+  def choose_checkpoint
     puts "\n*** Restore production links to a date below. ***
 Remember: If you need to restore, the last entry might be the one you want!
 Everything between the last two \"unstage (-u) commands\" will be lost if you proceed!\n\n"
 
-    list = @repomate.list_checkpoints
+    list = @repomate.get_checkpoints
 
     list.each do |num, date|
       datetime = DateTime.parse(date)
