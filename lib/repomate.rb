@@ -24,7 +24,7 @@ class RepoMate
   end
 
   def publish(force)
-    action = nil
+    action = false
     input  = nil
 
     pool.structure.each do |suitename, components|
@@ -35,7 +35,7 @@ class RepoMate
           package              = Package.new(source_fullname, suitename)
           destination_fullname = File.join(pool.pool_dir(suitename, component), package.newbasename)
 
-          action = 1
+          action = true
 
           printf "\n%s", "\nLink #{package.newbasename} to production => #{suitename}/#{component}? [y|yes|n|no]: "
           input = STDIN.gets unless force
@@ -48,7 +48,7 @@ class RepoMate
         end
       end
     end
-    save_checkpoint if not action.nil?
+    save_checkpoint if action
   end
 
   def link(source_fullname, destination_dir, suitename)
@@ -56,7 +56,7 @@ class RepoMate
     source_version = source_package.controlfile['Version']
     debfiles       = "#{destination_dir}/#{source_package.controlfile['Package']}*.deb"
     component      = File.split(destination_dir)[1]
-    action         = 1
+    action         = true
     dpkg           = @config.get[:dpkg]
 
     raise "dpkg is not installed" unless File.exists?(dpkg)
@@ -70,14 +70,14 @@ class RepoMate
         File.unlink(destination_fullname)
       elsif system("#{dpkg} --compare-versions #{source_version} eq #{destination_version}")
         puts "Package: #{source_package.newbasename} already exists with same version."
-        action = nil
+        action = false
       elsif system("#{dpkg} --compare-versions #{source_version} lt #{destination_version}")
         puts "Package: #{source_package.newbasename} already exists with higher version."
-        action = nil
+        action = false
       end
     end
 
-    if not action.nil?
+    if action
       destination_fullname = File.join(destination_dir, source_package.newbasename)
       puts "Package: #{source_package.newbasename} linked to production => #{suitename}/#{component}"
 
