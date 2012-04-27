@@ -23,8 +23,10 @@ class RepoMate
     FileUtils.copy(source_fullname, destination_fullname)
   end
 
-  def publish
+  def publish(force)
     action = nil
+    input  = nil
+
     pool.structure.each do |suitename, components|
       components.each do |component|
         debfiles = File.join(pool.stage_dir(suitename, component), "*.deb")
@@ -36,9 +38,9 @@ class RepoMate
           action = 1
 
           printf "\n%s", "\nLink #{package.newbasename} to production => #{suitename}/#{component}? [y|yes|n|no]: "
-          input = STDIN.gets
+          input = STDIN.gets unless force
 
-          if input =~ /[y|yes]/
+          if force || input =~ /[y|yes]/
             FileUtils.move(source_fullname, destination_fullname)
             source_fullname = destination_fullname
             link(source_fullname, pool.production_dir(suitename, component), suitename)
