@@ -64,23 +64,23 @@ module RepoMate
       action         = true
       dpkg           = @config.get[:dpkg]
 
-      # raise "dpkg is not installed" unless File.exists?(dpkg)
+      raise "dpkg is not installed" unless File.exists?(dpkg)
 
-      # Dir.glob(debfiles) do |destination_fullname|
-      #   destination_package = Package.new(destination_fullname, suitename)
-      #   destination_version = destination_package.controlfile['Version']
+      Dir.glob(debfiles) do |destination_fullname|
+        destination_package = Package.new(destination_fullname, suitename)
+        destination_version = destination_package.controlfile['Version']
 
-      #   if system("#{dpkg} --compare-versions #{source_version} gt #{destination_version}")
-      #     puts "Package: #{destination_package.newbasename} replaced with #{source_package.newbasename}."
-      #     File.unlink(destination_fullname)
-      #   elsif system("#{dpkg} --compare-versions #{source_version} eq #{destination_version}")
-      #     puts "Package: #{source_package.newbasename} already exists with same version."
-      #     action = false
-      #   elsif system("#{dpkg} --compare-versions #{source_version} lt #{destination_version}")
-      #     puts "Package: #{source_package.newbasename} already exists with higher version."
-      #     action = false
-      #   end
-      # end
+        if system("#{dpkg} --compare-versions #{source_version} gt #{destination_version}")
+          puts "Package: #{destination_package.newbasename} replaced with #{source_package.newbasename}."
+          File.unlink(destination_fullname)
+        elsif system("#{dpkg} --compare-versions #{source_version} eq #{destination_version}")
+          puts "Package: #{source_package.newbasename} already exists with same version."
+          action = false
+        elsif system("#{dpkg} --compare-versions #{source_version} lt #{destination_version}")
+          puts "Package: #{source_package.newbasename} already exists with higher version."
+          action = false
+        end
+      end
 
       if action
         destination_fullname = File.join(destination_dir, source_package.newbasename)
