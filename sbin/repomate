@@ -16,7 +16,7 @@ options = Slop.parse do
   on :s, :suitename=, "Set the name of the suite (lenny/squeeze...)", :argument => true
   on :c, :component=, "Set the name of the component (main/contrib...)", :default => "main"
   on :l, :listpackages, "List packages in a suite"
-  on :r, :repodirs, "Dirs", :argument => true
+  on :r, :repodir, "Type of pool", :argument => true
   on :force, "Force action", :default => false
   on :setup, "Setup directory structure"
   on :server, "Start Webserver", :argument => false
