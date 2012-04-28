@@ -1,4 +1,6 @@
 require_relative '../configuration'
+require_relative 'stage'
+require_relative 'suite'
 
 module RepoMate
   class Component
@@ -29,6 +31,21 @@ module RepoMate
     def destroy
       FileUtils.rm_r(directory) if exist?
     end
+
+    def self.all
+      config  = Configuration.new
+      suites  = RepoMate::Suite.all
+      dirs    = []
+      rootdir = config.get[:rootdir]
+      suites.each do |suite|
+        components = Dir.glob(File.join(rootdir, suite, "*"))
+        components.each do |component|
+          dirs.push component.gsub(/#{rootdir}\//, '')
+        end
+      end
+      return dirs
+    end
+
 
   end
 end
