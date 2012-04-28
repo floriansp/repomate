@@ -6,4 +6,4 @@
 
 * Seperate suite and component into classes in order to use them as single objects
 * Document code with RDoc
-* Create a unique namespace for RepoMate
+* Build backup function for the pool

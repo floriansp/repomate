@@ -1,4 +1,4 @@
-require_relative '../configuration'
+require_relative 'configuration'
 require_relative 'stage'
 
 module RepoMate

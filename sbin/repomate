@@ -2,10 +2,10 @@
 
 require 'rubygems'
 require 'slop'
-require_relative '../lib/configuration'
+require_relative '../lib/repomate/configuration'
 require_relative '../lib/repomate/base'
-require_relative '../lib/cli'
-require_relative '../lib/server'
+require_relative '../lib/repomate/cli'
+require_relative '../lib/repomate/server'
 
 options = Slop.parse do
   banner "RepoMate (A simple debian repository management tool)"
@@ -26,7 +26,7 @@ options = Slop.parse do
   end
 end
 
-cli = Cli.new
+cli = RepoMate::Cli.new
 
 if options.add?
   cli.stage(options)
