@@ -24,5 +24,11 @@ module RepoMate
       FileUtils.rm_r(directory) if exist?
     end
 
+    def self.all
+      config = Configuration.new
+      dirs   = Dir.glob(File.join(config.get[:rootdir], "*"))
+      dirs.map{ |dir| File.basename(dir) }
+    end
+
   end
 end
