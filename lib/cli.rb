@@ -6,6 +6,7 @@ require_relative 'packages'
 require_relative 'pool'
 
 class Cli
+
   def initialize
     @repomate = RepoMate.new
     @pool     = Pool.new
@@ -13,32 +14,29 @@ class Cli
   end
 
   def setup(options)
-      unless options.suitename?
-        puts "Specify a suitename with [-s|--suitname]"
-        exit 0
-      end
-      unless options.component?
-        puts "Specify a component with [-c|--component]"
-        exit 0
-      end
+    if options.suitename?
       @pool.setup(options[:suitename], options[:component])
-  end
-
-  def stage(options)
-    unless options.suitename?
+    else
       puts "Specify a suitename with [-s|--suitname]"
       exit 0
     end
-
-    workload = []
-    workload << {:package_fullname => options[:add], :suitename => options[:suitename], :component => options[:component]}
-
-    puts "Package: #{options[:add]} moving to stage => #{options[:suitename]}/#{options[:component]}"
-
-    @repomate.stage(workload)
   end
 
-  def publish(options=nil)
+  def stage(options)
+    if options.suitename?
+      workload = []
+      workload << {:package_fullname => options[:add], :suitename => options[:suitename], :component => options[:component]}
+
+      puts "Package: #{options[:add]} moving to stage => #{options[:suitename]}/#{options[:component]}"
+
+      @repomate.stage(workload)
+    else
+      puts "Specify a suitename with [-s|--suitname]"
+      exit 0
+    end
+  end
+
+  def publish
     workload = []
     @repomate.prepare_publish.each do |entry|
       basename  = File.basename(entry[:source_fullname])
@@ -67,8 +65,11 @@ class Cli
 
   def list_packagelist(options)
     if options.repodirs?
-      packages = @repomate.get_packagelist(options[:repodirs])
+      packages = @repomate.get_packagelist(options[:repodir])
       packages.each {|package| printf "%-50s%-20s%s\n", package[:basename], package[:version], "#{package[:suitename]}/#{package[:component]}"}
+    else
+      puts "Specify a suitename with [-r|--repodir]"
+      exit 0
     end
   end
 
@@ -99,4 +100,5 @@ Everything between the last two \"unstage (-u) commands\" will be lost if you pr
       @repomate.load_checkpoint(number)
     end
   end
+
 end

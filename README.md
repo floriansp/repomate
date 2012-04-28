@@ -12,7 +12,7 @@ Add a package to the staging area
 
     repomate -A package.deb -s squeeze
 
-Rublish all packages from the staging area. That means they will be linked to production
+Publish all packages from the staging area. That means they will be linked to production
 
     repomate -P
     
