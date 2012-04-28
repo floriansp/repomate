@@ -1,9 +1,11 @@
 require 'sinatra'
-require_relative 'repomate'
+require_relative 'repomate/base'
 require_relative 'configuration'
 require_relative 'packages'
 require_relative 'pool'
-require "pp"
+require_relative 'repomate/component'
+require_relative 'repomate/stage'
+require_relative 'repomate/suite'
 
 class Server < Sinatra::Base
 
@@ -19,6 +21,21 @@ class Server < Sinatra::Base
 
   get '/' do
     redirect '/packages/squeeze/main'
+  end
+
+  get '/suites' do
+    @suites = RepoMate::Suite.all
+    erb :'suites'
+  end
+
+  get '/components' do
+    @components = RepoMate::Component.all
+    erb :'components'
+  end
+
+  get '/stages' do
+    @stages = RepoMate::Stage.all
+    erb :'stages'
   end
 
   get '/packages/:suitename/:component' do
@@ -39,7 +56,7 @@ class Server < Sinatra::Base
       @packages.push({:basename => basename, :version => version, :description => description})
     end
 
-    erb :index
+    erb :'index'
   end
 
 end

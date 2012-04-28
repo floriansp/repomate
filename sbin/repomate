@@ -3,7 +3,7 @@
 require 'rubygems'
 require 'slop'
 require_relative '../lib/configuration'
-require_relative '../lib/repomate'
+require_relative '../lib/repomate/base'
 require_relative '../lib/cli'
 require_relative '../lib/server'
 

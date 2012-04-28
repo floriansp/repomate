@@ -1,6 +1,6 @@
 require 'date'
 require 'time'
-require_relative 'repomate'
+require_relative 'repomate/base'
 require_relative 'configuration'
 require_relative 'packages'
 require_relative 'pool'
@@ -8,7 +8,7 @@ require_relative 'pool'
 class Cli
 
   def initialize
-    @repomate = RepoMate.new
+    @repomate = RepoMate::Base.new
     @pool     = Pool.new
     @config   = Configuration.new
   end
@@ -102,3 +102,4 @@ Everything between the last two \"unstage (-u) commands\" will be lost if you pr
   end
 
 end
+
