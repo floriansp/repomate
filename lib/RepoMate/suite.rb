@@ -1,4 +1,5 @@
 require_relative '../configuration'
+require_relative 'stage'
 
 module RepoMate
   class Suite
@@ -29,5 +30,20 @@ module RepoMate
       FileUtils.rm_r(directory) if exist?
     end
 
+    def self.all
+      config  = Configuration.new
+      stages  = RepoMate::Stage.all
+      dirs    = []
+      rootdir = config.get[:rootdir]
+      stages.each do |stage|
+        suites = Dir.glob(File.join(rootdir, stage, "*"))
+        suites.each do |suite|
+          dirs.push suite.gsub(/#{rootdir}\//, '')
+        end
+      end
+      return dirs
+    end
+
   end
 end
+
