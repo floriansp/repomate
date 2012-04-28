@@ -16,46 +16,30 @@ options = Slop.parse do
   on :s, :suitename=, "Set the name of the suite (lenny/squeeze...)", :argument => true
   on :c, :component=, "Set the name of the component (main/contrib...)", :default => "main"
   on :l, :listpackages, "List packages in a suite"
+  on :r, :repodirs, "Dirs", :argument => true
   on :force, "Force action", :default => false
   on :setup, "Setup directory structure"
-  on :server, "Start Webserver"
+  on :server, "Start Webserver", :argument => false
   on :h, :help, 'Print this help message', :tail => true do
     puts help
     exit
   end
 end
 
-repomate = RepoMate.new
-
 cli = Cli.new
 
 if options.add?
-  unless options.suitename?
-    puts "Specify a suitename with [-s|--suitname]"
-    exit 0
-  end
-  repomate.stage(options[:add], options[:suitename], options[:component])
+  cli.stage(options)
 elsif options.publish?
   cli.publish
 elsif options.load?
   cli.choose_checkpoint
 elsif options.save?
-  repomate.save_checkpoint
-elsif options.listpackages? && options.suitename?
-  cli.list_packages(options[:suitename])
+  cli.save_checkpoint
 elsif options.listpackages?
-  cli.list_packages
+  cli.list_packagelist(options)
 elsif options.setup?
-  unless options.suitename?
-    puts "Specify a suitename with [-s|--suitname]"
-    exit 0
-  end
-  unless options.component?
-    puts "Specify a component with [-c|--component]"
-    exit 0
-  end
-  pool = Pool.new
-  pool.setup(options[:suitename], options[:component])
+  cli.setup(options)
 elsif options.server?
   Server.run!
 else

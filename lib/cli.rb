@@ -12,42 +12,63 @@ class Cli
     @config   = Configuration.new
   end
 
-  def list_packages(suitename=nil, component=nil)
-    if suitename.nil?
-      @pool.structure.each do |suitename, components|
-        components.each do |component|
-          list_packages_by_suite(suitename, component)
-        end
+  def setup(options)
+      unless options.suitename?
+        puts "Specify a suitename with [-s|--suitname]"
+        exit 0
       end
-    else
-      list_packages_by_suite(suitename, component)
+      unless options.component?
+        puts "Specify a component with [-c|--component]"
+        exit 0
+      end
+      @pool.setup(options[:suitename], options[:component])
+  end
+
+  def stage(options)
+    unless options.suitename?
+      puts "Specify a suitename with [-s|--suitname]"
+      exit 0
     end
+
+    workload = []
+    workload << {:package_fullname => options[:add], :suitename => options[:suitename], :component => options[:component]}
+
+    puts "Package: #{options[:add]} moving to stage => #{options[:suitename]}/#{options[:component]}"
+
+    @repomate.stage(workload)
   end
 
-  def list_packages_by_suite(suitename, component)
-    packages = @repomate.get_packages_by_suite(suitename, component)
-    packages.each {|package| printf "%-50s%-20s%s\n", package[:basename], package[:version], "#{suitename}/#{component}"}
-  end
+  def publish(options=nil)
+    workload = []
+    @repomate.prepare_publish.each do |entry|
+      basename  = File.basename(entry[:source_fullname])
+      suitename = entry[:suitename]
+      component = entry[:component]
 
-  def publish
-    input = nil
+      printf "\n%s", "Link #{basename} to production => #{suitename}/#{component}? [y|yes|n|no]: "
+      input = STDIN.gets
 
-    @pool.structure.each do |suitename, components|
-      components.each do |component|
-        debfiles = File.join(@pool.stage_dir(suitename, component), "*.deb")
-
-        Dir.glob(debfiles) do |source_fullname|
-          package              = Package.new(source_fullname, suitename)
-          destination_fullname = File.join(@pool.pool_dir(suitename, component), package.newbasename)
-
-          printf "\n%s", "\nLink #{package.newbasename} to production => #{suitename}/#{component}? [y|yes|n|no]: "
-          input = STDIN.gets
-
-          if input =~ /(y|yes)/
-            @repomate.publish(source_fullname, destination_fullname, suitename, component)
-          end
-        end
+      if input =~ /(y|yes)/
+        workload << {
+          :source_fullname      => entry[:source_fullname],
+          :destination_fullname => entry[:destination_fullname],
+          :component            => entry[:component],
+          :suitename            => entry[:suitename]
+        }
       end
+    end
+    @repomate.publish(workload) unless workload.empty?
+  end
+
+  def save_checkpoint
+    # Add verification and some output here
+    @repomate.save_checkpoint
+  end
+
+  def list_packagelist(options)
+    if options.repodirs?
+      packages = @repomate.get_packagelist(options[:repodirs])
+      packages.each {|package| printf "%-50s%-20s%s\n", package[:basename], package[:version], "#{package[:suitename]}/#{package[:component]}"}
     end
   end
 

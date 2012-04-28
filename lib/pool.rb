@@ -1,6 +1,9 @@
 require_relative 'configuration'
 
 class Pool
+
+  attr_reader :category
+
   def initialize
     @config   = Configuration.new
     @category = ["stage", "pool", "production"]

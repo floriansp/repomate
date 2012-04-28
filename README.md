@@ -24,13 +24,11 @@ Save a checkpoint
 
     repomate -S
     
-List all packages in squeeze
+List all packages in pool
 
-    repomate -l -d squeeze
+    repomate -l -r pool
+
     
-or list all
-
-    repomate -l
 
 
 
