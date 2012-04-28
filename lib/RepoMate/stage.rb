@@ -16,10 +16,6 @@ module RepoMate
       Dir.exist?(directory)
     end
 
-    def is_allowed?
-      @config.get[:components].include?(@stage)
-    end
-
     def create
       FileUtils.mkdir_p(directory) unless exist?
     end
