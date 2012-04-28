@@ -54,6 +54,7 @@ module RepoMate
         FileUtils.move(entry[:source_fullname], entry[:destination_fullname])
         link(entry[:destination_fullname], pool.production_dir(entry[:suitename], entry[:component]), entry[:suitename])
       end
+      scan_packages unless workload.empty?
     end
 
     def link(source_fullname, destination_dir, suitename)
@@ -87,8 +88,6 @@ module RepoMate
         puts "Package: #{source_package.newbasename} linked to production => #{suitename}/#{component}"
 
         File.symlink(source_fullname, destination_fullname)
-
-        scan_packages
       end
     end
 
