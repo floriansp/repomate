@@ -65,7 +65,7 @@ module RepoMate
     end
 
     def list_packagelist(options)
-      if options.repodirs?
+      if options.repodir?
         packages = @repomate.get_packagelist(options[:repodir])
         packages.each {|package| printf "%-50s%-20s%s\n", package[:basename], package[:version], "#{package[:suitename]}/#{package[:component]}"}
       else
