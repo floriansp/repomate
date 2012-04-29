@@ -86,7 +86,7 @@ Everything between the last two \"publish (-P) commands\" will be lost if you pr
         puts "#{num}) #{datetime.strftime("%F %T")}"
       end
 
-      printf "\n%s", "\nEnter number or [q|quit] to abord: "
+      printf "\n%s", "Enter number or [q|quit] to abord: "
       input  = STDIN.gets
       number = input.to_i
 
