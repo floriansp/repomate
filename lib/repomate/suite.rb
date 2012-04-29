@@ -19,7 +19,7 @@ module RepoMate
     end
 
     def is_allowed?
-      @config.get[:components].include?(@suitename)
+      self.allowed.include?(@suitename)
     end
 
     def create
@@ -42,6 +42,10 @@ module RepoMate
         end
       end
       return dirs
+    end
+
+    def self.allowed
+      Configuration.new.get[:suites].uniq
     end
 
   end
