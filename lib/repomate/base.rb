@@ -227,19 +227,14 @@ module RepoMate
       pool.structure.each do |suitename, components|
         components.each do |component|
           debfiles = File.join(@config.get[:rootdir], category, suitename, component, "*.deb")
-          Dir.glob(debfiles) do |source_fullname|
-            package = Package.new(source_fullname, suitename)
-
-            basename    = package.controlfile['Package']
-            version     = package.controlfile['Version']
-            description = package.controlfile['Description']
+          Dir.glob(debfiles) do |fullname|
+            package = Package.new(fullname, suitename)
 
             packages << {
-              :basename => basename,
-              :version => version,
-              :component => component,
-              :suitename => suitename,
-              :description => description
+              :fullname    => fullname,
+              :controlfile => package.controlfile,
+              :component   => component,
+              :suitename   => suitename,
             }
           end
         end
