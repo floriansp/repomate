@@ -69,25 +69,24 @@ module RepoMate
         packages = @repomate.get_packagelist(options[:repodir])
         packages.each {|package| printf "%-50s%-20s%s\n", package[:controlfile]['Package'], package[:controlfile]['Version'], "#{package[:suitename]}/#{package[:component]}"}
       else
-        puts "Specify a suitename with [-r|--repodir]"
+        puts "Specify a category with [-r|--repodir]"
         exit 0
       end
     end
 
     def choose_checkpoint
       puts "\n*** Restore production links to a date below. ***
-  Remember: If you need to restore, the last entry might be the one you want!
-  Everything between the last two \"unstage (-u) commands\" will be lost if you proceed!\n\n"
+Remember: If you need to restore, the last entry might be the one you want!
+Everything between the last two \"publish (-P) commands\" will be lost if you proceed!\n\n"
 
       list = @repomate.get_checkpoints
 
       list.each do |num, date|
         datetime = DateTime.parse(date)
-        ddate = datetime.strftime("%F %T")
-        puts "#{num}) #{ddate}"
+        puts "#{num}) #{datetime.strftime("%F %T")}"
       end
 
-      printf "\n%s", "\nEnter number or [q|quit] to abord: "
+      printf "\n%s", "Enter number or [q|quit] to abord: "
       input  = STDIN.gets
       number = input.to_i
 
