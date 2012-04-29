@@ -83,8 +83,7 @@ Everything between the last two \"publish (-P) commands\" will be lost if you pr
 
       list.each do |num, date|
         datetime = DateTime.parse(date)
-        ddate = datetime.strftime("%F %T")
-        puts "#{num}) #{ddate}"
+        puts "#{num}) #{datetime.strftime("%F %T")}"
       end
 
       printf "\n%s", "\nEnter number or [q|quit] to abord: "

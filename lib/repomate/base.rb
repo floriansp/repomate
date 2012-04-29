@@ -152,19 +152,20 @@ module RepoMate
     end
 
     def save_checkpoint
+      datetime = DateTime.now
       File.open(@config.get[:redolog], 'a') do |file|
       pool.structure.each do |suitename, components|
         components.each do |component|
             debfiles = File.join(pool.production_dir(suitename, component), "*.deb")
             Dir.glob(debfiles) do |fullname|
               basename = File.basename(fullname)
-              file.puts "#{DateTime.now} #{suitename} #{component} #{basename}"
+              file.puts "#{datetime} #{suitename} #{component} #{basename}"
               puts "Package: #{basename} #{suitename}/#{component} added to log"
             end
           end
         end
       end
-      puts "Checkpoint saved"
+      puts "Checkpoint (#{datetime.strftime("%F %T")}) saved"
     end
 
     def load_checkpoint(number)
