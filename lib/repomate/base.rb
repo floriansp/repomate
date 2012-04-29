@@ -85,15 +85,15 @@ module RepoMate
           target_version = target_package.controlfile['Version']
 
           if system("#{dpkg} --compare-versions #{source_version} gt #{target_version}")
-            puts "Package: #{target_package.newbasename} replaced with #{source_package.newbasename}."
+            puts "Package: #{target_package.newbasename} replaced with #{source_package.newbasename}"
             unlink << {
               :destination_fullname => target_fullname,
               :basename => target_package.newbasename
             }
           elsif system("#{dpkg} --compare-versions #{source_version} eq #{target_version}")
-          puts "Package: #{source_package.newbasename} already exists with same version."
+          puts "Package: #{source_package.newbasename} already exists with same version"
           elsif system("#{dpkg} --compare-versions #{source_version} lt #{target_version}")
-          puts "Package: #{source_package.newbasename} already exists with higher version."
+          puts "Package: #{source_package.newbasename} already exists with higher version"
           end
         end
 
@@ -159,10 +159,12 @@ module RepoMate
             Dir.glob(debfiles) do |fullname|
               basename = File.basename(fullname)
               file.puts "#{DateTime.now} #{suitename} #{component} #{basename}"
+              puts "Package: #{basename} #{suitename}/#{component} added to log"
             end
           end
         end
       end
+      puts "Checkpoint saved"
     end
 
     def load_checkpoint(number)
