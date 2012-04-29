@@ -1,4 +1,6 @@
 require_relative 'configuration'
+require_relative 'component'
+require_relative 'suite'
 
 module RepoMate
   class Pool
@@ -11,13 +13,13 @@ module RepoMate
     end
 
     def setup(suitename, component)
-      if not allowed_suites.include?(suitename)
-        puts "Suitename is not configured"
-        exit 0
+      unless Suite.allowed.include?(suitename)
+        $stderr.puts "Suitename is not configured"
+        exit 1
       end
-      if not allowed_components.include?(component)
-        puts "Component is not configured"
-        exit 0
+      unless Component.allowed.include?(component)
+        $stderr.puts "Component is not configured"
+        exit 1
       end
 
       @category.each do |name|
@@ -41,22 +43,6 @@ module RepoMate
       File.join(@config.get[:rootdir], "production", suitename, component)
     end
 
-    def allowed_suites
-      suites = []
-      @config.get[:suites].each do |name|
-        suites << name unless suites.include?(name)
-      end
-      suites
-    end
-
-    def allowed_components
-      components = []
-      @config.get[:components].each do |name|
-        components << name unless components.include?(name)
-      end
-      components
-    end
-
     def structure
       structures = {}
       Dir.glob(File.join(@config.get[:rootdir], "stage", "*")).each do |suitedir|
@@ -73,3 +59,4 @@ module RepoMate
     end
   end
 end
+
