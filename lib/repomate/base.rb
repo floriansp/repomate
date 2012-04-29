@@ -37,10 +37,10 @@ module RepoMate
             package              = Package.new(source_fullname, suitename)
             destination_fullname = File.join(pool.pool_dir(suitename, component), package.newbasename)
             workload << {
-              :source_fullname => source_fullname,
+              :source_fullname      => source_fullname,
               :destination_fullname => destination_fullname,
-              :component => component,
-              :suitename => suitename
+              :component            => component,
+              :suitename            => suitename
             }
           end
         end
@@ -49,45 +49,77 @@ module RepoMate
     end
 
     def publish(workload)
-      save_checkpoint
+      newworkload = []
       workload.each do |entry|
+        newworkload << {
+          :source_fullname => entry[:destination_fullname],
+          :destination_dir => pool.production_dir(entry[:suitename], entry[:component]),
+          :component       => entry[:component],
+          :suitename       => entry[:suitename]
+        }
         FileUtils.move(entry[:source_fullname], entry[:destination_fullname])
-        link(entry[:destination_fullname], pool.production_dir(entry[:suitename], entry[:component]), entry[:suitename])
       end
-      scan_packages unless workload.empty?
+      workload = newworkload
+
+      save_checkpoint
+      link(workload)
     end
 
-    def link(source_fullname, destination_dir, suitename)
-      source_package = Package.new(source_fullname, suitename)
-      source_version = source_package.controlfile['Version']
-      debfiles       = "#{destination_dir}/#{source_package.controlfile['Package']}*.deb"
-      component      = File.split(destination_dir)[1]
-      action         = true
-      dpkg           = @config.get[:dpkg]
+    def link(workload)
+      dpkg   = @config.get[:dpkg]
 
       raise "dpkg is not installed" unless File.exists?(dpkg)
 
-      Dir.glob(debfiles) do |destination_fullname|
-        destination_package = Package.new(destination_fullname, suitename)
-        destination_version = destination_package.controlfile['Version']
+      link   = []
+      unlink = []
+      action = false
 
-        if system("#{dpkg} --compare-versions #{source_version} gt #{destination_version}")
-          puts "Package: #{destination_package.newbasename} replaced with #{source_package.newbasename}."
-          File.unlink(destination_fullname)
-        elsif system("#{dpkg} --compare-versions #{source_version} eq #{destination_version}")
+      workload.each do |entry|
+        source_package  = Package.new(entry[:source_fullname], entry[:suitename])
+        source_version  = source_package.controlfile['Version']
+        debfiles        = "#{entry[:destination_dir]}/#{source_package.controlfile['Package']}*.deb"
+        destination_fullname = File.join(entry[:destination_dir], source_package.newbasename)
+
+        Dir.glob(debfiles) do |target_fullname|
+          target_package = Package.new(destination_fullname, entry[:suitename])
+          target_version = target_package.controlfile['Version']
+
+          if system("#{dpkg} --compare-versions #{source_version} gt #{target_version}")
+            puts "Package: #{target_package.newbasename} replaced with #{source_package.newbasename}."
+            unlink << {
+              :destination_fullname => target_fullname,
+              :basename => target_package.newbasename
+            }
+          elsif system("#{dpkg} --compare-versions #{source_version} eq #{target_version}")
           puts "Package: #{source_package.newbasename} already exists with same version."
-          action = false
-        elsif system("#{dpkg} --compare-versions #{source_version} lt #{destination_version}")
+          elsif system("#{dpkg} --compare-versions #{source_version} lt #{target_version}")
           puts "Package: #{source_package.newbasename} already exists with higher version."
-          action = false
+          end
         end
+
+        link << {
+          :source_fullname      => entry[:source_fullname],
+          :destination_fullname => destination_fullname,
+          :suitename            => entry[:suitename],
+          :component            => entry[:component],
+          :basename             => source_package.newbasename
+        }
+      end
+
+      unlink.each do |entry|
+        File.unlink(entry[:destination_fullname])
+        puts "Package: #{entry[:basename]} unlinked"
+        action = true
+      end
+
+      link.each do |entry|
+        File.symlink(entry[:source_fullname], entry[:destination_fullname]) unless File.exists?(entry[:destination_fullname])
+        puts "Package: #{entry[:basename]} linked to production => #{entry[:suitename]}/#{entry[:component]}"
+        action = true
       end
 
       if action
-        destination_fullname = File.join(destination_dir, source_package.newbasename)
-        puts "Package: #{source_package.newbasename} linked to production => #{suitename}/#{component}"
-
-        File.symlink(source_fullname, destination_fullname)
+        scan_packages
       end
     end
 
@@ -134,7 +166,8 @@ module RepoMate
     end
 
     def load_checkpoint(number)
-      list = get_checkpoints
+      list     = get_checkpoints
+      workload = []
 
       pool.structure.each do |suitename, components|
         components.each do |component|
@@ -151,13 +184,18 @@ module RepoMate
             suitename    = line.split[1]
             component    = line.split[2]
             basename     = line.split[3]
-            poolbasename = File.join(pool.pool_dir(suitename, component), basename)
 
-            link(poolbasename, pool.production_dir(suitename, component), suitename)
+            workload << {
+              :source_fullname => File.join(pool.pool_dir(suitename, component), basename),
+              :destination_dir => pool.production_dir(suitename, component),
+              :component       => component,
+              :suitename       => suitename
+            }
           end
         end
       end
-      scan_packages
+
+      link(workload)
     end
 
     def get_checkpoints
