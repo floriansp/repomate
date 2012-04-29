@@ -2,7 +2,7 @@
 
 ## Issues
 
-## Iprovements
+## Improvements
 
 * Seperate suite and component into classes in order to use them as single objects
 * Document code with RDoc
@@ -11,3 +11,4 @@
 * Add GPG support
 * Enhance user documentation
 * Add "--yes" switch for publish
+
