@@ -12,6 +12,13 @@ module RepoMate
 
     def initialize
       @config = Configuration.new
+      @logdir = @config.get[:logdir]
+
+      FileUtils.mkdir_p(@logdir) unless Dir.exists?(@logdir)
+    end
+
+    def redolog
+      File.join(@config.get[:logdir], @config.get[:redolog])
     end
 
     ### Main methods
@@ -153,7 +160,8 @@ module RepoMate
 
     def save_checkpoint
       datetime = DateTime.now
-      File.open(@config.get[:redolog], 'a') do |file|
+
+      File.open(redolog, 'a') do |file|
       pool.structure.each do |suitename, components|
         components.each do |component|
             debfiles = File.join(pool.production_dir(suitename, component), "*.deb")
@@ -181,7 +189,7 @@ module RepoMate
         end
       end
 
-      File.open(@config.get[:redolog], 'r') do |file|
+      File.open(redolog, 'r') do |file|
         while (line = file.gets)
           if line.split[0] == list[number]
             suitename    = line.split[1]
@@ -202,7 +210,7 @@ module RepoMate
     end
 
     def get_checkpoints
-      unless File.exists?(@config.get[:redolog])
+      unless File.exists?(redolog)
         puts "We can't restore because we don't have checkpoints"
         exit 1
       end
@@ -211,7 +219,7 @@ module RepoMate
       dates = []
       list  = {}
 
-      File.open(@config.get[:redolog], 'r') do |file|
+      File.open(redolog, 'r') do |file|
         while (line = file.gets)
           dates << line.split[0] unless dates.include?(line.split[0])
         end

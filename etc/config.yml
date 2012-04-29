@@ -1,6 +1,7 @@
 ---
 :rootdir: /var/lib/repomate/xing
-:redolog: /var/log/repomate/redo.log
+:logdir: /var/log/repomate
+:redolog: redo.log
 :dpkg: /usr/bin/dpkg
 :suites:
     - lenny
