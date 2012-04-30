@@ -23,7 +23,7 @@ module RepoMate
       end
 
       @categories.each do |category|
-        directory = File.join(@config.get[:rootdir], category, suitename, component, "binary-#{architecture}")
+        directory = get_directory(category, suitename, component, architecture)
 
         unless Dir.exists?(directory)
           FileUtils.mkdir_p(directory)
@@ -32,7 +32,11 @@ module RepoMate
     end
 
     def get_directory(category, suitename, component, architecture)
-      File.join(@config.get[:rootdir], category, suitename, component, "binary-#{architecture}")
+      if architecture.eql?("source")
+        File.join(@config.get[:rootdir], category, suitename, component, "source")
+      else
+        File.join(@config.get[:rootdir], category, suitename, component, "binary-#{architecture}")
+      end
     end
 
     def structure(category)
