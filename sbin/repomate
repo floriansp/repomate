@@ -24,6 +24,7 @@ options = Slop.parse do
   Options:"
   on :s, :suitename=, "Set the name of the suite (lenny/squeeze...)", :argument => true
   on :c, :component=, "Set the name of the component (main/contrib...)", :default => "main"
+  on :a, :architecture=, "Set the name of the component (main/contrib...)", :argument => true
   on :r, :repodir, "Type of pool/category (stage/pool/production)", :argument => true
   on :force, "Force action", :default => false
   on :h, :help, 'Print this help message', :tail => true do

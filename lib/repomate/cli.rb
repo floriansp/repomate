@@ -16,7 +16,7 @@ module RepoMate
 
     def setup(options)
       if options.suitename?
-        @pool.setup(options[:suitename], options[:component])
+        @pool.setup(options[:suitename], options[:component], options[:architecture])
       else
         puts "Specify a suitename with [-s|--suitname]"
         exit 0
@@ -54,7 +54,8 @@ module RepoMate
             :source_fullname      => entry[:source_fullname],
             :destination_fullname => entry[:destination_fullname],
             :component            => entry[:component],
-            :suitename            => entry[:suitename]
+            :suitename            => entry[:suitename],
+            :architecture         => entry[:architecture]
           }
         end
       end

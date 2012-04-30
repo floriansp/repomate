@@ -8,11 +8,11 @@ module RepoMate
     attr_reader :category
 
     def initialize
-      @config   = Configuration.new
-      @category = ["stage", "pool", "production"]
+      @config     = Configuration.new
+      @categories = ["stage", "pool", "dists"]
     end
 
-    def setup(suitename, component)
+    def setup(suitename, component, architecture)
       unless Suite.allowed.include?(suitename)
         $stderr.puts "Suitename is not configured"
         exit 1
@@ -22,8 +22,8 @@ module RepoMate
         exit 1
       end
 
-      @category.each do |name|
-        directory = File.join(@config.get[:rootdir], name, suitename, component)
+      @categories.each do |category|
+        directory = File.join(@config.get[:rootdir], category, suitename, component, "binary-#{architecture}")
 
         unless Dir.exists?(directory)
           FileUtils.mkdir_p(directory)
@@ -31,29 +31,23 @@ module RepoMate
       end
     end
 
-    def pool_dir(suitename, component)
-      File.join(@config.get[:rootdir], "pool", suitename, component)
+    def get_directory(category, suitename, component, architecture)
+      File.join(@config.get[:rootdir], category, suitename, component, "binary-#{architecture}")
     end
 
-    def stage_dir(suitename, component)
-      File.join(@config.get[:rootdir], "stage", suitename, component)
-    end
+    def structure(category)
+      structures   = []
 
-    def production_dir(suitename, component)
-      File.join(@config.get[:rootdir], "production", suitename, component)
-    end
-
-    def structure
-      structures = {}
-      Dir.glob(File.join(@config.get[:rootdir], "stage", "*")).each do |suitedir|
-        components = []
-        suite = File.split(suitedir)
-
-        Dir.glob(File.join(@config.get[:rootdir], "stage", suite[1], "*")).each do |componentdir|
+      Dir.glob(File.join(@config.get[:rootdir], category, "*")).each do |suitedir|
+        suitename = File.split(suitedir)
+        Dir.glob(File.join(@config.get[:rootdir], category, suitename[1], "*")).each do |componentdir|
           component = File.split(componentdir)
-          components << component[1] unless components.include?(component[1])
+          Dir.glob(File.join(@config.get[:rootdir], category, suitename[1], component[1], "*")).each do |architecturedir|
+            architecture_dir = File.split(architecturedir)
+            architecture = architecture_dir[1].split("-")
+            structures << { :suitename => suitename[1], :component => component[1], :architecture_dir => architecture_dir[1], :architecture => architecture[1]}
+          end
         end
-        structures[suite[1]] = components unless structures.has_key?(suite[1])
       end
       structures
     end
