@@ -1,13 +1,10 @@
 ---
 :rootdir: /var/lib/repomate/xing
-:redolog: /var/log/repomate/redo.log
+:logdir: /var/log/repomate
+:redolog: redo.log
 :dpkg: /usr/bin/dpkg
 :suites:
     - lenny
     - squeeze
 :components:
     - main
-:server:
-    :bind: 127.0.0.1
-    :port: 1234
-

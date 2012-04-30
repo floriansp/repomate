@@ -1,3 +1,14 @@
-﻿1. Add GPG support (default => disabled)
-2. Add "setup" routine if necessary (create directory structure, copy gpg keys...)
-3. Add options to cli: list, find, setup
+﻿# TODO
+
+## Issues
+
+## Improvements
+
+* Seperate suite and component into classes in order to use them as single objects => DONE
+* Document code with RDoc
+* Reduce number of package objects by passing them directly into related methods
+* Add backup function for the pool
+* Add GPG support
+* Enhance user documentation
+* Add "--yes" switch for publish
+
