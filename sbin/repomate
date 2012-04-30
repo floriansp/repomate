@@ -7,17 +7,25 @@ require_relative '../lib/repomate/base'
 require_relative '../lib/repomate/cli'
 
 options = Slop.parse do
-  banner "RepoMate (A simple debian repository management tool)"
-  on :A, :add=, "Add a package to the staging area (full path to file)", :argument => true
-  on :P, :publish, "Move a package from staging area to production"
-  on :L, :load, "Load production links to a specific moment"
-  on :S, :save, "Save production links"
+  banner "RepoMate (A simple debian repository management tool)
+
+  Usage: #{$0} add -s squeeze [-c main] <package>
+         #{$0} publish
+         #{$0} listpackages -r production
+
+  Actions:
+    add                - Add a package to the staging area
+    publish            - Move packages from staging area to production
+    save               - Save a checkpoint
+    load               - Load a checkpoint
+    listpackages       - List packages
+    setup              - Setup the pool
+
+  Options:"
   on :s, :suitename=, "Set the name of the suite (lenny/squeeze...)", :argument => true
   on :c, :component=, "Set the name of the component (main/contrib...)", :default => "main"
-  on :l, :listpackages, "List packages in a suite"
   on :r, :repodir, "Type of pool/category (stage/pool/production)", :argument => true
   on :force, "Force action", :default => false
-  on :setup, "Setup directory structure"
   on :h, :help, 'Print this help message', :tail => true do
     puts help
     exit
@@ -26,19 +34,28 @@ end
 
 cli = RepoMate::Cli.new
 
-if options.add?
-  cli.stage(options)
-elsif options.publish?
-  cli.publish
-elsif options.load?
-  cli.choose_checkpoint
-elsif options.save?
+if ARGV.include?("add")
+  filename = nil
+  ARGV.each do |arg|
+    if arg =~ /\.deb/
+      filename = arg
+    end
+  end
+  if filename && File.exists?(filename)
+    cli.stage(options, filename)
+  else
+    STDERR.puts "File does not exist"
+  end
+elsif ARGV.include?("publish")
+  cli.publish(options)
+elsif ARGV.include?("save")
   cli.save_checkpoint
-elsif options.listpackages?
+elsif ARGV.include?("load")
+  cli.choose_checkpoint
+elsif ARGV.include?("listpackages")
   cli.list_packagelist(options)
-elsif options.setup?
+elsif ARGV.include?("setup")
   cli.setup(options)
 else
   puts options.help
 end
-

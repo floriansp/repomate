@@ -10,5 +10,4 @@
 * Add backup function for the pool
 * Add GPG support
 * Enhance user documentation
-* Add "--yes" switch for publish
 

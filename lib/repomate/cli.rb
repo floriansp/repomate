@@ -23,12 +23,12 @@ module RepoMate
       end
     end
 
-    def stage(options)
+    def stage(options, filename)
       if options.suitename?
         workload = []
-        workload << {:package_fullname => options[:add], :suitename => options[:suitename], :component => options[:component]}
+        workload << {:package_fullname => filename, :suitename => options[:suitename], :component => options[:component]}
 
-        puts "Package: #{options[:add]} moving to stage => #{options[:suitename]}/#{options[:component]}"
+        puts "Package: #{filename} moving to stage => #{options[:suitename]}/#{options[:component]}"
 
         @repomate.stage(workload)
       else
@@ -37,17 +37,19 @@ module RepoMate
       end
     end
 
-    def publish
+    def publish(options)
       workload = []
       @repomate.prepare_publish.each do |entry|
         basename  = File.basename(entry[:source_fullname])
         suitename = entry[:suitename]
         component = entry[:component]
 
-        printf "\n%s", "Link #{basename} to production => #{suitename}/#{component}? [y|yes|n|no]: "
-        input = STDIN.gets
+        unless options.force?
+          printf "\n%s", "Link #{basename} to production => #{suitename}/#{component}? [y|yes|n|no]: "
+          input = STDIN.gets
+        end
 
-        if input =~ /(y|yes)/
+        if options.force? || input =~ /(y|yes)/
           workload << {
             :source_fullname      => entry[:source_fullname],
             :destination_fullname => entry[:destination_fullname],
