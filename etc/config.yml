@@ -1,5 +1,5 @@
 ---
-:rootdir: /var/lib/repomate/xing
+:rootdir: /var/lib/repomate/repository
 :logdir: /var/log/repomate
 :redolog: redo.log
 :dpkg: /usr/bin/dpkg
