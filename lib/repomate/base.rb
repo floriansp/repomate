@@ -26,9 +26,9 @@ module RepoMate
     def stage(workload)
       workload.each do |entry|
         package     = Package.new(entry[:package_fullname], entry[:suitename], entry[:component])
-        destination = Architecture.new(package.architecture, entry[:component], entry[:suitename], "stage")
+        destination = Component.new(entry[:component], entry[:suitename], "stage")
 
-        @repository.create(entry[:suitename], entry[:component], package.architecture)
+        @repository.create(entry[:suitename], entry[:component])
 
         FileUtils.copy(entry[:package_fullname], File.join(destination.directory, package.newbasename))
       end
@@ -38,11 +38,10 @@ module RepoMate
       workload = []
 
       @repository.loop("stage").each do |entry|
-        source = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], "stage")
-
+        source = Component.new(entry[:component], entry[:suitename], "stage")
         Dir.glob(File.join(source.directory, "/*.deb")) do |fullname|
           package     = Package.new(fullname, entry[:suitename], entry[:component])
-          destination = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], "pool")
+          destination = Architecture.new(package.architecture, entry[:component], entry[:suitename], "pool")
 
           workload << {
             :source_fullname      => fullname,
@@ -60,6 +59,8 @@ module RepoMate
       newworkload = []
       workload.each do |entry|
         destination = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], "dists")
+
+        @repository.create(entry[:suitename], entry[:component], entry[:architecture])
 
         newworkload << {
           :source_fullname => entry[:destination_fullname],
@@ -93,7 +94,7 @@ module RepoMate
           target_package = Package.new(destination_fullname, entry[:suitename], entry[:component] )
 
          if system("#{dpkg} --compare-versions #{source_package.version} gt #{target_package.version}")
-            puts "Package: #{target_package.newbasename} replaced with #{source_package.newbasename}"
+            puts "Package: #{target_package.newbasename} will be replaced with #{source_package.newbasename}"
             unlink << {
               :destination_fullname => target_fullname,
               :newbasename => target_package.newbasename
