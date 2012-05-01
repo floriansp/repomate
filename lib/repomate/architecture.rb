@@ -58,7 +58,7 @@ module RepoMate
     end
 
     def self.allowed
-      Configuration.new.get[:components].uniq
+      Configuration.new.get[:architectures].uniq
     end
 
   end

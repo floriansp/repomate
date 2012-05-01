@@ -9,3 +9,6 @@
 :components:
     - main
     - contrib
+:architectures:
+    - all
+    - amd64

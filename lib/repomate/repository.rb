@@ -14,13 +14,20 @@ module RepoMate
 
     def create(suitename=nil, component=nil, architecture=nil)
       unless Suite.allowed.include?(suitename)
-        $stderr.puts "Suitename is not configured"
-        exit 1
+        $stderr.puts "Suitename (#{suitename}) is not configured"
+        false
       end
 
       unless Component.allowed.include?(component)
-        $stderr.puts "Component is not configured"
-        exit 1
+        $stderr.puts "Component (#{component}) is not configured"
+        false
+      end
+
+      unless architecture.nil?
+        unless Architecture.allowed.include?(architecture)
+          $stderr.puts "Architecture (#{architecture}) is not configured"
+          false
+        end
       end
 
       @categories.each do |category|

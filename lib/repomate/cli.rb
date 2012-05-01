@@ -18,7 +18,7 @@ module RepoMate
         @repository.create(options[:suitename], options[:component], options[:architecture])
       else
         puts "Specify a suitename with [-s|--suitname]"
-        exit 0
+        exit 1
       end
     end
 
@@ -32,7 +32,7 @@ module RepoMate
         @repomate.stage(workload)
       else
         puts "Specify a suitename with [-s|--suitname]"
-        exit 0
+        exit 1
       end
     end
 
@@ -72,7 +72,7 @@ module RepoMate
         packages.each {|package| printf "%-50s%-20s%s\n", package[:controlfile]['Package'], package[:controlfile]['Version'], "#{package[:suitename]}/#{package[:component]}"}
       else
         puts "Specify a category with [-r|--repodir]"
-        exit 0
+        exit 1
       end
     end
 
@@ -97,7 +97,7 @@ Everything between the last two \"publish (-P) commands\" will be lost if you pr
         exit 0
       elsif list[number].nil?
         STDERR.puts "Invalid number"
-        exit 0
+        exit 1
       else
         @repomate.load_checkpoint(number)
       end

@@ -43,6 +43,8 @@ module RepoMate
           package     = Package.new(fullname, entry[:suitename], entry[:component])
           destination = Architecture.new(package.architecture, entry[:component], entry[:suitename], "pool")
 
+          package.architecture
+
           workload << {
             :source_fullname      => fullname,
             :destination_fullname => File.join(destination.directory, package.newbasename),
@@ -60,7 +62,9 @@ module RepoMate
       workload.each do |entry|
         destination = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], "dists")
 
-        @repository.create(entry[:suitename], entry[:component], entry[:architecture])
+        unless @repository.create(entry[:suitename], entry[:component], entry[:architecture])
+          puts "Package: #{entry[:source_fullname]}"
+        end
 
         newworkload << {
           :source_fullname => entry[:destination_fullname],
