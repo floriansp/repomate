@@ -39,7 +39,7 @@ module RepoMate
 
       @repository.loop("stage").each do |entry|
         source = Component.new(entry[:component], entry[:suitename], "stage")
-        Dir.glob(File.join(source.directory, "/*.deb")) do |fullname|
+        source.files.each do |fullname|
           package     = Package.new(fullname, entry[:suitename], entry[:component])
           destination = Architecture.new(package.architecture, entry[:component], entry[:suitename], "pool")
 
@@ -80,7 +80,7 @@ module RepoMate
     def link(workload)
       dpkg   = @config.get[:dpkg]
 
-      raise "dpkg is not installed" unless File.exists?(dpkg)
+      # raise "dpkg is not installed" unless File.exists?(dpkg)
 
       link   = []
       unlink = []
@@ -93,17 +93,17 @@ module RepoMate
         Dir.glob("#{entry[:destination_dir]}/#{source_package.name}*.deb") do |target_fullname|
           target_package = Package.new(destination_fullname, entry[:suitename], entry[:component] )
 
-         if system("#{dpkg} --compare-versions #{source_package.version} gt #{target_package.version}")
+         # if system("#{dpkg} --compare-versions #{source_package.version} gt #{target_package.version}")
             puts "Package: #{target_package.newbasename} will be replaced with #{source_package.newbasename}"
             unlink << {
               :destination_fullname => target_fullname,
-              :newbasename => target_package.newbasename
+              :newbasename          => target_package.newbasename
             }
-          elsif system("#{dpkg} --compare-versions #{source_package.version} eq #{target_package.version}")
-          puts "Package: #{source_package.newbasename} already exists with same version"
-          elsif system("#{dpkg} --compare-versions #{source_package.version} lt #{target_package.version}")
-          puts "Package: #{source_package.newbasename} already exists with higher version"
-          end
+          # elsif system("#{dpkg} --compare-versions #{source_package.version} eq #{target_package.version}")
+          # puts "Package: #{source_package.newbasename} already exists with same version"
+          # elsif system("#{dpkg} --compare-versions #{source_package.version} lt #{target_package.version}")
+          # puts "Package: #{source_package.newbasename} already exists with higher version"
+          # end
         end
 
         link << {
@@ -141,7 +141,7 @@ module RepoMate
 
         File.unlink(packages) if File.exists?(packages)
 
-        Dir.glob(File.join(destination.directory, "*.deb")) do |fullname|
+        destination.files.each do |fullname|
           package = Package.new(fullname, entry[:suitename], entry[:component])
 
           File.open(packages, 'a') do |file|
@@ -164,7 +164,7 @@ module RepoMate
       File.open(redolog, 'a') do |file|
         @repository.loop("dists").each do |entry|
           source = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], "dists")
-          Dir.glob(File.join(source.directory, "*.deb")) do |fullname|
+          source.files.each do |fullname|
             basename = File.basename(fullname)
             file.puts "#{datetime} #{entry[:suitename]} #{entry[:component]} #{entry[:architecture]} #{basename}"
             puts "Package: #{basename} #{entry[:suitename]}/#{entry[:component]}/#{entry[:architecture]} added to log"
@@ -181,7 +181,7 @@ module RepoMate
 
       @repository.loop("dists").each do |entry|
         destination = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], "dists")
-        Dir.glob(File.join(destination.directory, "*.deb")) do |fullname|
+        destination.files.each do |fullname|
           File.unlink fullname
         end
       end
@@ -239,7 +239,7 @@ module RepoMate
 
       @repository.loop(category).each do |entry|
         source = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], category)
-        Dir.glob(File.join(source.directory, "*.deb")) do |fullname|
+        source.files.each do |fullname|
           package = Package.new(fullname, entry[:suitename], entry[:component])
 
           packages << {

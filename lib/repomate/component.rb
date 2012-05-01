@@ -36,6 +36,10 @@ module RepoMate
       FileUtils.rm_r(directory) if exist?
     end
 
+    def files
+      Dir.glob("#{directory}/*.deb")
+    end
+
     def self.all
       config  = Configuration.new
       suites  = Suite.all
