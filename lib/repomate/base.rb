@@ -1,18 +1,20 @@
+require_relative 'configuration'
+require_relative 'architecture'
+require_relative 'repository'
+require_relative 'package'
 require 'date'
 require 'time'
 require 'digest/md5'
 require 'digest/sha1'
 require 'digest/sha2'
-require_relative 'configuration'
-require_relative 'package'
-require_relative 'pool'
 
 module RepoMate
   class Base
 
     def initialize
-      @config = Configuration.new
-      @logdir = @config.get[:logdir]
+      @config     = Configuration.new
+      @repository = Repository.new
+      @logdir     = @config.get[:logdir]
 
       FileUtils.mkdir_p(@logdir) unless Dir.exists?(@logdir)
     end
@@ -21,35 +23,33 @@ module RepoMate
       File.join(@config.get[:logdir], @config.get[:redolog])
     end
 
-    ### Main methods
     def stage(workload)
       workload.each do |entry|
-        package = Package.new(entry[:package_fullname], entry[:suitename])
-        source  = entry[:package_fullname]
-        dest    = File.join(pool.stage_dir(entry[:suitename], entry[:component]), package.newbasename)
+        package     = Package.new(entry[:package_fullname], entry[:suitename], entry[:component])
+        destination = Component.new(entry[:component], entry[:suitename], "stage")
 
-        pool.setup(entry[:suitename], entry[:component])
+        @repository.create(entry[:suitename], entry[:component])
 
-        FileUtils.copy(source, dest)
+        FileUtils.copy(entry[:package_fullname], File.join(destination.directory, package.newbasename))
       end
     end
 
     def prepare_publish
       workload = []
-      pool.structure.each do |suitename, components|
-        components.each do |component|
-          debfiles = File.join(pool.stage_dir(suitename, component), "*.deb")
 
-          Dir.glob(debfiles) do |source_fullname|
-            package              = Package.new(source_fullname, suitename)
-            destination_fullname = File.join(pool.pool_dir(suitename, component), package.newbasename)
-            workload << {
-              :source_fullname      => source_fullname,
-              :destination_fullname => destination_fullname,
-              :component            => component,
-              :suitename            => suitename
-            }
-          end
+      @repository.loop("stage").each do |entry|
+        source = Component.new(entry[:component], entry[:suitename], "stage")
+        source.files.each do |fullname|
+          package     = Package.new(fullname, entry[:suitename], entry[:component])
+          destination = Architecture.new(package.architecture, entry[:component], entry[:suitename], "pool")
+
+          workload << {
+            :source_fullname      => fullname,
+            :destination_fullname => File.join(destination.directory, package.newbasename),
+            :component            => entry[:component],
+            :suitename            => entry[:suitename],
+            :architecture         => package.architecture
+          }
         end
       end
       workload
@@ -58,11 +58,18 @@ module RepoMate
     def publish(workload)
       newworkload = []
       workload.each do |entry|
+        destination = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], "dists")
+        basename    = File.split(entry[:source_fullname])[1]
+
+        puts "Package: #{basename} publishing"
+        @repository.create(entry[:suitename], entry[:component], entry[:architecture])
+
         newworkload << {
           :source_fullname => entry[:destination_fullname],
-          :destination_dir => pool.production_dir(entry[:suitename], entry[:component]),
+          :destination_dir => destination.directory,
           :component       => entry[:component],
-          :suitename       => entry[:suitename]
+          :suitename       => entry[:suitename],
+          :architecture    => entry[:architecture]
         }
         FileUtils.move(entry[:source_fullname], entry[:destination_fullname])
       end
@@ -75,33 +82,30 @@ module RepoMate
     def link(workload)
       dpkg   = @config.get[:dpkg]
 
-      raise "dpkg is not installed" unless File.exists?(dpkg)
+      # raise "dpkg is not installed" unless File.exists?(dpkg)
 
       link   = []
       unlink = []
       action = false
 
       workload.each do |entry|
-        source_package  = Package.new(entry[:source_fullname], entry[:suitename])
-        source_version  = source_package.controlfile['Version']
-        debfiles        = "#{entry[:destination_dir]}/#{source_package.controlfile['Package']}*.deb"
+        source_package       = Package.new(entry[:source_fullname], entry[:suitename], entry[:component])
         destination_fullname = File.join(entry[:destination_dir], source_package.newbasename)
 
-        Dir.glob(debfiles) do |target_fullname|
-          target_package = Package.new(destination_fullname, entry[:suitename])
-          target_version = target_package.controlfile['Version']
+        Dir.glob("#{entry[:destination_dir]}/#{source_package.name}*.deb") do |target_fullname|
+          target_package = Package.new(destination_fullname, entry[:suitename], entry[:component] )
 
-          if system("#{dpkg} --compare-versions #{source_version} gt #{target_version}")
-            puts "Package: #{target_package.newbasename} replaced with #{source_package.newbasename}"
+         # if system("#{dpkg} --compare-versions #{source_package.version} gt #{target_package.version}")
+            puts "Package: #{target_package.newbasename} will be replaced with #{source_package.newbasename}"
             unlink << {
               :destination_fullname => target_fullname,
-              :basename => target_package.newbasename
+              :newbasename          => target_package.newbasename
             }
-          elsif system("#{dpkg} --compare-versions #{source_version} eq #{target_version}")
-          puts "Package: #{source_package.newbasename} already exists with same version"
-          elsif system("#{dpkg} --compare-versions #{source_version} lt #{target_version}")
-          puts "Package: #{source_package.newbasename} already exists with higher version"
-          end
+          # elsif system("#{dpkg} --compare-versions #{source_package.version} eq #{target_package.version}")
+          # puts "Package: #{source_package.newbasename} already exists with same version"
+          # elsif system("#{dpkg} --compare-versions #{source_package.version} lt #{target_package.version}")
+          # puts "Package: #{source_package.newbasename} already exists with higher version"
+          # end
         end
 
         link << {
@@ -109,19 +113,19 @@ module RepoMate
           :destination_fullname => destination_fullname,
           :suitename            => entry[:suitename],
           :component            => entry[:component],
-          :basename             => source_package.newbasename
+          :newbasename          => source_package.newbasename
         }
       end
 
       unlink.each do |entry|
         File.unlink(entry[:destination_fullname])
-        puts "Package: #{entry[:basename]} unlinked"
+        puts "Package: #{entry[:newbasename]} unlinked"
         action = true
       end
 
       link.each do |entry|
         File.symlink(entry[:source_fullname], entry[:destination_fullname]) unless File.exists?(entry[:destination_fullname])
-        puts "Package: #{entry[:basename]} linked to production => #{entry[:suitename]}/#{entry[:component]}"
+        puts "Package: #{entry[:newbasename]} linked to production => #{entry[:suitename]}/#{entry[:component]}"
         action = true
       end
 
@@ -131,61 +135,55 @@ module RepoMate
     end
 
     def scan_packages
-      pool.structure.each do |suitename, components|
-        components.each do |component|
-          packages    = File.join(pool.production_dir(suitename, component), "Packages")
-          packages_gz = File.join(pool.production_dir(suitename, component), "Packages.gz")
-          debfiles    = File.join(pool.production_dir(suitename, component), "*.deb")
+      @repository.loop("dists").each do |entry|
+        destination = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], "dists")
 
-          File.unlink(packages) if File.exists?(packages)
+        packages    = File.join(destination.directory, "Packages")
+        packages_gz = File.join(destination.directory, "Packages.gz")
 
-          Dir.glob(debfiles) do |fullname|
-            package = Package.new(fullname, suitename)
+        File.unlink(packages) if File.exists?(packages)
 
-            File.open(packages, 'a') do |file|
-              package.controlfile.each do |key, value|
-                file.puts "#{key}: #{value}"
-              end
-              file.puts "MD5sum: #{Digest::MD5.file(fullname).to_s}"
-              file.puts "SHA1: #{Digest::SHA1.file(fullname).to_s}"
-              file.puts "SHA256: #{Digest::SHA256.new(256).file(fullname).to_s}\n\n"
+        destination.files.each do |fullname|
+          package = Package.new(fullname, entry[:suitename], entry[:component])
+
+          File.open(packages, 'a') do |file|
+            package.controlfile.each do |key, value|
+              file.puts "#{key}: #{value}"
             end
+            file.puts "MD5sum: #{Digest::MD5.file(fullname).to_s}"
+            file.puts "SHA1: #{Digest::SHA1.file(fullname).to_s}"
+            file.puts "SHA256: #{Digest::SHA256.new(256).file(fullname).to_s}\n\n"
           end
-          if File.exists?(packages)
-            raise "Could not gzip" unless system "gzip -9 -c #{packages} > #{packages_gz}"
-          end
+        end
+        if File.exists?(packages)
+          raise "Could not gzip" unless system "gzip -9 -c #{packages} > #{packages_gz}"
         end
       end
     end
 
     def save_checkpoint
       datetime = DateTime.now
-
       File.open(redolog, 'a') do |file|
-      pool.structure.each do |suitename, components|
-        components.each do |component|
-            debfiles = File.join(pool.production_dir(suitename, component), "*.deb")
-            Dir.glob(debfiles) do |fullname|
-              basename = File.basename(fullname)
-              file.puts "#{datetime} #{suitename} #{component} #{basename}"
-              puts "Package: #{basename} #{suitename}/#{component} added to log"
-            end
+        @repository.loop("dists").each do |entry|
+          source = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], "dists")
+          source.files.each do |fullname|
+            basename = File.basename(fullname)
+            file.puts "#{datetime} #{entry[:suitename]} #{entry[:component]} #{entry[:architecture]} #{basename}"
           end
         end
       end
+
       puts "Checkpoint (#{datetime.strftime("%F %T")}) saved"
     end
 
     def load_checkpoint(number)
-      list     = get_checkpoints
-      workload = []
+      list      = get_checkpoints
+      workload  = []
 
-      pool.structure.each do |suitename, components|
-        components.each do |component|
-          debfiles = File.join(pool.production_dir(suitename, component), "*.deb")
-          Dir.glob(debfiles) do |fullname|
-            File.unlink fullname
-          end
+      @repository.loop("dists").each do |entry|
+        destination = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], "dists")
+        destination.files.each do |fullname|
+          File.unlink fullname
         end
       end
 
@@ -194,13 +192,17 @@ module RepoMate
           if line.split[0] == list[number]
             suitename    = line.split[1]
             component    = line.split[2]
-            basename     = line.split[3]
+            architecture = line.split[3]
+            basename     = line.split[4]
+            source       = Architecture.new(architecture, component, suitename, "pool")
+            destination  = Architecture.new(architecture, component, suitename, "dists")
 
             workload << {
-              :source_fullname => File.join(pool.pool_dir(suitename, component), basename),
-              :destination_dir => pool.production_dir(suitename, component),
-              :component       => component,
-              :suitename       => suitename
+              :source_fullname  => File.join(source.directory, basename),
+              :destination_dir  => destination.directory,
+              :component        => component,
+              :suitename        => suitename,
+              :architecture     => architecture
             }
           end
         end
@@ -235,28 +237,21 @@ module RepoMate
 
     def get_packagelist(category)
       packages = []
-      pool.structure.each do |suitename, components|
-        components.each do |component|
-          debfiles = File.join(@config.get[:rootdir], category, suitename, component, "*.deb")
-          Dir.glob(debfiles) do |fullname|
-            package = Package.new(fullname, suitename)
 
-            packages << {
-              :fullname    => fullname,
-              :controlfile => package.controlfile,
-              :component   => component,
-              :suitename   => suitename,
-            }
-          end
+      @repository.loop(category).each do |entry|
+        source = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], category)
+        source.files.each do |fullname|
+          package = Package.new(fullname, entry[:suitename], entry[:component])
+
+          packages << {
+            :fullname    => fullname,
+            :controlfile => package.controlfile,
+            :component   => entry[:component],
+            :suitename   => entry[:suitename],
+          }
         end
       end
       packages
-    end
-
-    protected
-
-    def pool
-      @pool ||= Pool.new
     end
   end
 end

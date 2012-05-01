@@ -4,11 +4,12 @@ require 'tempfile'
 module RepoMate
   class Package
 
-    attr_reader :newbasename, :controlfile
+    attr_reader :newbasename, :controlfile, :architecture, :suitename, :component, :version, :name
 
-    def initialize(fullname, suitename)
+    def initialize(fullname, suitename, component)
       @fullname  = fullname
       @suitename = suitename
+      @component = component
       @basename  = File.basename(fullname)
 
       check_package
