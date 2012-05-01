@@ -1,19 +1,23 @@
 require_relative 'configuration'
-require_relative 'stage'
+require_relative 'category'
 require_relative 'suite'
 
 module RepoMate
   class Component
 
-    def initialize(component, suitename, stage)
+    def initialize(component, suitename, category)
       @config     = Configuration.new
       @component  = component
       @suitename  = suitename
-      @stage      = stage
+      @category   = category
+    end
+
+    def name
+      @component
     end
 
     def directory
-      File.join(@config.get[:rootdir], @stage, @suitename, @component)
+      File.join(@config.get[:rootdir], @category, @suitename, @component)
     end
 
     def exist?
@@ -34,7 +38,7 @@ module RepoMate
 
     def self.all
       config  = Configuration.new
-      suites  = RepoMate::Suite.all
+      suites  = Suite.all
       dirs    = []
       rootdir = config.get[:rootdir]
       suites.each do |suite|

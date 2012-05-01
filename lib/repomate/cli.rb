@@ -1,22 +1,21 @@
+require_relative 'configuration'
+require_relative 'repository'
+require_relative 'base'
 require 'date'
 require 'time'
-require_relative 'base'
-require_relative 'configuration'
-require_relative 'package'
-require_relative 'pool'
 
 module RepoMate
   class Cli
 
     def initialize
-      @repomate = Base.new
-      @pool     = Pool.new
-      @config   = Configuration.new
+      @repomate   = Base.new
+      @repository = Repository.new
+      @config     = Configuration.new
     end
 
     def setup(options)
       if options.suitename?
-        @pool.setup(options[:suitename], options[:component], options[:architecture])
+        @repository.create(options[:suitename], options[:component], options[:architecture])
       else
         puts "Specify a suitename with [-s|--suitname]"
         exit 0
@@ -58,7 +57,7 @@ module RepoMate
             :architecture         => entry[:architecture]
           }
         end
-      end
+       end
       @repomate.publish(workload) unless workload.empty?
     end
 

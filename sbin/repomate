@@ -1,10 +1,10 @@
 #!/usr/bin/env ruby
 
-require 'rubygems'
-require 'slop'
 require_relative '../lib/repomate/configuration'
 require_relative '../lib/repomate/base'
 require_relative '../lib/repomate/cli'
+require 'rubygems'
+require 'slop'
 
 options = Slop.parse do
   banner "RepoMate (A simple debian repository management tool)

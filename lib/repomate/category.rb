@@ -1,15 +1,19 @@
 require_relative 'configuration'
 
 module RepoMate
-  class Stage
+  class Category
 
-    def initialize(stage)
-      @config     = Configuration.new
-      @stage      = stage
+    def initialize(category)
+      @config   = Configuration.new
+      @category = category
+    end
+
+    def name
+      @category
     end
 
     def directory
-      File.join(@config.get[:rootdir], @stage)
+      File.join(@config.get[:rootdir], @category)
     end
 
     def exist?

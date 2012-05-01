@@ -1,18 +1,20 @@
+require_relative 'configuration'
+require_relative 'architecture'
+require_relative 'repository'
+require_relative 'package'
 require 'date'
 require 'time'
 require 'digest/md5'
 require 'digest/sha1'
 require 'digest/sha2'
-require_relative 'configuration'
-require_relative 'package'
-require_relative 'pool'
 
 module RepoMate
   class Base
 
     def initialize
-      @config = Configuration.new
-      @logdir = @config.get[:logdir]
+      @config     = Configuration.new
+      @repository = Repository.new
+      @logdir     = @config.get[:logdir]
 
       FileUtils.mkdir_p(@logdir) unless Dir.exists?(@logdir)
     end
@@ -24,23 +26,27 @@ module RepoMate
     def stage(workload)
       workload.each do |entry|
         package = Package.new(entry[:package_fullname], entry[:suitename], entry[:component])
+        architecture = Architecture.new(package.architecture, entry[:component], entry[:suitename], "stage")
 
-        pool.setup(entry[:suitename], entry[:component], package.architecture)
+        @repository.create(entry[:suitename], entry[:component], package.architecture)
 
-        FileUtils.copy(entry[:package_fullname], File.join(pool.get_directory("stage", entry[:suitename], entry[:component], package.architecture), package.newbasename))
+        FileUtils.copy(entry[:package_fullname], File.join(architecture.directory, package.newbasename))
       end
     end
 
     def prepare_publish
       workload = []
-      category = "stage"
 
-      pool.structure(category).each do |entry|
-        Dir.glob(File.join(pool.get_directory(category, entry[:suitename], entry[:component], "*"), "*.deb")) do |source_fullname|
-          package = Package.new(source_fullname, entry[:suitename], entry[:component])
+      @repository.loop("stage").each do |entry|
+        source = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], "stage")
+
+        Dir.glob(File.join(source.directory, "/*.deb")) do |fullname|
+          package     = Package.new(fullname, entry[:suitename], entry[:component])
+          destination = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], "pool")
+
           workload << {
-            :source_fullname      => source_fullname,
-            :destination_fullname => File.join(pool.get_directory("pool", entry[:suitename], entry[:component], package.architecture), package.newbasename),
+            :source_fullname      => fullname,
+            :destination_fullname => File.join(destination.directory, package.newbasename),
             :component            => entry[:component],
             :suitename            => entry[:suitename],
             :architecture         => package.architecture
@@ -53,9 +59,11 @@ module RepoMate
     def publish(workload)
       newworkload = []
       workload.each do |entry|
+        destination = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], "dists")
+
         newworkload << {
           :source_fullname => entry[:destination_fullname],
-          :destination_dir => File.join(pool.get_directory("dists", entry[:suitename], entry[:component], entry[:architecture])),
+          :destination_dir => destination.directory,
           :component       => entry[:component],
           :suitename       => entry[:suitename],
           :architecture    => entry[:architecture]
@@ -102,7 +110,7 @@ module RepoMate
           :destination_fullname => destination_fullname,
           :suitename            => entry[:suitename],
           :component            => entry[:component],
-          :newbasename             => source_package.newbasename
+          :newbasename          => source_package.newbasename
         }
       end
 
@@ -124,15 +132,15 @@ module RepoMate
     end
 
     def scan_packages
-      category = "dists"
+      @repository.loop("dists").each do |entry|
+        destination = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], "dists")
 
-      pool.structure(category).each do |entry|
-        packages    = File.join(pool.get_directory(category, entry[:suitename], entry[:component], entry[:architecture]), "Packages")
-        packages_gz = File.join(pool.get_directory(category, entry[:suitename], entry[:component], entry[:architecture]), "Packages.gz")
+        packages    = File.join(destination.directory, "Packages")
+        packages_gz = File.join(destination.directory, "Packages.gz")
 
         File.unlink(packages) if File.exists?(packages)
 
-        Dir.glob(File.join(pool.get_directory("dists", entry[:suitename], entry[:component], entry[:architecture]), "*.deb")) do |fullname|
+        Dir.glob(File.join(destination.directory, "*.deb")) do |fullname|
           package = Package.new(fullname, entry[:suitename], entry[:component])
 
           File.open(packages, 'a') do |file|
@@ -152,11 +160,12 @@ module RepoMate
 
     def save_checkpoint
       datetime = DateTime.now
-      category = "dists"
 
       File.open(redolog, 'a') do |file|
-        pool.structure(category).each do |entry|
-          Dir.glob(File.join(pool.get_directory(category, entry[:suitename], entry[:component], entry[:architecture]), "*.deb")) do |fullname|
+        @repository.loop("dists").each do |entry|
+          destination = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], "dists")
+
+          Dir.glob(File.join(destination.directory, "*.deb")) do |fullname|
             basename = File.basename(fullname)
             file.puts "#{datetime} #{entry[:suitename]} #{entry[:component]} #{entry[:architecture]} #{basename}"
             puts "Package: #{basename} #{entry[:suitename]}/#{entry[:component]}/#{entry[:architecture]} added to log"
@@ -167,12 +176,13 @@ module RepoMate
     end
 
     def load_checkpoint(number)
-      list         = get_checkpoints
-      category     = "dists"
-      workload     = []
+      list      = get_checkpoints
+      workload  = []
 
-      pool.structure(category).each do |entry|
-        Dir.glob(File.join(pool.get_directory(category, entry[:suitename], entry[:component], entry[:architecture]), "*.deb")) do |fullname|
+      @repository.loop("dists").each do |entry|
+        destination = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], "dists")
+
+        Dir.glob(File.join(destination.directory, "*.deb")) do |fullname|
           File.unlink fullname
         end
       end
@@ -185,9 +195,12 @@ module RepoMate
             architecture = line.split[3]
             basename     = line.split[4]
 
+            source       = Architecture.new(architecture, component, suitename, "pool")
+            destination  = Architecture.new(architecture, component, suitename, "dists")
+
             workload << {
-              :source_fullname  => File.join(pool.get_directory("pool", suitename, component, architecture), basename),
-              :destination_dir  => pool.get_directory("dists", suitename, component, architecture),
+              :source_fullname  => File.join(source.directory, basename),
+              :destination_dir  => destination.directory,
               :component        => component,
               :suitename        => suitename,
               :architecture     => architecture
@@ -195,7 +208,6 @@ module RepoMate
           end
         end
       end
-
       link(workload)
     end
 
@@ -225,10 +237,11 @@ module RepoMate
 
     def get_packagelist(category)
       packages = []
-      category = "pool"
 
-      pool.structure(category).each do |entry|
-        Dir.glob(File.join(pool.get_directory(category, entry[:suitename], entry[:component], entry[:architecture]), "*.deb")) do |fullname|
+      @repository.loop(category).each do |entry|
+        destination = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], category)
+
+        Dir.glob(File.join(destination.directory, "*.deb")) do |fullname|
           package = Package.new(fullname, entry[:suitename], entry[:component])
 
           packages << {
@@ -240,12 +253,6 @@ module RepoMate
         end
       end
       packages
-    end
-
-    protected
-
-    def pool
-      @pool ||= Pool.new
     end
   end
 end
