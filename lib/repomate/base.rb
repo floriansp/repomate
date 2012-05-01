@@ -25,12 +25,12 @@ module RepoMate
 
     def stage(workload)
       workload.each do |entry|
-        package = Package.new(entry[:package_fullname], entry[:suitename], entry[:component])
-        architecture = Architecture.new(package.architecture, entry[:component], entry[:suitename], "stage")
+        package     = Package.new(entry[:package_fullname], entry[:suitename], entry[:component])
+        destination = Architecture.new(package.architecture, entry[:component], entry[:suitename], "stage")
 
         @repository.create(entry[:suitename], entry[:component], package.architecture)
 
-        FileUtils.copy(entry[:package_fullname], File.join(architecture.directory, package.newbasename))
+        FileUtils.copy(entry[:package_fullname], File.join(destination.directory, package.newbasename))
       end
     end
 
@@ -160,18 +160,17 @@ module RepoMate
 
     def save_checkpoint
       datetime = DateTime.now
-
       File.open(redolog, 'a') do |file|
         @repository.loop("dists").each do |entry|
-          destination = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], "dists")
-
-          Dir.glob(File.join(destination.directory, "*.deb")) do |fullname|
+          source = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], "dists")
+          Dir.glob(File.join(source.directory, "*.deb")) do |fullname|
             basename = File.basename(fullname)
             file.puts "#{datetime} #{entry[:suitename]} #{entry[:component]} #{entry[:architecture]} #{basename}"
             puts "Package: #{basename} #{entry[:suitename]}/#{entry[:component]}/#{entry[:architecture]} added to log"
           end
         end
       end
+
       puts "Checkpoint (#{datetime.strftime("%F %T")}) saved"
     end
 
@@ -181,7 +180,6 @@ module RepoMate
 
       @repository.loop("dists").each do |entry|
         destination = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], "dists")
-
         Dir.glob(File.join(destination.directory, "*.deb")) do |fullname|
           File.unlink fullname
         end
@@ -194,7 +192,6 @@ module RepoMate
             component    = line.split[2]
             architecture = line.split[3]
             basename     = line.split[4]
-
             source       = Architecture.new(architecture, component, suitename, "pool")
             destination  = Architecture.new(architecture, component, suitename, "dists")
 
@@ -208,6 +205,7 @@ module RepoMate
           end
         end
       end
+
       link(workload)
     end
 
@@ -239,9 +237,8 @@ module RepoMate
       packages = []
 
       @repository.loop(category).each do |entry|
-        destination = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], category)
-
-        Dir.glob(File.join(destination.directory, "*.deb")) do |fullname|
+        source = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], category)
+        Dir.glob(File.join(source.directory, "*.deb")) do |fullname|
           package = Package.new(fullname, entry[:suitename], entry[:component])
 
           packages << {
