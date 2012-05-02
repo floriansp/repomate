@@ -166,19 +166,12 @@ module RepoMate
         end
       end
 
-
-      # Archive: unstable
-      # Component: main
-      # Origin: XING squeeze repo
-      # Label: XING squeeze repo
-      # Architecture: amd64
-      # Description: a debian squeeze based repository for XING software
-      release         = "Release"
-      origin          = @config.get[:origin]
-      label           = @config.get[:label]
-      suites          = []
-      components      = []
-      architectures   = []
+      release          = "Release"
+      origin           = @config.get[:origin]
+      label            = @config.get[:label]
+      suites           = []
+      components       = []
+      architectures    = []
       architecturedirs = []
 
 
@@ -199,27 +192,6 @@ module RepoMate
           file.puts "Description: Repository for debian #{entry[:suitename]}"
         end
       end
-
-      # Origin: XING squeeze repo
-      # Label: XING squeeze repo
-      # Suite: unstable
-      # Codename: squeeze
-      # Date: Thu, 26 Apr 2012 08:53:19 UTC
-      # Architectures: amd64
-      # Components: main
-      # Description: a debian squeeze based repository for XING software
-      # MD5Sum:
-      #  ed1acf7aa9b4fd8b7dcb162ea4cdd3b3 641 main/binary-amd64/Packages
-      #  36e60311dbde072420def60f72de5014 454 main/binary-amd64/Packages.gz
-      #  69edb4bda0aefb099444b203c4386626 170 main/binary-amd64/Release
-      # SHA1:
-      #  c241b3899b18e70f5d4a5d6a5a34e87430d11753 641 main/binary-amd64/Packages
-      #  0d72e911a40cd096a4c727a7a7e9815bbcd4e239 454 main/binary-amd64/Packages.gz
-      #  ab4c100c3da0c5e85a9d6ae66caaa995f2e2ca1b 170 main/binary-amd64/Release
-      # SHA256:
-      #  32b3cc0540f851b357c21dba63c54613405f1cf007386c2a8b26228be4e1da83 641 main/binary-amd64/Packages
-      #  c371784d84220d3a1b16795c6ea0f5d8829c1ba1cd12317c80d61ac5484da349 454 main/binary-amd64/Packages.gz
-      #  d9ffe826368e151f44cba175c4c155e8edfaa4afe0eda0c2fab93b746dba16d5 170 main/binary-amd64/Release
 
       dt = Time.new.strftime("%a, %d %b %Y %H:%M:%S %Z")
 
@@ -282,6 +254,9 @@ module RepoMate
           end
         end
       end
+
+      # Add something like gpg -a --yes -u $KEY -b -o dists/squeeze/Release.gpg dists/squeeze/Release here
+
     end
 
     def save_checkpoint
