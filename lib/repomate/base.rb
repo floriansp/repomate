@@ -124,9 +124,11 @@ module RepoMate
       end
 
       link.each do |entry|
-        File.symlink(entry[:source_fullname], entry[:destination_fullname]) unless File.exists?(entry[:destination_fullname])
-        puts "Package: #{entry[:newbasename]} linked to production => #{entry[:suitename]}/#{entry[:component]}"
-        action = true
+        unless File.exists?(entry[:destination_fullname])
+          File.symlink(entry[:source_fullname], entry[:destination_fullname])
+          puts "Package: #{entry[:newbasename]} linked to production => #{entry[:suitename]}/#{entry[:component]}"
+          action = true
+        end
       end
 
       if action
