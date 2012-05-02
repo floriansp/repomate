@@ -150,7 +150,13 @@ module RepoMate
             package.controlfile.each do |key, value|
               file.puts "#{key}: #{value}"
             end
-            file.puts "Filename: dists/#{entry[:suitename]}/#{entry[:component]}/#{entry[:architecture_dir]}/#{package.newbasename}"
+
+            # temp
+            filename = "dists/#{entry[:suitename]}/#{entry[:component]}/#{entry[:architecture_dir]}/#{package.newbasename}"
+            size = File.size(filename)
+
+            file.puts "Size: #{size}"
+            file.puts "Filename: #{filename}"
             file.puts "MD5sum: #{Digest::MD5.file(fullname).to_s}"
             file.puts "SHA1: #{Digest::SHA1.file(fullname).to_s}"
             file.puts "SHA256: #{Digest::SHA256.new(256).file(fullname).to_s}\n\n"
