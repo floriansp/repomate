@@ -159,6 +159,123 @@ module RepoMate
           raise "Could not gzip" unless system "gzip -9 -c #{packages} > #{packages_gz}"
         end
       end
+
+
+      # Archive: unstable
+      # Component: main
+      # Origin: XING squeeze repo
+      # Label: XING squeeze repo
+      # Architecture: amd64
+      # Description: a debian squeeze based repository for XING software
+      release         = "Release"
+      origin          = @config.get[:origin]
+      label           = @config.get[:label]
+      suites          = []
+      components      = []
+      architectures   = []
+      architecturedirs = []
+
+
+      @repository.loop("dists").each do |entry|
+        source  = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], "dists")
+
+        suites << entry[:suitename] unless suites.include?(entry[:suitename])
+        components << entry[:component] unless components.include?(entry[:component])
+        architectures << entry[:architecture] unless architectures.include?(entry[:architecture])
+        architecturedirs << entry[:architecture_dir] unless architecturedirs.include?(entry[:architecture_dir])
+
+        File.open(File.join(source.directory, release), 'w') do |file|
+          file.puts "Archive: stable"
+          file.puts "Component: #{entry[:component]}"
+          file.puts "Origin: #{origin}"
+          file.puts "Label: #{label}"
+          file.puts "Architecture: #{entry[:architecture]}"
+          file.puts "Description: Repository for debian #{entry[:suitename]}"
+        end
+      end
+
+      # Origin: XING squeeze repo
+      # Label: XING squeeze repo
+      # Suite: unstable
+      # Codename: squeeze
+      # Date: Thu, 26 Apr 2012 08:53:19 UTC
+      # Architectures: amd64
+      # Components: main
+      # Description: a debian squeeze based repository for XING software
+      # MD5Sum:
+      #  ed1acf7aa9b4fd8b7dcb162ea4cdd3b3 641 main/binary-amd64/Packages
+      #  36e60311dbde072420def60f72de5014 454 main/binary-amd64/Packages.gz
+      #  69edb4bda0aefb099444b203c4386626 170 main/binary-amd64/Release
+      # SHA1:
+      #  c241b3899b18e70f5d4a5d6a5a34e87430d11753 641 main/binary-amd64/Packages
+      #  0d72e911a40cd096a4c727a7a7e9815bbcd4e239 454 main/binary-amd64/Packages.gz
+      #  ab4c100c3da0c5e85a9d6ae66caaa995f2e2ca1b 170 main/binary-amd64/Release
+      # SHA256:
+      #  32b3cc0540f851b357c21dba63c54613405f1cf007386c2a8b26228be4e1da83 641 main/binary-amd64/Packages
+      #  c371784d84220d3a1b16795c6ea0f5d8829c1ba1cd12317c80d61ac5484da349 454 main/binary-amd64/Packages.gz
+      #  d9ffe826368e151f44cba175c4c155e8edfaa4afe0eda0c2fab93b746dba16d5 170 main/binary-amd64/Release
+
+      dt = Time.new.strftime("%a, %d %b %Y %H:%M:%S %Z")
+
+      suitesline = suites.join ', '
+      componentline = components.join ', '
+      architectureline = architectures.join ', '
+
+      suites.each do |suite|
+        source = Suite.new(suite, "dists")
+
+        File.open(File.join(source.directory, release), 'w') do |file|
+          file.puts "Origin: #{origin}"
+          file.puts "Label: #{label}"
+          file.puts "Suite: stable"
+          file.puts "Codename: #{source.name}"
+          file.puts "Date: #{dt}"
+          file.puts "Architectures: #{architectureline}"
+          file.puts "Components: #{componentline}"
+          file.puts "Description: Repository for debian #{suitesline}"
+          file.puts "MD5Sum:"
+
+          @repository.loop("dists").each do |entry|
+            source  = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], "dists")
+            source.packagesfiles.each do |fullname|
+              basename = File.split(fullname)[1]
+              file.puts " #{Digest::MD5.file(fullname).to_s} #{File.size(fullname)} #{entry[:component]}/#{entry[:architecture_dir]}/#{basename}"
+            end
+            source.releasefiles.each do |fullname|
+              basename = File.split(fullname)[1]
+              file.puts " #{Digest::MD5.file(fullname).to_s} #{File.size(fullname)} #{entry[:component]}/#{entry[:architecture_dir]}/#{basename}"
+            end
+          end
+
+          file.puts "SHA1:"
+
+          @repository.loop("dists").each do |entry|
+            source  = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], "dists")
+            source.packagesfiles.each do |fullname|
+              basename = File.split(fullname)[1]
+              file.puts " #{Digest::SHA1.file(fullname).to_s} #{File.size(fullname)} #{entry[:component]}/#{entry[:architecture_dir]}/#{basename}"
+            end
+            source.releasefiles.each do |fullname|
+              basename = File.split(fullname)[1]
+              file.puts " #{Digest::SHA1.file(fullname).to_s} #{File.size(fullname)} #{entry[:component]}/#{entry[:architecture_dir]}/#{basename}"
+            end
+          end
+
+          file.puts "SHA256:"
+
+          @repository.loop("dists").each do |entry|
+            source  = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], "dists")
+            source.packagesfiles.each do |fullname|
+              basename = File.split(fullname)[1]
+              file.puts " #{Digest::SHA1.file(fullname).to_s} #{File.size(fullname)} #{entry[:component]}/#{entry[:architecture_dir]}/#{basename}"
+            end
+            source.releasefiles.each do |fullname|
+              basename = File.split(fullname)[1]
+              file.puts " #{Digest::SHA1.file(fullname).to_s} #{File.size(fullname)} #{entry[:component]}/#{entry[:architecture_dir]}/#{basename}"
+            end
+          end
+        end
+      end
     end
 
     def save_checkpoint

@@ -12,3 +12,5 @@
 :architectures:
     - all
     - amd64
+:origin: Repository
+:label: Repository

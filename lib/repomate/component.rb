@@ -40,6 +40,14 @@ module RepoMate
       Dir.glob("#{directory}/*.deb")
     end
 
+    def present
+      present = []
+      Dir.glob("#{directory}/*").each do |dir|
+        present << File.split(dir)[1]
+      end
+      present
+    end
+
     def self.all
       config  = Configuration.new
       suites  = Suite.all
