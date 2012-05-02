@@ -152,10 +152,9 @@ module RepoMate
             end
 
             # temp
-            filename = "dists/#{entry[:suitename]}/#{entry[:component]}/#{entry[:architecture_dir]}/#{package.newbasename}"
-            size = File.size(filename)
+            size = File.size(fullname)
 
-            file.puts "Size: #{size}"
+            file.puts "Size: dists/#{entry[:suitename]}/#{entry[:component]}/#{entry[:architecture_dir]}/#{package.newbasename}"
             file.puts "Filename: #{filename}"
             file.puts "MD5sum: #{Digest::MD5.file(fullname).to_s}"
             file.puts "SHA1: #{Digest::SHA1.file(fullname).to_s}"
