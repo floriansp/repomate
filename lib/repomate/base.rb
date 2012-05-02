@@ -267,11 +267,11 @@ module RepoMate
             source  = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], "dists")
             source.packagesfiles.each do |fullname|
               basename = File.split(fullname)[1]
-              file.puts " #{Digest::SHA1.file(fullname).to_s} #{File.size(fullname)} #{entry[:component]}/#{entry[:architecture_dir]}/#{basename}"
+              file.puts " #{Digest::SHA256.new(256).file(fullname).to_s} #{File.size(fullname)} #{entry[:component]}/#{entry[:architecture_dir]}/#{basename}"
             end
             source.releasefiles.each do |fullname|
               basename = File.split(fullname)[1]
-              file.puts " #{Digest::SHA1.file(fullname).to_s} #{File.size(fullname)} #{entry[:component]}/#{entry[:architecture_dir]}/#{basename}"
+              file.puts " #{Digest::SHA256.new(256).file(fullname).to_s} #{File.size(fullname)} #{entry[:component]}/#{entry[:architecture_dir]}/#{basename}"
             end
           end
         end
