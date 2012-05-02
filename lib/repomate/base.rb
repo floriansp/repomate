@@ -1,12 +1,10 @@
 require_relative 'configuration'
 require_relative 'architecture'
 require_relative 'repository'
+require_relative 'metafile'
 require_relative 'package'
 require 'date'
 require 'time'
-require 'digest/md5'
-require 'digest/sha1'
-require 'digest/sha2'
 
 module RepoMate
   class Base
@@ -14,6 +12,7 @@ module RepoMate
     def initialize
       @config     = Configuration.new
       @repository = Repository.new
+      @metafile   = Metafile.new
       @logdir     = @config.get[:logdir]
 
       FileUtils.mkdir_p(@logdir) unless Dir.exists?(@logdir)
@@ -124,40 +123,15 @@ module RepoMate
       end
 
       link.each do |entry|
-        File.symlink(entry[:source_fullname], entry[:destination_fullname]) unless File.exists?(entry[:destination_fullname])
-        puts "Package: #{entry[:newbasename]} linked to production => #{entry[:suitename]}/#{entry[:component]}"
-        action = true
+        unless File.exists?(entry[:destination_fullname])
+          File.symlink(entry[:source_fullname], entry[:destination_fullname])
+          puts "Package: #{entry[:newbasename]} linked to production => #{entry[:suitename]}/#{entry[:component]}"
+          action = true
+        end
       end
 
       if action
-        scan_packages
-      end
-    end
-
-    def scan_packages
-      @repository.loop("dists").each do |entry|
-        destination = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], "dists")
-
-        packages    = File.join(destination.directory, "Packages")
-        packages_gz = File.join(destination.directory, "Packages.gz")
-
-        File.unlink(packages) if File.exists?(packages)
-
-        destination.files.each do |fullname|
-          package = Package.new(fullname, entry[:suitename], entry[:component])
-
-          File.open(packages, 'a') do |file|
-            package.controlfile.each do |key, value|
-              file.puts "#{key}: #{value}"
-            end
-            file.puts "MD5sum: #{Digest::MD5.file(fullname).to_s}"
-            file.puts "SHA1: #{Digest::SHA1.file(fullname).to_s}"
-            file.puts "SHA256: #{Digest::SHA256.new(256).file(fullname).to_s}\n\n"
-          end
-        end
-        if File.exists?(packages)
-          raise "Could not gzip" unless system "gzip -9 -c #{packages} > #{packages_gz}"
-        end
+        @metafile.create
       end
     end
 

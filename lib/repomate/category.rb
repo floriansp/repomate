@@ -28,6 +28,14 @@ module RepoMate
       FileUtils.rm_r(directory) if exist?
     end
 
+    def present
+      present = []
+      Dir.glob("#{directory}/*").each do |dir|
+        present << File.split(dir)[1]
+      end
+      present
+    end
+
     def self.all
       config = Configuration.new
       dirs   = Dir.glob(File.join(config.get[:rootdir], "*"))
