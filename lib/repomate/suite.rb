@@ -58,7 +58,7 @@ module RepoMate
       categories.each do |category|
         suites = Dir.glob(File.join(rootdir, category, "*"))
         suites.each do |suite|
-          dirs.push suite.gsub(/#{rootdir}\//, '')
+          dirs.push suite.gsub(/#{rootdir}\//, '') if File.directory? suite
         end
       end
       return dirs

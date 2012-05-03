@@ -64,10 +64,9 @@ module RepoMate
       dirs        = []
       rootdir     = config.get[:rootdir]
       components.each do |component|
-        p component
         architectures = Dir.glob(File.join(rootdir, component, "*"))
         architectures.each do |architecture|
-          dirs.push architecture.gsub(/#{rootdir}\//, '')
+          dirs.push architecture.gsub(/#{rootdir}\//, '') if File.directory? architecture
         end
       end
       return dirs

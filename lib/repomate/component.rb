@@ -48,6 +48,16 @@ module RepoMate
       present
     end
 
+    def self.allbycategory(category)
+      cat = nil
+      directory = []
+      self.all.each do |entry|
+        cat = entry.split(File::SEPARATOR)[0]
+        directory << entry if cat.eql?(category)
+      end
+      return directory
+    end
+
     def self.all
       config  = Configuration.new
       suites  = Suite.all
@@ -56,7 +66,7 @@ module RepoMate
       suites.each do |suite|
         components = Dir.glob(File.join(rootdir, suite, "*"))
         components.each do |component|
-          dirs.push component.gsub(/#{rootdir}\//, '')
+          dirs.push component.gsub(/#{rootdir}\//, '') if File.directory? component
         end
       end
       return dirs
