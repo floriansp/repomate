@@ -45,7 +45,7 @@ module RepoMate
       data  = []
       self.all.each do |entry|
         parts = entry.split(/\//)
-        unless parts[0].nil? || parts[1].nil? || parts[2].nil?
+        unless parts.length < 3
           next unless parts[0].eql?(category) || category.eql?("all")
           data << {
             :category     => parts[0],
