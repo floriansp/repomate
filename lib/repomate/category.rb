@@ -36,6 +36,21 @@ module RepoMate
       present
     end
 
+    def self.allstructured
+      config  = Configuration.new
+      parts = []
+      self.all.each do |entry|
+        unless entry.nil?
+          parts << {
+            :category     => entry,
+            :basepath     => entry,
+            :path         => File.join(config.get[:rootdir], entry)
+          }
+        end
+      end
+      parts
+    end
+
     def self.all
       config = Configuration.new
       dirs   = Dir.glob(File.join(config.get[:rootdir], "*"))

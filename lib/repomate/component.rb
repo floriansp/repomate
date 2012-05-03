@@ -48,14 +48,22 @@ module RepoMate
       present
     end
 
-    def self.allbycategory(category)
-      cat = nil
-      directory = []
+    def self.allstructured
+      config  = Configuration.new
+      parts = []
       self.all.each do |entry|
-        cat = entry.split(File::SEPARATOR)[0]
-        directory << entry if cat.eql?(category)
+        s = entry.split(/\//)
+        unless s[0].nil? || s[1].nil? || s[2].nil?
+          parts << {
+            :category     => s[0],
+            :suitename    => s[1],
+            :component    => s[2],
+            :basepath     => entry,
+            :path         => File.join(config.get[:rootdir], entry)
+          }
+        end
       end
-      return directory
+      parts
     end
 
     def self.all

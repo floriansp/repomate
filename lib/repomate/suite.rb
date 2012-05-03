@@ -50,6 +50,23 @@ module RepoMate
       Dir.glob("#{directory}/Release*")
     end
 
+    def self.allstructured
+      config  = Configuration.new
+      parts = []
+      self.all.each do |entry|
+        s = entry.split(/\//)
+        unless s[0].nil? || s[1].nil?
+          parts << {
+            :category     => s[0],
+            :suitename    => s[1],
+            :basepath     => entry,
+            :path         => File.join(config.get[:rootdir], entry)
+          }
+        end
+      end
+      parts
+    end
+
     def self.all
       config      = Configuration.new
       categories  = Category.all

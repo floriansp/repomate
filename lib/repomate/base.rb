@@ -36,6 +36,8 @@ module RepoMate
     def prepare_publish
       workload = []
 
+      # p Architecture.allstructured
+
       @repository.loop("stage").each do |entry|
         source = Component.new(entry[:component], entry[:suitename], "stage")
         source.files.each do |fullname|
