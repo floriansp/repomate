@@ -17,8 +17,10 @@ module RepoMate
     end
 
     def create
-      @repository.loop("dists").each do |entry|
-        destination = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], "dists")
+      source_category = "dists"
+
+      Architecture.allabove(source_category).each do |entry|
+        destination = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], source_category)
 
         packages    = File.join(destination.directory, "Packages")
         packages_gz = File.join(destination.directory, "Packages.gz")
@@ -57,8 +59,8 @@ module RepoMate
       architecturedirs = []
 
 
-      @repository.loop("dists").each do |entry|
-        source  = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], "dists")
+      Architecture.allabove(source_category).each do |entry|
+        source  = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], source_category)
 
         suites << entry[:suitename] unless suites.include?(entry[:suitename])
         components << entry[:component] unless components.include?(entry[:component])
@@ -95,8 +97,8 @@ module RepoMate
           file.puts "Description: Repository for debian #{suitesline}"
           file.puts "MD5Sum:"
 
-          @repository.loop("dists").each do |entry|
-            source  = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], "dists")
+          Architecture.allabove(source_category).each do |entry|
+            source  = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], source_category)
             source.packagesfiles.each do |fullname|
               basename = File.split(fullname)[1]
               file.puts " #{Digest::MD5.file(fullname).to_s} #{File.size(fullname)} #{entry[:component]}/#{entry[:architecture_dir]}/#{basename}"
@@ -109,8 +111,8 @@ module RepoMate
 
           file.puts "SHA1:"
 
-          @repository.loop("dists").each do |entry|
-            source  = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], "dists")
+          Architecture.allabove(source_category).each do |entry|
+            source  = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], source_category)
             source.packagesfiles.each do |fullname|
               basename = File.split(fullname)[1]
               file.puts " #{Digest::SHA1.file(fullname).to_s} #{File.size(fullname)} #{entry[:component]}/#{entry[:architecture_dir]}/#{basename}"
@@ -123,8 +125,8 @@ module RepoMate
 
           file.puts "SHA256:"
 
-          @repository.loop("dists").each do |entry|
-            source  = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], "dists")
+          Architecture.allabove(source_category).each do |entry|
+            source  = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], source_category)
             source.packagesfiles.each do |fullname|
               basename = File.split(fullname)[1]
               file.puts " #{Digest::SHA256.new(256).file(fullname).to_s} #{File.size(fullname)} #{entry[:component]}/#{entry[:architecture_dir]}/#{basename}"

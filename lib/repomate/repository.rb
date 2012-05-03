@@ -46,27 +46,6 @@ module RepoMate
         end
       end
     end
-
-    def loop(category)
-      structures   = []
-
-      Dir.glob(File.join(@config.get[:rootdir], category, "*")).each do |suitedir|
-        suitename = File.split(suitedir)
-        Dir.glob(File.join(@config.get[:rootdir], category, suitename[1], "*")).each do |componentdir|
-          component = File.split(componentdir)
-          if category.eql?("stage")
-            structures << { :suitename => suitename[1], :component => component[1]}
-          else
-            Dir.glob(File.join(@config.get[:rootdir], category, suitename[1], component[1], "*")).each do |architecturedir|
-              architecture_dir = File.split(architecturedir)
-              architecture = architecture_dir[1].split("-")
-              structures << { :suitename => suitename[1], :component => component[1], :architecture_dir => architecture_dir[1], :architecture => architecture[1]}
-            end
-          end
-        end
-      end
-      structures
-    end
   end
 end
 

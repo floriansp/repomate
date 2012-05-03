@@ -28,27 +28,20 @@ module RepoMate
       FileUtils.rm_r(directory) if exist?
     end
 
-    def present
-      present = []
-      Dir.glob("#{directory}/*").each do |dir|
-        present << File.split(dir)[1]
-      end
-      present
-    end
-
-    def self.allstructured
-      config  = Configuration.new
-      parts = []
+    def self.allabove(category=nil)
+      config = Configuration.new
+      data   = []
       self.all.each do |entry|
         unless entry.nil?
-          parts << {
+          next unless entry.eql?(category) || category.eql?("all")
+          data << {
             :category     => entry,
             :basepath     => entry,
             :path         => File.join(config.get[:rootdir], entry)
           }
         end
       end
-      parts
+      data
     end
 
     def self.all

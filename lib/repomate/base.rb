@@ -36,13 +36,14 @@ module RepoMate
     def prepare_publish
       workload = []
 
-      # p Architecture.allstructured
+      source_category      = "stage"
+      destination_category = "pool"
 
-      @repository.loop("stage").each do |entry|
-        source = Component.new(entry[:component], entry[:suitename], "stage")
+      Component.allabove(source_category).each do |entry|
+        source = Component.new(entry[:component], entry[:suitename], source_category)
         source.files.each do |fullname|
           package     = Package.new(fullname, entry[:suitename], entry[:component])
-          destination = Architecture.new(package.architecture, entry[:component], entry[:suitename], "pool")
+          destination = Architecture.new(package.architecture, entry[:component], entry[:suitename], destination_category)
 
           workload << {
             :source_fullname      => fullname,
@@ -138,10 +139,12 @@ module RepoMate
     end
 
     def save_checkpoint
-      datetime = DateTime.now
+      datetime        = DateTime.now
+      source_category = "dists"
+
       File.open(redolog, 'a') do |file|
-        @repository.loop("dists").each do |entry|
-          source = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], "dists")
+        Architecture.allabove(source_category).each do |entry|
+          source = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], source_category)
           source.files.each do |fullname|
             basename = File.basename(fullname)
             file.puts "#{datetime} #{entry[:suitename]} #{entry[:component]} #{entry[:architecture]} #{basename}"
@@ -153,11 +156,12 @@ module RepoMate
     end
 
     def load_checkpoint(number)
-      list      = get_checkpoints
-      workload  = []
+      list            = get_checkpoints
+      workload        = []
+      source_category = "dists"
 
-      @repository.loop("dists").each do |entry|
-        destination = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], "dists")
+      Architecture.allabove(source_category).each do |entry|
+        destination = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], source_category)
         destination.files.each do |fullname|
           File.unlink fullname
         end
@@ -214,7 +218,7 @@ module RepoMate
     def get_packagelist(category)
       packages = []
 
-      @repository.loop(category).each do |entry|
+      Architecture.allabove(category).each do |entry|
         source = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], category)
         source.files.each do |fullname|
           package = Package.new(fullname, entry[:suitename], entry[:component])

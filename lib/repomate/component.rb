@@ -40,30 +40,23 @@ module RepoMate
       Dir.glob("#{directory}/*.deb")
     end
 
-    def present
-      present = []
-      Dir.glob("#{directory}/*").each do |dir|
-        present << File.split(dir)[1]
-      end
-      present
-    end
-
-    def self.allstructured
-      config  = Configuration.new
-      parts = []
+    def self.allabove(category=nil)
+      config = Configuration.new
+      data  = []
       self.all.each do |entry|
-        s = entry.split(/\//)
-        unless s[0].nil? || s[1].nil? || s[2].nil?
-          parts << {
-            :category     => s[0],
-            :suitename    => s[1],
-            :component    => s[2],
+        parts = entry.split(/\//)
+        unless parts[0].nil? || parts[1].nil? || parts[2].nil?
+          next unless parts[0].eql?(category) || category.eql?("all")
+          data << {
+            :category     => parts[0],
+            :suitename    => parts[1],
+            :component    => parts[2],
             :basepath     => entry,
             :path         => File.join(config.get[:rootdir], entry)
           }
         end
       end
-      parts
+      data
     end
 
     def self.all

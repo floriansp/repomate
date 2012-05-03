@@ -77,11 +77,16 @@ module RepoMate
     end
 
     def choose_checkpoint
+      list = @repomate.get_checkpoints
+
+      if list.empty?
+        puts "We can't restore because we don't have checkpoints"
+        exit 1
+      end
+
       puts "\n*** Restore production links to a date below. ***
 Remember: If you need to restore, the last entry might be the one you want!
 Everything between the last two \"publish (-P) commands\" will be lost if you proceed!\n\n"
-
-      list = @repomate.get_checkpoints
 
       list.each do |num, date|
         datetime = DateTime.parse(date)
