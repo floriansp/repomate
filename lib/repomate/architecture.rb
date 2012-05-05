@@ -39,7 +39,7 @@ module RepoMate
     end
 
     def files
-      Dir.glob("#{directory}/*.deb")
+      Dir.glob(File.join(directory, "*.deb"))
     end
 
     def self.names
