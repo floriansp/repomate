@@ -52,7 +52,7 @@ module RepoMate
       archrelease_template  = ERB.new File.new(File.join(File.dirname(__FILE__), "templates/archrelease.erb")).read, nil, "%"
       suiterelease_template = ERB.new File.new(File.join(File.dirname(__FILE__), "templates/suiterelease.erb")).read, nil, "%"
 
-      Architecture.allabove(source_category).each do |entry|
+      Architecture.dataset(source_category).each do |entry|
         source  = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], source_category)
         source.files.each do |fullname|
           package = Package.new(fullname, entry[:suitename], entry[:component])
@@ -72,7 +72,7 @@ module RepoMate
         end
       end
 
-      Architecture.allabove(source_category).each do |entry|
+      Architecture.dataset(source_category).each do |entry|
         source      = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], source_category)
         releasefile = File.join(entry[:fullpath], "Release")
 
@@ -82,7 +82,7 @@ module RepoMate
       end
 
       Suite.names.each do |suite|
-        Suite.allabove(source_category).each do |entry|
+        Suite.dataset(source_category).each do |entry|
           source      = Suite.new(suite, "dists")
           releasefile = File.join(entry[:fullpath], "Release")
 

@@ -48,7 +48,7 @@ module RepoMate
       names
     end
 
-    def self.allabove(category=nil)
+    def self.dataset(category=nil)
       config = Configuration.new
       data  = []
       self.all.each do |entry|

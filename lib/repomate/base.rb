@@ -39,7 +39,7 @@ module RepoMate
       source_category      = "stage"
       destination_category = "pool"
 
-      Component.allabove(source_category).each do |entry|
+      Component.dataset(source_category).each do |entry|
         source = Component.new(entry[:component], entry[:suitename], source_category)
         source.files.each do |fullname|
           package     = Package.new(fullname, entry[:suitename], entry[:component])
@@ -143,7 +143,7 @@ module RepoMate
       source_category = "dists"
 
       File.open(redolog, 'a') do |file|
-        Architecture.allabove(source_category).each do |entry|
+        Architecture.dataset(source_category).each do |entry|
           source = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], source_category)
           source.files.each do |fullname|
             basename = File.basename(fullname)
@@ -160,7 +160,7 @@ module RepoMate
       workload        = []
       source_category = "dists"
 
-      Architecture.allabove(source_category).each do |entry|
+      Architecture.dataset(source_category).each do |entry|
         destination = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], source_category)
         destination.files.each do |fullname|
           File.unlink fullname
@@ -218,7 +218,7 @@ module RepoMate
     def get_packagelist(category)
       packages = []
 
-      Architecture.allabove(category).each do |entry|
+      Architecture.dataset(category).each do |entry|
         source = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], category)
         source.files.each do |fullname|
           package = Package.new(fullname, entry[:suitename], entry[:component])

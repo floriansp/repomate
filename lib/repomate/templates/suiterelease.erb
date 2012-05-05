@@ -7,7 +7,7 @@ Architectures: <%= Architecture.names.join(', ').gsub(/binary-/, "") %>
 Components: <%= Component.names.join(', ') %>
 Description: Repository for debian <%=  %>
 MD5Sum:
-<% Architecture.allabove(source_category).each do |entry| %>
+<% Architecture.dataset(source_category).each do |entry| %>
   <% source = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], source_category) %>
   <% Dir.glob(File.join(entry[:fullpath], "Packages*")).each do |file| %>
     <% path = File.join(entry[:component], entry[:architecture], File.basename(file)) %>
@@ -18,7 +18,7 @@ MD5Sum:
   <%= Digest::MD5.file(file) %> <%= File.size(file) %> <%= path %>
 <% end %>
 SHA1:
-<% Architecture.allabove(source_category).each do |entry| %>
+<% Architecture.dataset(source_category).each do |entry| %>
   <% source = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], source_category) %>
   <% Dir.glob(File.join(entry[:fullpath], "Packages*")).each do |file| %>
     <% path = File.join(entry[:component], entry[:architecture], File.basename(file)) %>
@@ -29,7 +29,7 @@ SHA1:
   <%= Digest::SHA1.file(file) %> <%= File.size(file) %> <%= path %>
 <% end %>
 SHA256:
-<% Architecture.allabove(source_category).each do |entry| %>
+<% Architecture.dataset(source_category).each do |entry| %>
   <% source = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], source_category) %>
   <% Dir.glob(File.join(entry[:fullpath], "Packages*")).each do |file| %>
     <% path = File.join(entry[:component], entry[:architecture], File.basename(file)) %>
