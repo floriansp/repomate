@@ -24,6 +24,7 @@ module RepoMate
     protected
 
     def check_package
+      #p @fullname
       unless `file --dereference #{@fullname}` =~ /Debian binary package/i
         puts "File does not exist or is not a Debian package!"
         false

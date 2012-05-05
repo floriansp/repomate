@@ -2,6 +2,7 @@ require_relative 'configuration'
 require_relative 'architecture'
 require_relative 'repository'
 require_relative 'package'
+require 'erb'
 require 'date'
 require 'time'
 require 'digest/md5'
@@ -16,131 +17,80 @@ module RepoMate
       @repository = Repository.new
     end
 
+    def all
+      config   = Configuration.new
+      rootdir  = config.get[:rootdir]
+      dirlist  = ["#{rootdir}/*/*", "#{rootdir}/*/*/*/*"]
+      filelist = ["Packages", "Packages.gz", "Release", "Release.gpg" ]
+      files = []
+
+      dirlist.each do |dirs|
+        Dir.glob(dirs).each do |dir|
+          filelist.each do |file|
+            fullname = File.join(dir, file)
+            files << fullname if File.exists? fullname
+          end
+        end
+      end
+      return files
+    end
+
+    def destroy
+      all.each do |file|
+        FileUtils.rm_f(file)
+      end
+    end
+
     def create
+      destroy
+
       source_category = "dists"
 
+      now = Time.new.strftime("%a, %d %b %Y %H:%M:%S %Z")
+
+      packages_template     = ERB.new File.new(File.join(File.dirname(__FILE__), "templates/packages.erb")).read, nil, "%"
+      archrelease_template  = ERB.new File.new(File.join(File.dirname(__FILE__), "templates/archrelease.erb")).read, nil, "%"
+      suiterelease_template = ERB.new File.new(File.join(File.dirname(__FILE__), "templates/suiterelease.erb")).read, nil, "%"
+
       Architecture.allabove(source_category).each do |entry|
-        destination = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], source_category)
-
-        packages    = File.join(destination.directory, "Packages")
-        packages_gz = File.join(destination.directory, "Packages.gz")
-
-        File.unlink(packages) if File.exists?(packages)
-
-        destination.files.each do |fullname|
+        source  = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], source_category)
+        source.files.each do |fullname|
           package = Package.new(fullname, entry[:suitename], entry[:component])
 
-          File.open(packages, 'a') do |file|
+          packagesfile = File.join(entry[:fullpath], "Packages")
+          size         = File.size(fullname)
+          path         = File.join("dists", entry[:suitename], entry[:component], entry[:architecture_dir], package.newbasename)
+
+          File.open(packagesfile, 'a') do |file|
             package.controlfile.each do |key, value|
               file.puts "#{key}: #{value}"
             end
 
-            # temp
-            size = File.size(fullname)
-
-            file.puts "Size: #{size}"
-            file.puts "Filename: dists/#{entry[:suitename]}/#{entry[:component]}/#{entry[:architecture_dir]}/#{package.newbasename}"
-            file.puts "MD5sum: #{Digest::MD5.file(fullname).to_s}"
-            file.puts "SHA1: #{Digest::SHA1.file(fullname).to_s}"
-            file.puts "SHA256: #{Digest::SHA256.new(256).file(fullname).to_s}\n\n"
+            file.puts packages_template.result(binding)
           end
-        end
-        if File.exists?(packages)
-          raise "Could not gzip" unless system "gzip -9 -c #{packages} > #{packages_gz}"
+          raise "Could not gzip" unless system "gzip -9 -c #{packagesfile} > #{packagesfile}.gz"
         end
       end
-
-      release          = "Release"
-      origin           = @config.get[:origin]
-      label            = @config.get[:label]
-      suites           = []
-      components       = []
-      architectures    = []
-      architecturedirs = []
-
 
       Architecture.allabove(source_category).each do |entry|
-        source  = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], source_category)
+        source      = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], source_category)
+        releasefile = File.join(entry[:fullpath], "Release")
 
-        suites << entry[:suitename] unless suites.include?(entry[:suitename])
-        components << entry[:component] unless components.include?(entry[:component])
-        architectures << entry[:architecture] unless architectures.include?(entry[:architecture])
-        architecturedirs << entry[:architecture_dir] unless architecturedirs.include?(entry[:architecture_dir])
-
-        File.open(File.join(source.directory, release), 'w') do |file|
-          file.puts "Archive: stable"
-          file.puts "Component: #{entry[:component]}"
-          file.puts "Origin: #{origin}"
-          file.puts "Label: #{label}"
-          file.puts "Architecture: #{entry[:architecture]}"
-          file.puts "Description: Repository for debian #{entry[:suitename]}"
+        File.open(releasefile, 'w') do |file|
+          file.puts archrelease_template.result(binding)
         end
       end
 
-      dt = Time.new.strftime("%a, %d %b %Y %H:%M:%S %Z")
+      Suite.names.each do |suite|
+        Suite.allabove(source_category).each do |entry|
+          source      = Suite.new(suite, "dists")
+          releasefile = File.join(entry[:fullpath], "Release")
 
-      suitesline = suites.join ', '
-      componentline = components.join ', '
-      architectureline = architectures.join ', '
-
-      suites.each do |suite|
-        source = Suite.new(suite, "dists")
-
-        File.open(File.join(source.directory, release), 'w') do |file|
-          file.puts "Origin: #{origin}"
-          file.puts "Label: #{label}"
-          file.puts "Suite: stable"
-          file.puts "Codename: #{source.name}"
-          file.puts "Date: #{dt}"
-          file.puts "Architectures: #{architectureline}"
-          file.puts "Components: #{componentline}"
-          file.puts "Description: Repository for debian #{suitesline}"
-          file.puts "MD5Sum:"
-
-          Architecture.allabove(source_category).each do |entry|
-            source  = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], source_category)
-            source.packagesfiles.each do |fullname|
-              basename = File.split(fullname)[1]
-              file.puts " #{Digest::MD5.file(fullname).to_s} #{File.size(fullname)} #{entry[:component]}/#{entry[:architecture_dir]}/#{basename}"
-            end
-            source.releasefiles.each do |fullname|
-              basename = File.split(fullname)[1]
-              file.puts " #{Digest::MD5.file(fullname).to_s} #{File.size(fullname)} #{entry[:component]}/#{entry[:architecture_dir]}/#{basename}"
-            end
-          end
-
-          file.puts "SHA1:"
-
-          Architecture.allabove(source_category).each do |entry|
-            source  = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], source_category)
-            source.packagesfiles.each do |fullname|
-              basename = File.split(fullname)[1]
-              file.puts " #{Digest::SHA1.file(fullname).to_s} #{File.size(fullname)} #{entry[:component]}/#{entry[:architecture_dir]}/#{basename}"
-            end
-            source.releasefiles.each do |fullname|
-              basename = File.split(fullname)[1]
-              file.puts " #{Digest::SHA1.file(fullname).to_s} #{File.size(fullname)} #{entry[:component]}/#{entry[:architecture_dir]}/#{basename}"
-            end
-          end
-
-          file.puts "SHA256:"
-
-          Architecture.allabove(source_category).each do |entry|
-            source  = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], source_category)
-            source.packagesfiles.each do |fullname|
-              basename = File.split(fullname)[1]
-              file.puts " #{Digest::SHA256.new(256).file(fullname).to_s} #{File.size(fullname)} #{entry[:component]}/#{entry[:architecture_dir]}/#{basename}"
-            end
-            source.releasefiles.each do |fullname|
-              basename = File.split(fullname)[1]
-              file.puts " #{Digest::SHA256.new(256).file(fullname).to_s} #{File.size(fullname)} #{entry[:component]}/#{entry[:architecture_dir]}/#{basename}"
-            end
+          File.open(releasefile, 'w') do |file|
+            file.puts suiterelease_template.result(binding).gsub(/^\s+/, '')
           end
         end
       end
-
-      # Add something like gpg -a --yes -u $KEY -b -o dists/squeeze/Release.gpg dists/squeeze/Release here
-
     end
   end
 end

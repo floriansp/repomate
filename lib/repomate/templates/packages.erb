@@ -1,0 +1,6 @@
+Size: <%= size %>
+Filename: <%= path %>
+MD5sum: <%= Digest::MD5.file(fullname).to_s %>
+SHA1: <%= Digest::SHA1.file(fullname).to_s %>
+SHA256: <%= Digest::SHA256.new(256).file(fullname).to_s %>
+

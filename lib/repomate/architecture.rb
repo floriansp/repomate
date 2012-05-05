@@ -42,12 +42,12 @@ module RepoMate
       Dir.glob("#{directory}/*.deb")
     end
 
-    def packagesfiles
-      Dir.glob("#{directory}/Packages*")
-    end
-
-    def releasefiles
-      Dir.glob("#{directory}/Release*")
+    def self.names
+      names = []
+      self.all.each do |dir|
+        names << File.split(dir).last unless names.include?(File.split(dir).last)
+      end
+      names
     end
 
     def self.allabove(category=nil)

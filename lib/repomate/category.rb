@@ -28,6 +28,14 @@ module RepoMate
       FileUtils.rm_r(directory) if exist?
     end
 
+    def self.names
+      names = []
+      self.all.each do |dir|
+        names << File.split(dir).last unless names.include? File.split(dir).last
+      end
+      names
+    end
+
     def self.allabove(category=nil)
       config = Configuration.new
       data   = []
@@ -37,7 +45,7 @@ module RepoMate
           data << {
             :category     => entry,
             :basepath     => entry,
-            :path         => File.join(config.get[:rootdir], entry)
+            :fullpath     => File.join(config.get[:rootdir], entry)
           }
         end
       end
