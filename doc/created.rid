@@ -1,0 +1,13 @@
+Sat, 05 May 2012 15:53:24 +0200
+./Gemfile	Sat, 05 May 2012 14:07:25 +0200
+./lib/repomate/architecture.rb	Sat, 05 May 2012 15:30:06 +0200
+./lib/repomate/base.rb	Sat, 05 May 2012 15:53:13 +0200
+./lib/repomate/category.rb	Sat, 05 May 2012 15:21:22 +0200
+./lib/repomate/cli.rb	Sat, 05 May 2012 15:47:32 +0200
+./lib/repomate/component.rb	Sat, 05 May 2012 15:34:20 +0200
+./lib/repomate/configuration.rb	Sat, 05 May 2012 15:35:33 +0200
+./lib/repomate/metafile.rb	Sat, 05 May 2012 15:43:10 +0200
+./lib/repomate/package.rb	Sat, 05 May 2012 15:41:29 +0200
+./lib/repomate/repository.rb	Sat, 05 May 2012 15:40:15 +0200
+./lib/repomate/suite.rb	Sat, 05 May 2012 15:39:24 +0200
+./sbin/repomate	Sat, 05 May 2012 12:20:52 +0200

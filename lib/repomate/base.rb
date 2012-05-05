@@ -6,9 +6,13 @@ require_relative 'package'
 require 'date'
 require 'time'
 
+# RepoMate module
 module RepoMate
+
+  # Class containing the main logic
   class Base
 
+    # Init
     def initialize
       @config     = Configuration.new
       @repository = Repository.new
@@ -18,10 +22,12 @@ module RepoMate
       FileUtils.mkdir_p(@logdir) unless Dir.exists?(@logdir)
     end
 
+    # Get's the location of the redo logfile
     def redolog
       File.join(@config.get[:logdir], @config.get[:redolog])
     end
 
+    # Add's a package to the staging area
     def stage(workload)
       workload.each do |entry|
         package     = Package.new(entry[:package_fullname], entry[:suitename], entry[:component])
@@ -33,6 +39,7 @@ module RepoMate
       end
     end
 
+    # Returns a list of staged packages for cli confirmation packed as array of hashes
     def prepare_publish
       workload = []
 
@@ -57,6 +64,7 @@ module RepoMate
       workload
     end
 
+    # Publish all staged packages. Packages will be moved from stage to pool and linked to dists
     def publish(workload)
       newworkload = []
       workload.each do |entry|
@@ -81,10 +89,11 @@ module RepoMate
       link(workload)
     end
 
+    # Does the link job after checking versions through dpkg
     def link(workload)
       dpkg   = @config.get[:dpkg]
 
-      # raise "dpkg is not installed" unless File.exists?(dpkg)
+      raise "dpkg is not installed" unless File.exists?(dpkg)
 
       link   = []
       unlink = []
@@ -97,17 +106,17 @@ module RepoMate
         Dir.glob("#{entry[:destination_dir]}/#{source_package.name}*.deb") do |target_fullname|
           target_package = Package.new(destination_fullname, entry[:suitename], entry[:component] )
 
-         # if system("#{dpkg} --compare-versions #{source_package.version} gt #{target_package.version}")
+         if system("#{dpkg} --compare-versions #{source_package.version} gt #{target_package.version}")
             puts "Package: #{target_package.newbasename} will be replaced with #{source_package.newbasename}"
             unlink << {
               :destination_fullname => target_fullname,
               :newbasename          => target_package.newbasename
             }
-          # elsif system("#{dpkg} --compare-versions #{source_package.version} eq #{target_package.version}")
-          # puts "Package: #{source_package.newbasename} already exists with same version"
-          # elsif system("#{dpkg} --compare-versions #{source_package.version} lt #{target_package.version}")
-          # puts "Package: #{source_package.newbasename} already exists with higher version"
-          # end
+          elsif system("#{dpkg} --compare-versions #{source_package.version} eq #{target_package.version}")
+          puts "Package: #{source_package.newbasename} already exists with same version"
+          elsif system("#{dpkg} --compare-versions #{source_package.version} lt #{target_package.version}")
+          puts "Package: #{source_package.newbasename} already exists with higher version"
+          end
         end
 
         link << {
@@ -138,6 +147,7 @@ module RepoMate
       end
     end
 
+    # Saves a checkpoint
     def save_checkpoint
       datetime        = DateTime.now
       source_category = "dists"
@@ -155,6 +165,7 @@ module RepoMate
       puts "Checkpoint (#{datetime.strftime("%F %T")}) saved"
     end
 
+    # Loads a checkpoint
     def load_checkpoint(number)
       list            = get_checkpoints
       workload        = []
@@ -191,6 +202,7 @@ module RepoMate
       link(workload)
     end
 
+    # Returns a list of checkpoints for the cli
     def get_checkpoints
       unless File.exists?(redolog)
         puts "We can't restore because we don't have checkpoints"
@@ -215,6 +227,7 @@ module RepoMate
       list
     end
 
+    # Returns a list of packages
     def get_packagelist(category)
       packages = []
 

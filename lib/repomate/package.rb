@@ -1,11 +1,15 @@
 require 'yaml'
 require 'tempfile'
 
+# RepoMate module
 module RepoMate
+
+  # Class for reading debian packages
   class Package
 
     attr_reader :newbasename, :controlfile, :architecture, :suitename, :component, :version, :name
 
+    # Init
     def initialize(fullname, suitename, component)
       @fullname  = fullname
       @suitename = suitename
@@ -23,6 +27,7 @@ module RepoMate
 
     protected
 
+    # Checks if the given package is a debian package
     def check_package
       #p @fullname
       unless `file --dereference #{@fullname}` =~ /Debian binary package/i
@@ -31,6 +36,7 @@ module RepoMate
       end
     end
 
+    # Extracts the controlfile and returns is
     def read_controlfile
       gzbasename  = "control.tar.gz"
       basename    = "control"

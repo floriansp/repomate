@@ -10,14 +10,19 @@ require 'digest/md5'
 require 'digest/sha1'
 require 'digest/sha2'
 
+# RepoMate module
 module RepoMate
+
+  # Class that can create and delete all metafiles like Packages, Packages.gz, Release and Release.gpg
   class Metafile
 
+    # Init
     def initialize
       @config     = Configuration.new
       @repository = Repository.new
     end
 
+    # Returns a lit of all existing metafiles as array
     def all
       config   = Configuration.new
       rootdir  = config.get[:rootdir]
@@ -36,12 +41,14 @@ module RepoMate
       return files
     end
 
+    # Deletes all existing metafiles
     def destroy
       all.each do |file|
         FileUtils.rm_f(file)
       end
     end
 
+    # Creates all metafiles
     def create
       destroy
 

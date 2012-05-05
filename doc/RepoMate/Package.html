@@ -1,0 +1,440 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+
+	<title>Class: RepoMate::Package</title>
+
+	<link rel="stylesheet" href="../rdoc.css" type="text/css" media="screen" />
+
+	<script src="../js/jquery.js" type="text/javascript"
+		charset="utf-8"></script>
+	<script src="../js/thickbox-compressed.js" type="text/javascript"
+		charset="utf-8"></script>
+	<script src="../js/quicksearch.js" type="text/javascript"
+		charset="utf-8"></script>
+	<script src="../js/darkfish.js" type="text/javascript"
+		charset="utf-8"></script>
+
+</head>
+<body class="class">
+
+	<div id="metadata">
+		<div id="home-metadata">
+			<div id="home-section" class="section">
+        <h3 class="section-header">
+          <a href="../index.html">Home</a>
+          <a href="../index.html#classes">Classes</a>
+          <a href="../index.html#methods">Methods</a>
+        </h3>
+			</div>
+		</div>
+
+		<div id="file-metadata">
+			<div id="file-list-section" class="section">
+				<h3 class="section-header">In Files</h3>
+				<div class="section-body">
+					<ul>
+					
+						<li><a href="../lib/repomate/package_rb.html?TB_iframe=true&amp;height=550&amp;width=785"
+							class="thickbox" title="lib/repomate/package.rb">lib/repomate/package.rb</a></li>
+					
+					</ul>
+				</div>
+			</div>
+
+			
+		</div>
+
+		<div id="class-metadata">
+
+			<!-- Parent Class -->
+			
+			<div id="parent-class-section" class="section">
+				<h3 class="section-header">Parent</h3>
+				
+				<p class="link">Object</p>
+				
+			</div>
+			
+
+			<!-- Namespace Contents -->
+			
+
+			<!-- Method Quickref -->
+			
+			<div id="method-list-section" class="section">
+				<h3 class="section-header">Methods</h3>
+				<ul class="link-list">
+					
+					<li><a href="#method-c-new">::new</a></li>
+					
+					<li><a href="#method-i-check_package">#check_package</a></li>
+					
+					<li><a href="#method-i-read_controlfile">#read_controlfile</a></li>
+					
+				</ul>
+			</div>
+			
+
+			<!-- Included Modules -->
+			
+		</div>
+
+		<div id="project-metadata">
+			
+			
+			<div id="fileindex-section" class="section project-section">
+				<h3 class="section-header">Files</h3>
+				<ul>
+				
+					<li class="file"><a href="../Gemfile.html">Gemfile</a></li>
+				
+				</ul>
+			</div>
+			
+
+			<div id="classindex-section" class="section project-section">
+				<h3 class="section-header">Class Index
+					<span class="search-toggle"><img src="../images/find.png"
+						height="16" width="16" alt="[+]"
+						title="show/hide quicksearch" /></span></h3>
+				<form action="#" method="get" accept-charset="utf-8" class="initially-hidden">
+				<fieldset>
+					<legend>Quicksearch</legend>
+					<input type="text" name="quicksearch" value=""
+						class="quicksearch-field" />
+				</fieldset>
+				</form>
+
+				<ul class="link-list">
+				
+					<li><a href="../RepoMate.html">RepoMate</a></li>
+				
+					<li><a href="../RepoMate/Architecture.html">RepoMate::Architecture</a></li>
+				
+					<li><a href="../RepoMate/Base.html">RepoMate::Base</a></li>
+				
+					<li><a href="../RepoMate/Category.html">RepoMate::Category</a></li>
+				
+					<li><a href="../RepoMate/Cli.html">RepoMate::Cli</a></li>
+				
+					<li><a href="../RepoMate/Component.html">RepoMate::Component</a></li>
+				
+					<li><a href="../RepoMate/Configuration.html">RepoMate::Configuration</a></li>
+				
+					<li><a href="../RepoMate/Metafile.html">RepoMate::Metafile</a></li>
+				
+					<li><a href="../RepoMate/Package.html">RepoMate::Package</a></li>
+				
+					<li><a href="../RepoMate/Repository.html">RepoMate::Repository</a></li>
+				
+					<li><a href="../RepoMate/Suite.html">RepoMate::Suite</a></li>
+				
+				</ul>
+				<div id="no-class-search-results" style="display: none;">No matching classes.</div>
+			</div>
+
+			
+		</div>
+	</div>
+
+	<div id="documentation">
+		<h1 class="class">RepoMate::Package</h1>
+
+		<div id="description">
+			<p>
+Class for reading debian packages
+</p>
+
+		</div>
+
+		<!-- Constants -->
+		
+
+		<!-- Attributes -->
+		
+		<div id="attribute-method-details" class="method-section section">
+			<h3 class="section-header">Attributes</h3>
+
+			
+			<div id="newbasename-attribute-method" class="method-detail">
+				<a name="newbasename"></a>
+				
+				<div class="method-heading attribute-method-heading">
+					<span class="method-name">newbasename</span><span
+						class="attribute-access-type">[R]</span>
+				</div>
+
+				<div class="method-description">
+				
+				
+				
+				</div>
+			</div>
+			
+			<div id="controlfile-attribute-method" class="method-detail">
+				<a name="controlfile"></a>
+				
+				<div class="method-heading attribute-method-heading">
+					<span class="method-name">controlfile</span><span
+						class="attribute-access-type">[R]</span>
+				</div>
+
+				<div class="method-description">
+				
+				
+				
+				</div>
+			</div>
+			
+			<div id="architecture-attribute-method" class="method-detail">
+				<a name="architecture"></a>
+				
+				<div class="method-heading attribute-method-heading">
+					<span class="method-name">architecture</span><span
+						class="attribute-access-type">[R]</span>
+				</div>
+
+				<div class="method-description">
+				
+				
+				
+				</div>
+			</div>
+			
+			<div id="suitename-attribute-method" class="method-detail">
+				<a name="suitename"></a>
+				
+				<div class="method-heading attribute-method-heading">
+					<span class="method-name">suitename</span><span
+						class="attribute-access-type">[R]</span>
+				</div>
+
+				<div class="method-description">
+				
+				
+				
+				</div>
+			</div>
+			
+			<div id="component-attribute-method" class="method-detail">
+				<a name="component"></a>
+				
+				<div class="method-heading attribute-method-heading">
+					<span class="method-name">component</span><span
+						class="attribute-access-type">[R]</span>
+				</div>
+
+				<div class="method-description">
+				
+				
+				
+				</div>
+			</div>
+			
+			<div id="version-attribute-method" class="method-detail">
+				<a name="version"></a>
+				
+				<div class="method-heading attribute-method-heading">
+					<span class="method-name">version</span><span
+						class="attribute-access-type">[R]</span>
+				</div>
+
+				<div class="method-description">
+				
+				
+				
+				</div>
+			</div>
+			
+			<div id="name-attribute-method" class="method-detail">
+				<a name="name"></a>
+				
+				<div class="method-heading attribute-method-heading">
+					<span class="method-name">name</span><span
+						class="attribute-access-type">[R]</span>
+				</div>
+
+				<div class="method-description">
+				
+				
+				
+				</div>
+			</div>
+			
+		</div>
+		
+
+		<!-- Methods -->
+		
+		<div id="public-class-method-details" class="method-section section">
+			<h3 class="section-header">Public Class Methods</h3>
+
+		
+			<div id="new-method" class="method-detail ">
+				<a name="method-c-new"></a>
+
+				<div class="method-heading">
+				
+					<span class="method-name">new</span><span
+						class="method-args">(fullname, suitename, component)</span>
+					<span class="method-click-advice">click to toggle source</span>
+				
+				</div>
+
+				<div class="method-description">
+					
+					<p>
+Init
+</p>
+					
+
+					
+					<div class="method-source-code"
+						id="new-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/repomate/package.rb, line 13</span>
+13:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">fullname</span>, <span class="ruby-identifier">suitename</span>, <span class="ruby-identifier">component</span>)
+14:       <span class="ruby-ivar">@fullname</span>  = <span class="ruby-identifier">fullname</span>
+15:       <span class="ruby-ivar">@suitename</span> = <span class="ruby-identifier">suitename</span>
+16:       <span class="ruby-ivar">@component</span> = <span class="ruby-identifier">component</span>
+17:       <span class="ruby-ivar">@basename</span>  = <span class="ruby-constant">File</span>.<span class="ruby-identifier">basename</span>(<span class="ruby-identifier">fullname</span>)
+18: 
+19:       <span class="ruby-identifier">check_package</span>
+20: 
+21:       <span class="ruby-ivar">@controlfile</span>  = <span class="ruby-identifier">read_controlfile</span>
+22:       <span class="ruby-ivar">@name</span>         = <span class="ruby-ivar">@controlfile</span>[<span class="ruby-value str">'Package'</span>]
+23:       <span class="ruby-ivar">@version</span>      = <span class="ruby-ivar">@controlfile</span>[<span class="ruby-value str">'Version'</span>]
+24:       <span class="ruby-ivar">@architecture</span> = <span class="ruby-ivar">@controlfile</span>[<span class="ruby-value str">'Architecture'</span>]
+25:       <span class="ruby-ivar">@newbasename</span>  = <span class="ruby-node">&quot;#{@name}-#{@version}_#{@architecture}.deb&quot;</span>
+26:     <span class="ruby-keyword kw">end</span></pre>
+					</div>
+					
+				</div>
+
+				
+
+				
+			</div>
+
+		
+		</div>
+	
+		<div id="protected-instance-method-details" class="method-section section">
+			<h3 class="section-header">Protected Instance Methods</h3>
+
+		
+			<div id="check-package-method" class="method-detail ">
+				<a name="method-i-check_package"></a>
+
+				<div class="method-heading">
+				
+					<span class="method-name">check_package</span><span
+						class="method-args">()</span>
+					<span class="method-click-advice">click to toggle source</span>
+				
+				</div>
+
+				<div class="method-description">
+					
+					<p>
+Checks if the given package is a debian package
+</p>
+					
+
+					
+					<div class="method-source-code"
+						id="check-package-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/repomate/package.rb, line 31</span>
+31:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">check_package</span>
+32:       <span class="ruby-comment cmt">#p @fullname</span>
+33:       <span class="ruby-keyword kw">unless</span> <span class="ruby-node">`file --dereference #{@fullname}`</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp re">/Debian binary package/</span>
+34:         <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;File does not exist or is not a Debian package!&quot;</span>
+35:         <span class="ruby-keyword kw">false</span>
+36:       <span class="ruby-keyword kw">end</span>
+37:     <span class="ruby-keyword kw">end</span></pre>
+					</div>
+					
+				</div>
+
+				
+
+				
+			</div>
+
+		
+			<div id="read-controlfile-method" class="method-detail ">
+				<a name="method-i-read_controlfile"></a>
+
+				<div class="method-heading">
+				
+					<span class="method-name">read_controlfile</span><span
+						class="method-args">()</span>
+					<span class="method-click-advice">click to toggle source</span>
+				
+				</div>
+
+				<div class="method-description">
+					
+					<p>
+Extracts the controlfile and returns is
+</p>
+					
+
+					
+					<div class="method-source-code"
+						id="read-controlfile-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/repomate/package.rb, line 40</span>
+40:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">read_controlfile</span>
+41:       <span class="ruby-identifier">gzbasename</span>  = <span class="ruby-value str">&quot;control.tar.gz&quot;</span>
+42:       <span class="ruby-identifier">basename</span>    = <span class="ruby-value str">&quot;control&quot;</span>
+43:       <span class="ruby-identifier">tmpdir</span>      = <span class="ruby-constant">File</span>.<span class="ruby-identifier">expand_path</span> <span class="ruby-node">&quot;#{Dir.tmpdir}/#{Time.now.to_i}#{rand(1000)}/&quot;</span>
+44:       <span class="ruby-identifier">gzfullname</span>  = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">tmpdir</span>, <span class="ruby-identifier">gzbasename</span>)
+45:       <span class="ruby-identifier">fullname</span>    = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">tmpdir</span>, <span class="ruby-identifier">basename</span>)
+46: 
+47:       <span class="ruby-constant">FileUtils</span>.<span class="ruby-identifier">mkdir_p</span>(<span class="ruby-identifier">tmpdir</span>)
+48:       <span class="ruby-keyword kw">begin</span>
+49:         <span class="ruby-identifier">raise</span> <span class="ruby-value str">&quot;Could not untar&quot;</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">system</span> <span class="ruby-node">&quot;ar -p #{@fullname} #{gzbasename} &gt; #{gzfullname}&quot;</span>
+50:         <span class="ruby-identifier">raise</span> <span class="ruby-constant">Errno</span><span class="ruby-operator">::</span><span class="ruby-constant">ENOENT</span>, <span class="ruby-value str">&quot;Package file does not exist&quot;</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">exists?</span>(<span class="ruby-identifier">gzfullname</span>)
+51:         <span class="ruby-identifier">raise</span> <span class="ruby-value str">&quot;Could not untar&quot;</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">system</span> <span class="ruby-node">&quot;tar xfz #{gzfullname} -C #{tmpdir}&quot;</span>
+52:         <span class="ruby-constant">YAML</span><span class="ruby-operator">::</span><span class="ruby-identifier">load_file</span>(<span class="ruby-identifier">fullname</span>)
+53:       <span class="ruby-keyword kw">ensure</span>
+54:         <span class="ruby-constant">FileUtils</span>.<span class="ruby-identifier">rm_rf</span>(<span class="ruby-identifier">tmpdir</span>)
+55:       <span class="ruby-keyword kw">end</span>
+56:     <span class="ruby-keyword kw">end</span></pre>
+					</div>
+					
+				</div>
+
+				
+
+				
+			</div>
+
+		
+		</div>
+	
+
+	</div>
+
+
+	<div id="rdoc-debugging-section-dump" class="debugging-section">
+	
+		<p>Disabled; run with --debug to generate this.</p>
+	
+	</div>
+
+	<div id="validator-badges">
+		<p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+		<p><small>Generated with the <a href="http://deveiate.org/projects/Darkfish-Rdoc/">Darkfish
+			Rdoc Generator</a> 1.1.6</small>.</p>
+	</div>
+
+</body>
+</html>
+

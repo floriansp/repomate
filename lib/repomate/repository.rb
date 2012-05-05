@@ -4,14 +4,19 @@ require_relative 'component'
 require_relative 'category'
 require_relative 'suite'
 
+# RepoMate module
 module RepoMate
+
+  # Class for creating the repository structure
   class Repository
 
+    # Init
     def initialize
       @config     = Configuration.new
       @categories = ["stage", "pool", "dists"]
     end
 
+    # Creates the base structure
     def create(suitename=nil, component=nil, architecture=nil)
       unless Suite.allowed.include?(suitename)
         $stderr.puts "Suitename (#{suitename}) is not configured"

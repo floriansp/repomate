@@ -2,9 +2,13 @@ require_relative 'configuration'
 require_relative 'category'
 require_relative 'suite'
 
+# RepoMate module
 module RepoMate
+
+  # Class for the component layer of the directory structure
   class Component
 
+    # Init
     def initialize(component, suitename, category)
       @config     = Configuration.new
       @component  = component
@@ -12,34 +16,42 @@ module RepoMate
       @category   = category
     end
 
+    # Returns the given architecture name (eg. main, contrib, non-free)
     def name
       @component
     end
 
+    # Returns the directory strcuture of the component including all lower layers
     def directory
       File.join(@config.get[:rootdir], @category, @suitename, @component)
     end
 
+    # Checks if the component directory exists
     def exist?
       Dir.exist?(directory)
     end
 
+    # Checks if the component is allowed (See: configurationfile)
     def is_allowed?
       self.allowed.include?(@component)
     end
 
+    # Creates the directory strcuture of the component including all lower layers
     def create
       FileUtils.mkdir_p(directory) unless exist?
     end
 
+    # Deletes the components directory including all lower layers
     def destroy
       FileUtils.rm_r(directory) if exist?
     end
 
+    # Returns a list of all debian files in the component directory
     def files
       Dir.glob(File.join(directory, "*.deb"))
     end
 
+    # Returns the name of all existing component directories as array (eg. main, contrib)
     def self.dirnames
       names = []
       self.all.each do |dir|
@@ -48,10 +60,12 @@ module RepoMate
       names
     end
 
+    # Returns the name of all existing components based on the directory structure as array (eg. main, contrib, non-free)
     def self.names
       self.dirnames
     end
 
+    # Returns a dataset including the name of the component, the basepath and the fullpath recursive through all lower layers
     def self.dataset(category=nil)
       config = Configuration.new
       data  = []
@@ -71,6 +85,7 @@ module RepoMate
       data
     end
 
+    # Returns all directories without @rooddir
     def self.all
       config  = Configuration.new
       suites  = Suite.all
@@ -85,6 +100,7 @@ module RepoMate
       return dirs
     end
 
+    # Gets all configured architectures
     def self.allowed
       Configuration.new.get[:components].uniq
     end

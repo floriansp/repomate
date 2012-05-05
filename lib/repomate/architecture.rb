@@ -3,9 +3,13 @@ require_relative 'component'
 require_relative 'category'
 require_relative 'suite'
 
+# RepoMate module
 module RepoMate
+
+  # Class for the architecture layer of the directory structure
   class Architecture
 
+    # Init
     def initialize(architecture, component, suitename, category)
       @config       = Configuration.new
       @architecture = architecture
@@ -14,34 +18,42 @@ module RepoMate
       @category     = category
     end
 
+    # Returns the given architecture name (eg. all, amd64)
     def name
       @architecture
     end
 
+    # Returns the directory strcuture of the architecture including all lower layers
     def directory
       File.join(@config.get[:rootdir], @category, @suitename, @component, "binary-#{name}")
     end
 
+    # Checks if the architecture directory exists
     def exist?
       Dir.exist?(directory)
     end
 
+    # Checks if the architecture is allowed (See: configurationfile)
     def is_allowed?
       self.allowed.include?(@architecture)
     end
 
+    # Creates the directory strcuture of the architecture including all lower layers
     def create
       FileUtils.mkdir_p(directory) unless exist?
     end
 
+    # Deletes the architecture directory including all lower layers
     def destroy
       FileUtils.rm_r(directory) if exist?
     end
 
+    # Returns a list of all debian files in the architecture directory
     def files
       Dir.glob(File.join(directory, "*.deb"))
     end
 
+    # Returns the name of all existing architecture directories as array (eg. binary-amd64, binary-all)
     def self.dirnames
       names = []
       self.all.each do |dir|
@@ -50,6 +62,7 @@ module RepoMate
       names
     end
 
+    # Returns the name of all existing architecturs based on the directory structure as array (eg. amd64, all, i386)
     def self.names
       names = []
       self.dirnames.each do |dir|
@@ -59,6 +72,7 @@ module RepoMate
       names
     end
 
+    # Returns a dataset including the name of the architecture, the basepath and the fullpath recursive through all lower layers
     def self.dataset(category=nil)
       config = Configuration.new
       data   = []
@@ -81,6 +95,7 @@ module RepoMate
       data
     end
 
+    # Returns all directories without @rooddir
     def self.all
       config      = Configuration.new
       components  = Component.all
@@ -95,6 +110,7 @@ module RepoMate
       return dirs
     end
 
+    # Gets all configured architectures
     def self.allowed
       Configuration.new.get[:architectures].uniq
     end

@@ -1,39 +1,50 @@
 require_relative 'configuration'
 require_relative 'category'
 
+# RepoMate module
 module RepoMate
+
+  # Class for the suite layer of the directory structure
   class Suite
 
+    # Init
     def initialize(suitename, category)
       @config     = Configuration.new
       @suitename  = suitename
       @category   = category
     end
 
+    # Returns the given suite name (eg. lenny, squeeze)
     def name
       @suitename
     end
 
+    # Returns the directory strcuture of the suite including all lower layers
     def directory
       File.join(@config.get[:rootdir], @category, @suitename)
     end
 
+    # Checks if the suite directory exists
     def exist?
       Dir.exist?(directory)
     end
 
+    # Checks if the suite is allowed (See: configurationfile)
     def is_allowed?
       self.allowed.include?(@suitename)
     end
 
+    # Creates the directory strcuture of the suite including all lower layers
     def create
       FileUtils.mkdir_p(directory) unless exist?
     end
 
+    # Deletes the suites directory including all lower layers
     def destroy
       FileUtils.rm_r(directory) if exist?
     end
 
+    # Returns the name of all existing suite directories as array (eg. lenny, squeeze)
     def self.dirnames
       names = []
       self.all.each do |dir|
@@ -42,10 +53,12 @@ module RepoMate
       names
     end
 
+    # Returns the name of all existing suite based on the directory structure as array (eg. lenny, squeeze)
     def self.names
       self.dirnames
     end
 
+    # Returns a dataset including the name of the suite, the basepath and the fullpath recursive through all lower layers
     def self.dataset(category=nil)
       config = Configuration.new
       data   = []
@@ -64,6 +77,7 @@ module RepoMate
       data
     end
 
+    # Returns all directories without @rooddir
     def self.all
       config      = Configuration.new
       categories  = Category.all
@@ -78,6 +92,7 @@ module RepoMate
       return dirs
     end
 
+    # Gets all configured architectures
     def self.allowed
       Configuration.new.get[:suites].uniq
     end

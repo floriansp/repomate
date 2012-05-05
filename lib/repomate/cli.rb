@@ -4,15 +4,20 @@ require_relative 'base'
 require 'date'
 require 'time'
 
+# RepoMate module
 module RepoMate
+
+  # Class for the commandline interface
   class Cli
 
+    # Init
     def initialize
       @repomate   = Base.new
       @repository = Repository.new
       @config     = Configuration.new
     end
 
+    # Sets up the base directory structure by calling the repository class
     def setup(options)
       if options.suitename?
         @repository.create(options[:suitename], options[:component], options[:architecture])
@@ -22,6 +27,7 @@ module RepoMate
       end
     end
 
+    # Adds a given package to the staging area by calling the base class
     def stage(options, filename)
       if options.suitename?
         workload = []
@@ -36,6 +42,7 @@ module RepoMate
       end
     end
 
+    # Get's all packages from the staging area. Packages need to be confirmed here.
     def publish(options)
       workload = []
       @repomate.prepare_publish.each do |entry|
@@ -61,11 +68,13 @@ module RepoMate
       @repomate.publish(workload) unless workload.empty?
     end
 
+    # Save a checkpoint
     def save_checkpoint
       # Add verification and some output here
       @repomate.save_checkpoint
     end
 
+    # List all packages, see cli output
     def list_packagelist(options)
       if options.repodir?
         packages = @repomate.get_packagelist(options[:repodir])
@@ -76,6 +85,7 @@ module RepoMate
       end
     end
 
+    # Choose a checkpoint to restore.
     def choose_checkpoint
       list = @repomate.get_checkpoints
 
