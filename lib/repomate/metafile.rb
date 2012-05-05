@@ -5,6 +5,7 @@ require_relative 'package'
 require 'erb'
 require 'date'
 require 'time'
+require 'gpgme'
 require 'digest/md5'
 require 'digest/sha1'
 require 'digest/sha2'
@@ -72,22 +73,34 @@ module RepoMate
         end
       end
 
-      Architecture.dataset(source_category).each do |entry|
-        source      = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], source_category)
-        releasefile = File.join(entry[:fullpath], "Release")
+      if @config.get[:gpg_enable]
+        if @config.get[:gpg_password].nil? || @config.get[:gpg_email].nil?
+          puts "Configure password and email for GPG!"
+          exit 1
+        else
+          Architecture.dataset(source_category).each do |entry|
+            source      = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], source_category)
+            releasefile = File.join(entry[:fullpath], "Release")
 
-        File.open(releasefile, 'w') do |file|
-          file.puts archrelease_template.result(binding)
-        end
-      end
+            File.open(releasefile, 'w') do |file|
+              file.puts archrelease_template.result(binding)
+            end
+          end
 
-      Suite.names.each do |suite|
-        Suite.dataset(source_category).each do |entry|
-          source      = Suite.new(suite, "dists")
-          releasefile = File.join(entry[:fullpath], "Release")
+          Suite.names.each do |suite|
+            Suite.dataset(source_category).each do |entry|
+              source      = Suite.new(suite, "dists")
+              releasefile = File.join(entry[:fullpath], "Release")
 
-          File.open(releasefile, 'w') do |file|
-            file.puts suiterelease_template.result(binding).gsub(/^\s+/, '')
+              File.open(releasefile, 'w') do |file|
+                file.puts suiterelease_template.result(binding).gsub(/^\s+/, '')
+              end
+
+              crypto = GPGME::Crypto.new :password => @config.get[:gpg_password]
+              file = "#{releasefile}.gpg"
+              output = File.open(file, 'w')
+              crypto.clearsign File.open(releasefile, 'r'), :symmetric => true, :output => output, :signer => @config.get[:gpg_email], :mode => GPGME::SIG_MODE_DETACH
+            end
           end
         end
       end

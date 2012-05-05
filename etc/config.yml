@@ -14,3 +14,6 @@
     - amd64
 :origin: Repository
 :label: Repository
+:gpg_enable: yes
+:gpg_email: someone@example.net
+:gpg_password: secret

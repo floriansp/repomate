@@ -1,10 +1,12 @@
 GEM
   remote: http://rubygems.org/
   specs:
+    gpgme (2.0.0)
     slop (3.1.1)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
+  gpgme (>= 2.0.0)
   slop (>= 3.0.4)
