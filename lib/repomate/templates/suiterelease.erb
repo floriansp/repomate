@@ -3,7 +3,7 @@ Label: <%= @config.get[:label] %>
 Suite: stable
 Codename: <%= source.name %>
 Date: <%= now %>
-Architectures: <%= Architecture.names.join(', ').gsub(/binary-/, "") %>
+Architectures: <%= Architecture.names.join(', ') %>
 Components: <%= Component.names.join(', ') %>
 Description: Repository for debian <%=  %>
 MD5Sum:

@@ -42,10 +42,19 @@ module RepoMate
       Dir.glob(File.join(directory, "*.deb"))
     end
 
-    def self.names
+    def self.dirnames
       names = []
       self.all.each do |dir|
         names << File.split(dir).last unless names.include?(File.split(dir).last)
+      end
+      names
+    end
+
+    def self.names
+      names = []
+      self.dirnames.each do |dir|
+        arch = File.split(dir).last.gsub("binary-", '')
+        names << arch unless names.include?(arch)
       end
       names
     end

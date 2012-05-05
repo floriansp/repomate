@@ -33,10 +33,6 @@ options = Slop.parse do
   end
 end
 
-# m = RepoMate::Metafile.new
-
-# m.create
-
 cli = RepoMate::Cli.new
 
 if ARGV.include?("add")
