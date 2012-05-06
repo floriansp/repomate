@@ -71,7 +71,7 @@ module RepoMate
       data
     end
 
-    # Returns all directories without @rooddir
+    # Returns all directories without @rootdir
     def self.all
       config  = Configuration.new
       suites  = Suite.all

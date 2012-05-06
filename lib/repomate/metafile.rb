@@ -48,18 +48,25 @@ module RepoMate
       end
     end
 
-    # Creates all metafiles
     def create
       destroy
+      create_packages
 
+      if @config.get[:gpg_enable]
+        if @config.get[:gpg_password].nil? || @config.get[:gpg_email].nil?
+          puts "Configure password and email for GPG!"
+          exit 1
+        else
+          create_release
+        end
+      end
+    end
+
+    # Creates all metafiles
+    def create_packages
       source_category = "dists"
-      suites          = []
-
-      now = Time.new.strftime("%a, %d %b %Y %H:%M:%S %Z")
 
       packages_template     = ERB.new File.new(File.join(File.dirname(__FILE__), "templates/packages.erb")).read, nil, "%"
-      archrelease_template  = ERB.new File.new(File.join(File.dirname(__FILE__), "templates/archrelease.erb")).read, nil, "%"
-      suiterelease_template = ERB.new File.new(File.join(File.dirname(__FILE__), "templates/suiterelease.erb")).read, nil, "%"
 
       Architecture.dataset(source_category).each do |entry|
         source  = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], source_category)
@@ -70,7 +77,7 @@ module RepoMate
           size         = File.size(fullname)
           path         = File.join("dists", entry[:suitename], entry[:component], entry[:architecture_dir], package.newbasename)
 
-          File.open(packagesfile, 'a') do |file|
+          File.open(packagesfile, 'w') do |file|
             package.controlfile.each do |key, value|
               file.puts "#{key}: #{value}"
             end
@@ -80,50 +87,60 @@ module RepoMate
           raise "Could not gzip" unless system "gzip -9 -c #{packagesfile} > #{packagesfile}.gz"
         end
       end
+    end
 
-      if @config.get[:gpg_enable]
-        if @config.get[:gpg_password].nil? || @config.get[:gpg_email].nil?
-          puts "Configure password and email for GPG!"
-          exit 1
-        else
-          Architecture.dataset(source_category).each do |entry|
-            source      = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], source_category)
-            releasefile = File.join(entry[:fullpath], "Release")
+    def create_release
+      source_category = "dists"
+      suites          = []
 
-            suites << entry[:suitename] unless suites.include?(entry[:suitename])
+      archrelease_template  = ERB.new File.new(File.join(File.dirname(__FILE__), "templates/archrelease.erb")).read, nil, "%"
+      suiterelease_template = ERB.new File.new(File.join(File.dirname(__FILE__), "templates/suiterelease.erb")).read, nil, "%"
 
-            File.open(releasefile, 'w') do |file|
-              file.puts archrelease_template.result(binding)
-            end
-          end
+      now = Time.new.strftime("%a, %d %b %Y %H:%M:%S %Z")
 
-          suites.each do |suite|
-            architecture = []
-            component    = []
+      Architecture.dataset(source_category).each do |entry|
+        source      = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], source_category)
+        releasefile = File.join(entry[:fullpath], "Release")
 
-            Architecture.dataset(source_category).each do |entry|
-              if entry[:suitename].eql?(suite)
-                architecture << entry[:architecture] unless architecture.include?(entry[:architecture])
-                component << entry[:component] unless component.include?(entry[:component])
-              end
-            end
+        suites << entry[:suitename] unless suites.include?(entry[:suitename])
 
-            puts "#{suite} #{component} #{architecture}"
-
-            source      = Suite.new(suite, "dists")
-            releasefile = File.join(@config.get[:rootdir], source_category, suite, "Release")
-
-            File.open(releasefile, 'w') do |file|
-              file.puts suiterelease_template.result(binding).gsub(/^\s+\n|^\n|^\s{3}/, '')
-            end
-
-            crypto = GPGME::Crypto.new :password => @config.get[:gpg_password]
-            file = "#{releasefile}.gpg"
-            output = File.open(file, 'w')
-            crypto.clearsign File.open(releasefile, 'r'), :symmetric => false, :output => output, :signer => @config.get[:gpg_email], :mode => GPGME::SIG_MODE_DETACH
-          end
+        File.open(releasefile, 'w') do |file|
+          file.puts archrelease_template.result(binding)
         end
       end
+
+      suites.each do |suite|
+        architecture = []
+        component    = []
+
+        Architecture.dataset(source_category).each do |entry|
+          if entry[:suitename].eql?(suite)
+            architecture << entry[:architecture] unless architecture.include?(entry[:architecture])
+            component << entry[:component] unless component.include?(entry[:component])
+          end
+        end
+
+        source      = Suite.new(suite, "dists")
+        releasefile = File.join(@config.get[:rootdir], source_category, suite, "Release")
+
+        File.open(releasefile, 'w') do |file|
+          file.puts suiterelease_template.result(binding).gsub(/^\s+\n|^\n|^\s{3}/, '')
+        end
+        begin
+          sign(releasefile)
+        ensure
+          destroy
+          create_packages
+          puts "Password incorrect"
+        end
+      end
+    end
+
+    def sign(file)
+      crypto = GPGME::Crypto.new :password => @config.get[:gpg_password]
+      outfile = "#{file}.gpg"
+      output = File.open(outfile, 'w')
+      crypto.sign File.open(file, 'r'), :symmetric => false, :output => output, :signer => @config.get[:gpg_email], :mode => GPGME::SIG_MODE_DETACH
     end
   end
 end
