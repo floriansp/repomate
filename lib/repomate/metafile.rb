@@ -48,6 +48,7 @@ module RepoMate
       end
     end
 
+    # Creates all metafiles
     def create
       destroy
       create_packages
@@ -62,7 +63,7 @@ module RepoMate
       end
     end
 
-    # Creates all metafiles
+    # Create Packages* files
     def create_packages
       source_category = "dists"
 
@@ -89,6 +90,7 @@ module RepoMate
       end
     end
 
+    # Create Release* files
     def create_release
       source_category = "dists"
       suites          = []
@@ -128,14 +130,15 @@ module RepoMate
         end
         begin
           sign(releasefile)
-        ensure
+        rescue
           destroy
           create_packages
-          puts "Password incorrect"
+          puts "GPG password incorrect"
         end
       end
     end
 
+    # Sign a file
     def sign(file)
       crypto = GPGME::Crypto.new :password => @config.get[:gpg_password]
       outfile = "#{file}.gpg"
