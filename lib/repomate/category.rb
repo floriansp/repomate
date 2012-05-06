@@ -37,20 +37,6 @@ module RepoMate
       FileUtils.rm_r(directory) if exist?
     end
 
-    # Returns all directory basenames of all present categories as array (eg. ["pool", "dists])
-    def self.dirnames
-      names = []
-      self.all.each do |dir|
-        names << File.split(dir).last unless names.include? File.split(dir).last
-      end
-      names
-    end
-
-    # Returns all present category names as array (["pool", "dists])
-    def self.names
-      self.dirnames
-    end
-
     # Returns a dataset including the name of the category, the basepath and the fullpath
     def self.dataset(category=nil)
       config = Configuration.new

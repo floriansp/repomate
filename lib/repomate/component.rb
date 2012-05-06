@@ -51,20 +51,6 @@ module RepoMate
       Dir.glob(File.join(directory, "*.deb"))
     end
 
-    # Returns the name of all existing component directories as array (eg. main, contrib)
-    def self.dirnames
-      names = []
-      self.all.each do |dir|
-        names << File.split(dir).last unless names.include? File.split(dir).last
-      end
-      names
-    end
-
-    # Returns the name of all existing components based on the directory structure as array (eg. main, contrib, non-free)
-    def self.names
-      self.dirnames
-    end
-
     # Returns a dataset including the name of the component, the basepath and the fullpath recursive through all lower layers
     def self.dataset(category=nil)
       config = Configuration.new

@@ -53,6 +53,7 @@ module RepoMate
       destroy
 
       source_category = "dists"
+      suites          = []
 
       now = Time.new.strftime("%a, %d %b %Y %H:%M:%S %Z")
 
@@ -89,25 +90,37 @@ module RepoMate
             source      = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], source_category)
             releasefile = File.join(entry[:fullpath], "Release")
 
+            suites << entry[:suitename] unless suites.include?(entry[:suitename])
+
             File.open(releasefile, 'w') do |file|
               file.puts archrelease_template.result(binding)
             end
           end
 
-          Suite.names.each do |suite|
-            Suite.dataset(source_category).each do |entry|
-              source      = Suite.new(suite, "dists")
-              releasefile = File.join(entry[:fullpath], "Release")
+          suites.each do |suite|
+            architecture = []
+            component    = []
 
-              File.open(releasefile, 'w') do |file|
-                file.puts suiterelease_template.result(binding).gsub(/^\s+/, '')
+            Architecture.dataset(source_category).each do |entry|
+              if entry[:suitename].eql?(suite)
+                architecture << entry[:architecture] unless architecture.include?(entry[:architecture])
+                component << entry[:component] unless component.include?(entry[:component])
               end
-
-              crypto = GPGME::Crypto.new :password => @config.get[:gpg_password]
-              file = "#{releasefile}.gpg"
-              output = File.open(file, 'w')
-              crypto.clearsign File.open(releasefile, 'r'), :symmetric => true, :output => output, :signer => @config.get[:gpg_email], :mode => GPGME::SIG_MODE_DETACH
             end
+
+            puts "#{suite} #{component} #{architecture}"
+
+            source      = Suite.new(suite, "dists")
+            releasefile = File.join(@config.get[:rootdir], source_category, suite, "Release")
+
+            File.open(releasefile, 'w') do |file|
+              file.puts suiterelease_template.result(binding).gsub(/^\s+\n|^\n|^\s{3}/, '')
+            end
+
+            crypto = GPGME::Crypto.new :password => @config.get[:gpg_password]
+            file = "#{releasefile}.gpg"
+            output = File.open(file, 'w')
+            crypto.clearsign File.open(releasefile, 'r'), :symmetric => false, :output => output, :signer => @config.get[:gpg_email], :mode => GPGME::SIG_MODE_DETACH
           end
         end
       end

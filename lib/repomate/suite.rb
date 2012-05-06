@@ -44,20 +44,6 @@ module RepoMate
       FileUtils.rm_r(directory) if exist?
     end
 
-    # Returns the name of all existing suite directories as array (eg. lenny, squeeze)
-    def self.dirnames
-      names = []
-      self.all.each do |dir|
-        names << File.split(dir).last unless names.include? File.split(dir).last
-      end
-      names
-    end
-
-    # Returns the name of all existing suite based on the directory structure as array (eg. lenny, squeeze)
-    def self.names
-      self.dirnames
-    end
-
     # Returns a dataset including the name of the suite, the basepath and the fullpath recursive through all lower layers
     def self.dataset(category=nil)
       config = Configuration.new
@@ -66,11 +52,12 @@ module RepoMate
         parts = entry.split(/\//)
         unless parts.length < 2
           next unless parts[0].eql?(category) || category.eql?("all")
+
           data << {
             :category     => parts[0],
             :suitename    => parts[1],
             :basepath     => entry,
-            :fullpath         => File.join(config.get[:rootdir], entry)
+            :fullpath     => File.join(config.get[:rootdir], entry),
           }
         end
       end

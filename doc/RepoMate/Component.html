@@ -75,10 +75,6 @@
 					
 					<li><a href="#method-c-dataset">::dataset</a></li>
 					
-					<li><a href="#method-c-dirnames">::dirnames</a></li>
-					
-					<li><a href="#method-c-names">::names</a></li>
-					
 					<li><a href="#method-c-new">::new</a></li>
 					
 					<li><a href="#method-i-create">#create</a></li>
@@ -205,20 +201,20 @@ Returns all directories without @rooddir
 					<div class="method-source-code"
 						id="all-source">
 <pre>
-     <span class="ruby-comment cmt"># File lib/repomate/component.rb, line 89</span>
- 89:     <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">all</span>
- 90:       <span class="ruby-identifier">config</span>  = <span class="ruby-constant">Configuration</span>.<span class="ruby-identifier">new</span>
- 91:       <span class="ruby-identifier">suites</span>  = <span class="ruby-constant">Suite</span>.<span class="ruby-identifier">all</span>
- 92:       <span class="ruby-identifier">dirs</span>    = []
- 93:       <span class="ruby-identifier">rootdir</span> = <span class="ruby-identifier">config</span>.<span class="ruby-identifier">get</span>[<span class="ruby-value">:rootdir</span>]
- 94:       <span class="ruby-identifier">suites</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">suite</span><span class="ruby-operator">|</span>
- 95:         <span class="ruby-identifier">components</span> = <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">glob</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">rootdir</span>, <span class="ruby-identifier">suite</span>, <span class="ruby-value str">&quot;*&quot;</span>))
- 96:         <span class="ruby-identifier">components</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">component</span><span class="ruby-operator">|</span>
- 97:           <span class="ruby-identifier">dirs</span>.<span class="ruby-identifier">push</span> <span class="ruby-identifier">component</span>.<span class="ruby-identifier">gsub</span>(<span class="ruby-node">/#{rootdir}\//</span>, <span class="ruby-value str">''</span>) <span class="ruby-keyword kw">if</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">directory?</span> <span class="ruby-identifier">component</span>
- 98:         <span class="ruby-keyword kw">end</span>
- 99:       <span class="ruby-keyword kw">end</span>
-100:       <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">dirs</span>
-101:     <span class="ruby-keyword kw">end</span></pre>
+    <span class="ruby-comment cmt"># File lib/repomate/component.rb, line 75</span>
+75:     <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">all</span>
+76:       <span class="ruby-identifier">config</span>  = <span class="ruby-constant">Configuration</span>.<span class="ruby-identifier">new</span>
+77:       <span class="ruby-identifier">suites</span>  = <span class="ruby-constant">Suite</span>.<span class="ruby-identifier">all</span>
+78:       <span class="ruby-identifier">dirs</span>    = []
+79:       <span class="ruby-identifier">rootdir</span> = <span class="ruby-identifier">config</span>.<span class="ruby-identifier">get</span>[<span class="ruby-value">:rootdir</span>]
+80:       <span class="ruby-identifier">suites</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">suite</span><span class="ruby-operator">|</span>
+81:         <span class="ruby-identifier">components</span> = <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">glob</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">rootdir</span>, <span class="ruby-identifier">suite</span>, <span class="ruby-value str">&quot;*&quot;</span>))
+82:         <span class="ruby-identifier">components</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">component</span><span class="ruby-operator">|</span>
+83:           <span class="ruby-identifier">dirs</span>.<span class="ruby-identifier">push</span> <span class="ruby-identifier">component</span>.<span class="ruby-identifier">gsub</span>(<span class="ruby-node">/#{rootdir}\//</span>, <span class="ruby-value str">''</span>) <span class="ruby-keyword kw">if</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">directory?</span> <span class="ruby-identifier">component</span>
+84:         <span class="ruby-keyword kw">end</span>
+85:       <span class="ruby-keyword kw">end</span>
+86:       <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">dirs</span>
+87:     <span class="ruby-keyword kw">end</span></pre>
 					</div>
 					
 				</div>
@@ -251,10 +247,10 @@ Gets all configured architectures
 					<div class="method-source-code"
 						id="allowed-source">
 <pre>
-     <span class="ruby-comment cmt"># File lib/repomate/component.rb, line 104</span>
-104:     <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">allowed</span>
-105:       <span class="ruby-constant">Configuration</span>.<span class="ruby-identifier">new</span>.<span class="ruby-identifier">get</span>[<span class="ruby-value">:components</span>].<span class="ruby-identifier">uniq</span>
-106:     <span class="ruby-keyword kw">end</span></pre>
+    <span class="ruby-comment cmt"># File lib/repomate/component.rb, line 90</span>
+90:     <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">allowed</span>
+91:       <span class="ruby-constant">Configuration</span>.<span class="ruby-identifier">new</span>.<span class="ruby-identifier">get</span>[<span class="ruby-value">:components</span>].<span class="ruby-identifier">uniq</span>
+92:     <span class="ruby-keyword kw">end</span></pre>
 					</div>
 					
 				</div>
@@ -288,103 +284,25 @@ fullpath recursive through all lower layers
 					<div class="method-source-code"
 						id="dataset-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/repomate/component.rb, line 69</span>
-69:     <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">dataset</span>(<span class="ruby-identifier">category</span>=<span class="ruby-keyword kw">nil</span>)
-70:       <span class="ruby-identifier">config</span> = <span class="ruby-constant">Configuration</span>.<span class="ruby-identifier">new</span>
-71:       <span class="ruby-identifier">data</span>  = []
-72:       <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">all</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">entry</span><span class="ruby-operator">|</span>
-73:         <span class="ruby-identifier">parts</span> = <span class="ruby-identifier">entry</span>.<span class="ruby-identifier">split</span>(<span class="ruby-regexp re">/\//</span>)
-74:         <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">parts</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">&lt;</span> <span class="ruby-value">3</span>
-75:           <span class="ruby-keyword kw">next</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">parts</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">eql?</span>(<span class="ruby-identifier">category</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">category</span>.<span class="ruby-identifier">eql?</span>(<span class="ruby-value str">&quot;all&quot;</span>)
-76:           <span class="ruby-identifier">data</span> <span class="ruby-operator">&lt;&lt;</span> {
-77:             <span class="ruby-value">:category</span>     =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">parts</span>[<span class="ruby-value">0</span>],
-78:             <span class="ruby-value">:suitename</span>    =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">parts</span>[<span class="ruby-value">1</span>],
-79:             <span class="ruby-value">:component</span>    =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">parts</span>[<span class="ruby-value">2</span>],
-80:             <span class="ruby-value">:basepath</span>     =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">entry</span>,
-81:             <span class="ruby-value">:fullpath</span>     =<span class="ruby-operator">&gt;</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">config</span>.<span class="ruby-identifier">get</span>[<span class="ruby-value">:rootdir</span>], <span class="ruby-identifier">entry</span>)
-82:           }
-83:         <span class="ruby-keyword kw">end</span>
-84:       <span class="ruby-keyword kw">end</span>
-85:       <span class="ruby-identifier">data</span>
-86:     <span class="ruby-keyword kw">end</span></pre>
-					</div>
-					
-				</div>
-
-				
-
-				
-			</div>
-
-		
-			<div id="dirnames-method" class="method-detail ">
-				<a name="method-c-dirnames"></a>
-
-				<div class="method-heading">
-				
-					<span class="method-name">dirnames</span><span
-						class="method-args">()</span>
-					<span class="method-click-advice">click to toggle source</span>
-				
-				</div>
-
-				<div class="method-description">
-					
-					<p>
-Returns the name of all existing component directories as array (eg. main,
-contrib)
-</p>
-					
-
-					
-					<div class="method-source-code"
-						id="dirnames-source">
-<pre>
     <span class="ruby-comment cmt"># File lib/repomate/component.rb, line 55</span>
-55:     <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">dirnames</span>
-56:       <span class="ruby-identifier">names</span> = []
-57:       <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">all</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">dir</span><span class="ruby-operator">|</span>
-58:         <span class="ruby-identifier">names</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">split</span>(<span class="ruby-identifier">dir</span>).<span class="ruby-identifier">last</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">names</span>.<span class="ruby-identifier">include?</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">split</span>(<span class="ruby-identifier">dir</span>).<span class="ruby-identifier">last</span>
-59:       <span class="ruby-keyword kw">end</span>
-60:       <span class="ruby-identifier">names</span>
-61:     <span class="ruby-keyword kw">end</span></pre>
-					</div>
-					
-				</div>
-
-				
-
-				
-			</div>
-
-		
-			<div id="names-method" class="method-detail ">
-				<a name="method-c-names"></a>
-
-				<div class="method-heading">
-				
-					<span class="method-name">names</span><span
-						class="method-args">()</span>
-					<span class="method-click-advice">click to toggle source</span>
-				
-				</div>
-
-				<div class="method-description">
-					
-					<p>
-Returns the name of all existing components based on the directory
-structure as array (eg. main, contrib, non-free)
-</p>
-					
-
-					
-					<div class="method-source-code"
-						id="names-source">
-<pre>
-    <span class="ruby-comment cmt"># File lib/repomate/component.rb, line 64</span>
-64:     <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">names</span>
-65:       <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">dirnames</span>
-66:     <span class="ruby-keyword kw">end</span></pre>
+55:     <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">dataset</span>(<span class="ruby-identifier">category</span>=<span class="ruby-keyword kw">nil</span>)
+56:       <span class="ruby-identifier">config</span> = <span class="ruby-constant">Configuration</span>.<span class="ruby-identifier">new</span>
+57:       <span class="ruby-identifier">data</span>  = []
+58:       <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">all</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">entry</span><span class="ruby-operator">|</span>
+59:         <span class="ruby-identifier">parts</span> = <span class="ruby-identifier">entry</span>.<span class="ruby-identifier">split</span>(<span class="ruby-regexp re">/\//</span>)
+60:         <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">parts</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">&lt;</span> <span class="ruby-value">3</span>
+61:           <span class="ruby-keyword kw">next</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">parts</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">eql?</span>(<span class="ruby-identifier">category</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">category</span>.<span class="ruby-identifier">eql?</span>(<span class="ruby-value str">&quot;all&quot;</span>)
+62:           <span class="ruby-identifier">data</span> <span class="ruby-operator">&lt;&lt;</span> {
+63:             <span class="ruby-value">:category</span>     =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">parts</span>[<span class="ruby-value">0</span>],
+64:             <span class="ruby-value">:suitename</span>    =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">parts</span>[<span class="ruby-value">1</span>],
+65:             <span class="ruby-value">:component</span>    =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">parts</span>[<span class="ruby-value">2</span>],
+66:             <span class="ruby-value">:basepath</span>     =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">entry</span>,
+67:             <span class="ruby-value">:fullpath</span>     =<span class="ruby-operator">&gt;</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">config</span>.<span class="ruby-identifier">get</span>[<span class="ruby-value">:rootdir</span>], <span class="ruby-identifier">entry</span>)
+68:           }
+69:         <span class="ruby-keyword kw">end</span>
+70:       <span class="ruby-keyword kw">end</span>
+71:       <span class="ruby-identifier">data</span>
+72:     <span class="ruby-keyword kw">end</span></pre>
 					</div>
 					
 				</div>

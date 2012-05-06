@@ -73,10 +73,6 @@
 					
 					<li><a href="#method-c-dataset">::dataset</a></li>
 					
-					<li><a href="#method-c-dirnames">::dirnames</a></li>
-					
-					<li><a href="#method-c-names">::names</a></li>
-					
 					<li><a href="#method-c-new">::new</a></li>
 					
 					<li><a href="#method-i-create">#create</a></li>
@@ -199,12 +195,12 @@ Returns all directories
 					<div class="method-source-code"
 						id="all-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/repomate/category.rb, line 72</span>
-72:     <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">all</span>
-73:       <span class="ruby-identifier">config</span> = <span class="ruby-constant">Configuration</span>.<span class="ruby-identifier">new</span>
-74:       <span class="ruby-identifier">dirs</span>   = <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">glob</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">config</span>.<span class="ruby-identifier">get</span>[<span class="ruby-value">:rootdir</span>], <span class="ruby-value str">&quot;*&quot;</span>))
-75:       <span class="ruby-identifier">dirs</span>.<span class="ruby-identifier">map</span>{ <span class="ruby-operator">|</span><span class="ruby-identifier">dir</span><span class="ruby-operator">|</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">basename</span>(<span class="ruby-identifier">dir</span>) }
-76:     <span class="ruby-keyword kw">end</span></pre>
+    <span class="ruby-comment cmt"># File lib/repomate/category.rb, line 58</span>
+58:     <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">all</span>
+59:       <span class="ruby-identifier">config</span> = <span class="ruby-constant">Configuration</span>.<span class="ruby-identifier">new</span>
+60:       <span class="ruby-identifier">dirs</span>   = <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">glob</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">config</span>.<span class="ruby-identifier">get</span>[<span class="ruby-value">:rootdir</span>], <span class="ruby-value str">&quot;*&quot;</span>))
+61:       <span class="ruby-identifier">dirs</span>.<span class="ruby-identifier">map</span>{ <span class="ruby-operator">|</span><span class="ruby-identifier">dir</span><span class="ruby-operator">|</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">basename</span>(<span class="ruby-identifier">dir</span>) }
+62:     <span class="ruby-keyword kw">end</span></pre>
 					</div>
 					
 				</div>
@@ -238,100 +234,22 @@ fullpath
 					<div class="method-source-code"
 						id="dataset-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/repomate/category.rb, line 55</span>
-55:     <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">dataset</span>(<span class="ruby-identifier">category</span>=<span class="ruby-keyword kw">nil</span>)
-56:       <span class="ruby-identifier">config</span> = <span class="ruby-constant">Configuration</span>.<span class="ruby-identifier">new</span>
-57:       <span class="ruby-identifier">data</span>   = []
-58:       <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">all</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">entry</span><span class="ruby-operator">|</span>
-59:         <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">entry</span>.<span class="ruby-identifier">nil?</span>
-60:           <span class="ruby-keyword kw">next</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">entry</span>.<span class="ruby-identifier">eql?</span>(<span class="ruby-identifier">category</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">category</span>.<span class="ruby-identifier">eql?</span>(<span class="ruby-value str">&quot;all&quot;</span>)
-61:           <span class="ruby-identifier">data</span> <span class="ruby-operator">&lt;&lt;</span> {
-62:             <span class="ruby-value">:category</span>     =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">entry</span>,
-63:             <span class="ruby-value">:basepath</span>     =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">entry</span>,
-64:             <span class="ruby-value">:fullpath</span>     =<span class="ruby-operator">&gt;</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">config</span>.<span class="ruby-identifier">get</span>[<span class="ruby-value">:rootdir</span>], <span class="ruby-identifier">entry</span>)
-65:           }
-66:         <span class="ruby-keyword kw">end</span>
-67:       <span class="ruby-keyword kw">end</span>
-68:       <span class="ruby-identifier">data</span>
-69:     <span class="ruby-keyword kw">end</span></pre>
-					</div>
-					
-				</div>
-
-				
-
-				
-			</div>
-
-		
-			<div id="dirnames-method" class="method-detail ">
-				<a name="method-c-dirnames"></a>
-
-				<div class="method-heading">
-				
-					<span class="method-name">dirnames</span><span
-						class="method-args">()</span>
-					<span class="method-click-advice">click to toggle source</span>
-				
-				</div>
-
-				<div class="method-description">
-					
-					<p>
-Returns all directory basenames of all present categories as array (eg.
-[&#8220;pool&#8221;, &#8220;dists])
-</p>
-					
-
-					
-					<div class="method-source-code"
-						id="dirnames-source">
-<pre>
     <span class="ruby-comment cmt"># File lib/repomate/category.rb, line 41</span>
-41:     <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">dirnames</span>
-42:       <span class="ruby-identifier">names</span> = []
-43:       <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">all</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">dir</span><span class="ruby-operator">|</span>
-44:         <span class="ruby-identifier">names</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">split</span>(<span class="ruby-identifier">dir</span>).<span class="ruby-identifier">last</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">names</span>.<span class="ruby-identifier">include?</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">split</span>(<span class="ruby-identifier">dir</span>).<span class="ruby-identifier">last</span>
-45:       <span class="ruby-keyword kw">end</span>
-46:       <span class="ruby-identifier">names</span>
-47:     <span class="ruby-keyword kw">end</span></pre>
-					</div>
-					
-				</div>
-
-				
-
-				
-			</div>
-
-		
-			<div id="names-method" class="method-detail ">
-				<a name="method-c-names"></a>
-
-				<div class="method-heading">
-				
-					<span class="method-name">names</span><span
-						class="method-args">()</span>
-					<span class="method-click-advice">click to toggle source</span>
-				
-				</div>
-
-				<div class="method-description">
-					
-					<p>
-Returns all present category names as array ([&#8220;pool&#8221;,
-&#8220;dists])
-</p>
-					
-
-					
-					<div class="method-source-code"
-						id="names-source">
-<pre>
-    <span class="ruby-comment cmt"># File lib/repomate/category.rb, line 50</span>
-50:     <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">names</span>
-51:       <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">dirnames</span>
-52:     <span class="ruby-keyword kw">end</span></pre>
+41:     <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">dataset</span>(<span class="ruby-identifier">category</span>=<span class="ruby-keyword kw">nil</span>)
+42:       <span class="ruby-identifier">config</span> = <span class="ruby-constant">Configuration</span>.<span class="ruby-identifier">new</span>
+43:       <span class="ruby-identifier">data</span>   = []
+44:       <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">all</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">entry</span><span class="ruby-operator">|</span>
+45:         <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">entry</span>.<span class="ruby-identifier">nil?</span>
+46:           <span class="ruby-keyword kw">next</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">entry</span>.<span class="ruby-identifier">eql?</span>(<span class="ruby-identifier">category</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">category</span>.<span class="ruby-identifier">eql?</span>(<span class="ruby-value str">&quot;all&quot;</span>)
+47:           <span class="ruby-identifier">data</span> <span class="ruby-operator">&lt;&lt;</span> {
+48:             <span class="ruby-value">:category</span>     =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">entry</span>,
+49:             <span class="ruby-value">:basepath</span>     =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">entry</span>,
+50:             <span class="ruby-value">:fullpath</span>     =<span class="ruby-operator">&gt;</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">config</span>.<span class="ruby-identifier">get</span>[<span class="ruby-value">:rootdir</span>], <span class="ruby-identifier">entry</span>)
+51:           }
+52:         <span class="ruby-keyword kw">end</span>
+53:       <span class="ruby-keyword kw">end</span>
+54:       <span class="ruby-identifier">data</span>
+55:     <span class="ruby-keyword kw">end</span></pre>
 					</div>
 					
 				</div>

@@ -53,25 +53,6 @@ module RepoMate
       Dir.glob(File.join(directory, "*.deb"))
     end
 
-    # Returns the name of all existing architecture directories as array (eg. binary-amd64, binary-all)
-    def self.dirnames
-      names = []
-      self.all.each do |dir|
-        names << File.split(dir).last unless names.include?(File.split(dir).last)
-      end
-      names
-    end
-
-    # Returns the name of all existing architecturs based on the directory structure as array (eg. amd64, all, i386)
-    def self.names
-      names = []
-      self.dirnames.each do |dir|
-        arch = File.split(dir).last.gsub("binary-", '')
-        names << arch unless names.include?(arch)
-      end
-      names
-    end
-
     # Returns a dataset including the name of the architecture, the basepath and the fullpath recursive through all lower layers
     def self.dataset(category=nil)
       config = Configuration.new
