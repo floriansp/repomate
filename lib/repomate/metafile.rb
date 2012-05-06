@@ -78,7 +78,7 @@ module RepoMate
           size         = File.size(fullname)
           path         = File.join("dists", entry[:suitename], entry[:component], entry[:architecture_dir], package.newbasename)
 
-          File.open(packagesfile, 'w') do |file|
+          File.open(packagesfile, 'a') do |file|
             package.controlfile.each do |key, value|
               file.puts "#{key}: #{value}"
             end

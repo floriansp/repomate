@@ -71,7 +71,7 @@ module RepoMate
         destination = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], "dists")
         basename    = File.split(entry[:source_fullname])[1]
 
-        puts "Package: #{basename} publishing"
+        # puts "Package: #{basename} publishing"
         @repository.create(entry[:suitename], entry[:component], entry[:architecture])
 
         newworkload << {

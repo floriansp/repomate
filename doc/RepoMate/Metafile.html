@@ -75,7 +75,13 @@
 					
 					<li><a href="#method-i-create">#create</a></li>
 					
+					<li><a href="#method-i-create_packages">#create_packages</a></li>
+					
+					<li><a href="#method-i-create_release">#create_release</a></li>
+					
 					<li><a href="#method-i-destroy">#destroy</a></li>
+					
+					<li><a href="#method-i-sign">#sign</a></li>
 					
 				</ul>
 			</div>
@@ -281,83 +287,157 @@ Creates all metafiles
 					<div class="method-source-code"
 						id="create-source">
 <pre>
-     <span class="ruby-comment cmt"># File lib/repomate/metafile.rb, line 52</span>
- 52:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">create</span>
- 53:       <span class="ruby-identifier">destroy</span>
- 54: 
- 55:       <span class="ruby-identifier">source_category</span> = <span class="ruby-value str">&quot;dists&quot;</span>
- 56:       <span class="ruby-identifier">suites</span>          = []
- 57: 
- 58:       <span class="ruby-identifier">now</span> = <span class="ruby-constant">Time</span>.<span class="ruby-identifier">new</span>.<span class="ruby-identifier">strftime</span>(<span class="ruby-value str">&quot;%a, %d %b %Y %H:%M:%S %Z&quot;</span>)
- 59: 
- 60:       <span class="ruby-identifier">packages_template</span>     = <span class="ruby-constant">ERB</span>.<span class="ruby-identifier">new</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">new</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">dirname</span>(<span class="ruby-keyword kw">__FILE__</span>), <span class="ruby-value str">&quot;templates/packages.erb&quot;</span>)).<span class="ruby-identifier">read</span>, <span class="ruby-keyword kw">nil</span>, <span class="ruby-value str">&quot;%&quot;</span>
- 61:       <span class="ruby-identifier">archrelease_template</span>  = <span class="ruby-constant">ERB</span>.<span class="ruby-identifier">new</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">new</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">dirname</span>(<span class="ruby-keyword kw">__FILE__</span>), <span class="ruby-value str">&quot;templates/archrelease.erb&quot;</span>)).<span class="ruby-identifier">read</span>, <span class="ruby-keyword kw">nil</span>, <span class="ruby-value str">&quot;%&quot;</span>
- 62:       <span class="ruby-identifier">suiterelease_template</span> = <span class="ruby-constant">ERB</span>.<span class="ruby-identifier">new</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">new</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">dirname</span>(<span class="ruby-keyword kw">__FILE__</span>), <span class="ruby-value str">&quot;templates/suiterelease.erb&quot;</span>)).<span class="ruby-identifier">read</span>, <span class="ruby-keyword kw">nil</span>, <span class="ruby-value str">&quot;%&quot;</span>
- 63: 
- 64:       <span class="ruby-constant">Architecture</span>.<span class="ruby-identifier">dataset</span>(<span class="ruby-identifier">source_category</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">entry</span><span class="ruby-operator">|</span>
- 65:         <span class="ruby-identifier">source</span>  = <span class="ruby-constant">Architecture</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">entry</span>[<span class="ruby-value">:architecture</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:component</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:suitename</span>], <span class="ruby-identifier">source_category</span>)
- 66:         <span class="ruby-identifier">source</span>.<span class="ruby-identifier">files</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">fullname</span><span class="ruby-operator">|</span>
- 67:           <span class="ruby-identifier">package</span> = <span class="ruby-constant">Package</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">fullname</span>, <span class="ruby-identifier">entry</span>[<span class="ruby-value">:suitename</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:component</span>])
- 68: 
- 69:           <span class="ruby-identifier">packagesfile</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">entry</span>[<span class="ruby-value">:fullpath</span>], <span class="ruby-value str">&quot;Packages&quot;</span>)
- 70:           <span class="ruby-identifier">size</span>         = <span class="ruby-constant">File</span>.<span class="ruby-identifier">size</span>(<span class="ruby-identifier">fullname</span>)
- 71:           <span class="ruby-identifier">path</span>         = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-value str">&quot;dists&quot;</span>, <span class="ruby-identifier">entry</span>[<span class="ruby-value">:suitename</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:component</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:architecture_dir</span>], <span class="ruby-identifier">package</span>.<span class="ruby-identifier">newbasename</span>)
- 72: 
- 73:           <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">packagesfile</span>, <span class="ruby-value str">'a'</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">file</span><span class="ruby-operator">|</span>
- 74:             <span class="ruby-identifier">package</span>.<span class="ruby-identifier">controlfile</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">key</span>, <span class="ruby-identifier">value</span><span class="ruby-operator">|</span>
- 75:               <span class="ruby-identifier">file</span>.<span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;#{key}: #{value}&quot;</span>
- 76:             <span class="ruby-keyword kw">end</span>
- 77: 
- 78:             <span class="ruby-identifier">file</span>.<span class="ruby-identifier">puts</span> <span class="ruby-identifier">packages_template</span>.<span class="ruby-identifier">result</span>(<span class="ruby-identifier">binding</span>)
- 79:           <span class="ruby-keyword kw">end</span>
- 80:           <span class="ruby-identifier">raise</span> <span class="ruby-value str">&quot;Could not gzip&quot;</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">system</span> <span class="ruby-node">&quot;gzip -9 -c #{packagesfile} &gt; #{packagesfile}.gz&quot;</span>
- 81:         <span class="ruby-keyword kw">end</span>
- 82:       <span class="ruby-keyword kw">end</span>
- 83: 
- 84:       <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@config</span>.<span class="ruby-identifier">get</span>[<span class="ruby-value">:gpg_enable</span>]
- 85:         <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@config</span>.<span class="ruby-identifier">get</span>[<span class="ruby-value">:gpg_password</span>].<span class="ruby-identifier">nil?</span> <span class="ruby-operator">||</span> <span class="ruby-ivar">@config</span>.<span class="ruby-identifier">get</span>[<span class="ruby-value">:gpg_email</span>].<span class="ruby-identifier">nil?</span>
- 86:           <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;Configure password and email for GPG!&quot;</span>
- 87:           <span class="ruby-identifier">exit</span> <span class="ruby-value">1</span>
- 88:         <span class="ruby-keyword kw">else</span>
- 89:           <span class="ruby-constant">Architecture</span>.<span class="ruby-identifier">dataset</span>(<span class="ruby-identifier">source_category</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">entry</span><span class="ruby-operator">|</span>
- 90:             <span class="ruby-identifier">source</span>      = <span class="ruby-constant">Architecture</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">entry</span>[<span class="ruby-value">:architecture</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:component</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:suitename</span>], <span class="ruby-identifier">source_category</span>)
- 91:             <span class="ruby-identifier">releasefile</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">entry</span>[<span class="ruby-value">:fullpath</span>], <span class="ruby-value str">&quot;Release&quot;</span>)
- 92: 
- 93:             <span class="ruby-identifier">suites</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">entry</span>[<span class="ruby-value">:suitename</span>] <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">suites</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">entry</span>[<span class="ruby-value">:suitename</span>])
- 94: 
- 95:             <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">releasefile</span>, <span class="ruby-value str">'w'</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">file</span><span class="ruby-operator">|</span>
- 96:               <span class="ruby-identifier">file</span>.<span class="ruby-identifier">puts</span> <span class="ruby-identifier">archrelease_template</span>.<span class="ruby-identifier">result</span>(<span class="ruby-identifier">binding</span>)
- 97:             <span class="ruby-keyword kw">end</span>
- 98:           <span class="ruby-keyword kw">end</span>
- 99: 
-100:           <span class="ruby-identifier">suites</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">suite</span><span class="ruby-operator">|</span>
-101:             <span class="ruby-identifier">architecture</span> = []
-102:             <span class="ruby-identifier">component</span>    = []
-103: 
-104:             <span class="ruby-constant">Architecture</span>.<span class="ruby-identifier">dataset</span>(<span class="ruby-identifier">source_category</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">entry</span><span class="ruby-operator">|</span>
-105:               <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">entry</span>[<span class="ruby-value">:suitename</span>].<span class="ruby-identifier">eql?</span>(<span class="ruby-identifier">suite</span>)
-106:                 <span class="ruby-identifier">architecture</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">entry</span>[<span class="ruby-value">:architecture</span>] <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">architecture</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">entry</span>[<span class="ruby-value">:architecture</span>])
-107:                 <span class="ruby-identifier">component</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">entry</span>[<span class="ruby-value">:component</span>] <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">component</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">entry</span>[<span class="ruby-value">:component</span>])
-108:               <span class="ruby-keyword kw">end</span>
-109:             <span class="ruby-keyword kw">end</span>
-110: 
-111:             <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;#{suite} #{component} #{architecture}&quot;</span>
-112: 
-113:             <span class="ruby-identifier">source</span>      = <span class="ruby-constant">Suite</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">suite</span>, <span class="ruby-value str">&quot;dists&quot;</span>)
-114:             <span class="ruby-identifier">releasefile</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-ivar">@config</span>.<span class="ruby-identifier">get</span>[<span class="ruby-value">:rootdir</span>], <span class="ruby-identifier">source_category</span>, <span class="ruby-identifier">suite</span>, <span class="ruby-value str">&quot;Release&quot;</span>)
-115: 
-116:             <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">releasefile</span>, <span class="ruby-value str">'w'</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">file</span><span class="ruby-operator">|</span>
-117:               <span class="ruby-identifier">file</span>.<span class="ruby-identifier">puts</span> <span class="ruby-identifier">suiterelease_template</span>.<span class="ruby-identifier">result</span>(<span class="ruby-identifier">binding</span>).<span class="ruby-identifier">gsub</span>(<span class="ruby-regexp re">/^\s+\n|^\n|^\s{3}/</span>, <span class="ruby-value str">''</span>)
-118:             <span class="ruby-keyword kw">end</span>
-119: 
-120:             <span class="ruby-identifier">crypto</span> = <span class="ruby-constant">GPGME</span><span class="ruby-operator">::</span><span class="ruby-constant">Crypto</span>.<span class="ruby-identifier">new</span> <span class="ruby-value">:password</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-ivar">@config</span>.<span class="ruby-identifier">get</span>[<span class="ruby-value">:gpg_password</span>]
-121:             <span class="ruby-identifier">file</span> = <span class="ruby-node">&quot;#{releasefile}.gpg&quot;</span>
-122:             <span class="ruby-identifier">output</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">file</span>, <span class="ruby-value str">'w'</span>)
-123:             <span class="ruby-identifier">crypto</span>.<span class="ruby-identifier">clearsign</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">releasefile</span>, <span class="ruby-value str">'r'</span>), <span class="ruby-value">:symmetric</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-keyword kw">false</span>, <span class="ruby-value">:output</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">output</span>, <span class="ruby-value">:signer</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-ivar">@config</span>.<span class="ruby-identifier">get</span>[<span class="ruby-value">:gpg_email</span>], <span class="ruby-value">:mode</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-constant">GPGME</span><span class="ruby-operator">::</span><span class="ruby-constant">SIG_MODE_DETACH</span>
-124:           <span class="ruby-keyword kw">end</span>
-125:         <span class="ruby-keyword kw">end</span>
-126:       <span class="ruby-keyword kw">end</span>
-127:     <span class="ruby-keyword kw">end</span></pre>
+    <span class="ruby-comment cmt"># File lib/repomate/metafile.rb, line 52</span>
+52:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">create</span>
+53:       <span class="ruby-identifier">destroy</span>
+54:       <span class="ruby-identifier">create_packages</span>
+55: 
+56:       <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@config</span>.<span class="ruby-identifier">get</span>[<span class="ruby-value">:gpg_enable</span>]
+57:         <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@config</span>.<span class="ruby-identifier">get</span>[<span class="ruby-value">:gpg_password</span>].<span class="ruby-identifier">nil?</span> <span class="ruby-operator">||</span> <span class="ruby-ivar">@config</span>.<span class="ruby-identifier">get</span>[<span class="ruby-value">:gpg_email</span>].<span class="ruby-identifier">nil?</span>
+58:           <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;Configure password and email for GPG!&quot;</span>
+59:           <span class="ruby-identifier">exit</span> <span class="ruby-value">1</span>
+60:         <span class="ruby-keyword kw">else</span>
+61:           <span class="ruby-identifier">create_release</span>
+62:         <span class="ruby-keyword kw">end</span>
+63:       <span class="ruby-keyword kw">end</span>
+64:     <span class="ruby-keyword kw">end</span></pre>
+					</div>
+					
+				</div>
+
+				
+
+				
+			</div>
+
+		
+			<div id="create-packages-method" class="method-detail ">
+				<a name="method-i-create_packages"></a>
+
+				<div class="method-heading">
+				
+					<span class="method-name">create_packages</span><span
+						class="method-args">()</span>
+					<span class="method-click-advice">click to toggle source</span>
+				
+				</div>
+
+				<div class="method-description">
+					
+					<p>
+Create Packages* files
+</p>
+					
+
+					
+					<div class="method-source-code"
+						id="create-packages-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/repomate/metafile.rb, line 67</span>
+67:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">create_packages</span>
+68:       <span class="ruby-identifier">source_category</span> = <span class="ruby-value str">&quot;dists&quot;</span>
+69: 
+70:       <span class="ruby-identifier">packages_template</span>     = <span class="ruby-constant">ERB</span>.<span class="ruby-identifier">new</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">new</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">dirname</span>(<span class="ruby-keyword kw">__FILE__</span>), <span class="ruby-value str">&quot;templates/packages.erb&quot;</span>)).<span class="ruby-identifier">read</span>, <span class="ruby-keyword kw">nil</span>, <span class="ruby-value str">&quot;%&quot;</span>
+71: 
+72:       <span class="ruby-constant">Architecture</span>.<span class="ruby-identifier">dataset</span>(<span class="ruby-identifier">source_category</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">entry</span><span class="ruby-operator">|</span>
+73:         <span class="ruby-identifier">source</span>  = <span class="ruby-constant">Architecture</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">entry</span>[<span class="ruby-value">:architecture</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:component</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:suitename</span>], <span class="ruby-identifier">source_category</span>)
+74:         <span class="ruby-identifier">source</span>.<span class="ruby-identifier">files</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">fullname</span><span class="ruby-operator">|</span>
+75:           <span class="ruby-identifier">package</span> = <span class="ruby-constant">Package</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">fullname</span>, <span class="ruby-identifier">entry</span>[<span class="ruby-value">:suitename</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:component</span>])
+76: 
+77:           <span class="ruby-identifier">packagesfile</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">entry</span>[<span class="ruby-value">:fullpath</span>], <span class="ruby-value str">&quot;Packages&quot;</span>)
+78:           <span class="ruby-identifier">size</span>         = <span class="ruby-constant">File</span>.<span class="ruby-identifier">size</span>(<span class="ruby-identifier">fullname</span>)
+79:           <span class="ruby-identifier">path</span>         = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-value str">&quot;dists&quot;</span>, <span class="ruby-identifier">entry</span>[<span class="ruby-value">:suitename</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:component</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:architecture_dir</span>], <span class="ruby-identifier">package</span>.<span class="ruby-identifier">newbasename</span>)
+80: 
+81:           <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">packagesfile</span>, <span class="ruby-value str">'a'</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">file</span><span class="ruby-operator">|</span>
+82:             <span class="ruby-identifier">package</span>.<span class="ruby-identifier">controlfile</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">key</span>, <span class="ruby-identifier">value</span><span class="ruby-operator">|</span>
+83:               <span class="ruby-identifier">file</span>.<span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;#{key}: #{value}&quot;</span>
+84:             <span class="ruby-keyword kw">end</span>
+85: 
+86:             <span class="ruby-identifier">file</span>.<span class="ruby-identifier">puts</span> <span class="ruby-identifier">packages_template</span>.<span class="ruby-identifier">result</span>(<span class="ruby-identifier">binding</span>)
+87:           <span class="ruby-keyword kw">end</span>
+88:           <span class="ruby-identifier">raise</span> <span class="ruby-value str">&quot;Could not gzip&quot;</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">system</span> <span class="ruby-node">&quot;gzip -9 -c #{packagesfile} &gt; #{packagesfile}.gz&quot;</span>
+89:         <span class="ruby-keyword kw">end</span>
+90:       <span class="ruby-keyword kw">end</span>
+91:     <span class="ruby-keyword kw">end</span></pre>
+					</div>
+					
+				</div>
+
+				
+
+				
+			</div>
+
+		
+			<div id="create-release-method" class="method-detail ">
+				<a name="method-i-create_release"></a>
+
+				<div class="method-heading">
+				
+					<span class="method-name">create_release</span><span
+						class="method-args">()</span>
+					<span class="method-click-advice">click to toggle source</span>
+				
+				</div>
+
+				<div class="method-description">
+					
+					<p>
+Create Release* files
+</p>
+					
+
+					
+					<div class="method-source-code"
+						id="create-release-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/repomate/metafile.rb, line 94</span>
+ 94:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">create_release</span>
+ 95:       <span class="ruby-identifier">source_category</span> = <span class="ruby-value str">&quot;dists&quot;</span>
+ 96:       <span class="ruby-identifier">suites</span>          = []
+ 97: 
+ 98:       <span class="ruby-identifier">archrelease_template</span>  = <span class="ruby-constant">ERB</span>.<span class="ruby-identifier">new</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">new</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">dirname</span>(<span class="ruby-keyword kw">__FILE__</span>), <span class="ruby-value str">&quot;templates/archrelease.erb&quot;</span>)).<span class="ruby-identifier">read</span>, <span class="ruby-keyword kw">nil</span>, <span class="ruby-value str">&quot;%&quot;</span>
+ 99:       <span class="ruby-identifier">suiterelease_template</span> = <span class="ruby-constant">ERB</span>.<span class="ruby-identifier">new</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">new</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">dirname</span>(<span class="ruby-keyword kw">__FILE__</span>), <span class="ruby-value str">&quot;templates/suiterelease.erb&quot;</span>)).<span class="ruby-identifier">read</span>, <span class="ruby-keyword kw">nil</span>, <span class="ruby-value str">&quot;%&quot;</span>
+100: 
+101:       <span class="ruby-identifier">now</span> = <span class="ruby-constant">Time</span>.<span class="ruby-identifier">new</span>.<span class="ruby-identifier">strftime</span>(<span class="ruby-value str">&quot;%a, %d %b %Y %H:%M:%S %Z&quot;</span>)
+102: 
+103:       <span class="ruby-constant">Architecture</span>.<span class="ruby-identifier">dataset</span>(<span class="ruby-identifier">source_category</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">entry</span><span class="ruby-operator">|</span>
+104:         <span class="ruby-identifier">source</span>      = <span class="ruby-constant">Architecture</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">entry</span>[<span class="ruby-value">:architecture</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:component</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:suitename</span>], <span class="ruby-identifier">source_category</span>)
+105:         <span class="ruby-identifier">releasefile</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">entry</span>[<span class="ruby-value">:fullpath</span>], <span class="ruby-value str">&quot;Release&quot;</span>)
+106: 
+107:         <span class="ruby-identifier">suites</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">entry</span>[<span class="ruby-value">:suitename</span>] <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">suites</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">entry</span>[<span class="ruby-value">:suitename</span>])
+108: 
+109:         <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">releasefile</span>, <span class="ruby-value str">'w'</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">file</span><span class="ruby-operator">|</span>
+110:           <span class="ruby-identifier">file</span>.<span class="ruby-identifier">puts</span> <span class="ruby-identifier">archrelease_template</span>.<span class="ruby-identifier">result</span>(<span class="ruby-identifier">binding</span>)
+111:         <span class="ruby-keyword kw">end</span>
+112:       <span class="ruby-keyword kw">end</span>
+113: 
+114:       <span class="ruby-identifier">suites</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">suite</span><span class="ruby-operator">|</span>
+115:         <span class="ruby-identifier">architecture</span> = []
+116:         <span class="ruby-identifier">component</span>    = []
+117: 
+118:         <span class="ruby-constant">Architecture</span>.<span class="ruby-identifier">dataset</span>(<span class="ruby-identifier">source_category</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">entry</span><span class="ruby-operator">|</span>
+119:           <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">entry</span>[<span class="ruby-value">:suitename</span>].<span class="ruby-identifier">eql?</span>(<span class="ruby-identifier">suite</span>)
+120:             <span class="ruby-identifier">architecture</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">entry</span>[<span class="ruby-value">:architecture</span>] <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">architecture</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">entry</span>[<span class="ruby-value">:architecture</span>])
+121:             <span class="ruby-identifier">component</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">entry</span>[<span class="ruby-value">:component</span>] <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">component</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">entry</span>[<span class="ruby-value">:component</span>])
+122:           <span class="ruby-keyword kw">end</span>
+123:         <span class="ruby-keyword kw">end</span>
+124: 
+125:         <span class="ruby-identifier">source</span>      = <span class="ruby-constant">Suite</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">suite</span>, <span class="ruby-value str">&quot;dists&quot;</span>)
+126:         <span class="ruby-identifier">releasefile</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-ivar">@config</span>.<span class="ruby-identifier">get</span>[<span class="ruby-value">:rootdir</span>], <span class="ruby-identifier">source_category</span>, <span class="ruby-identifier">suite</span>, <span class="ruby-value str">&quot;Release&quot;</span>)
+127: 
+128:         <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">releasefile</span>, <span class="ruby-value str">'w'</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">file</span><span class="ruby-operator">|</span>
+129:           <span class="ruby-identifier">file</span>.<span class="ruby-identifier">puts</span> <span class="ruby-identifier">suiterelease_template</span>.<span class="ruby-identifier">result</span>(<span class="ruby-identifier">binding</span>).<span class="ruby-identifier">gsub</span>(<span class="ruby-regexp re">/^\s+\n|^\n|^\s{3}/</span>, <span class="ruby-value str">''</span>)
+130:         <span class="ruby-keyword kw">end</span>
+131:         <span class="ruby-keyword kw">begin</span>
+132:           <span class="ruby-identifier">sign</span>(<span class="ruby-identifier">releasefile</span>)
+133:         <span class="ruby-keyword kw">rescue</span>
+134:           <span class="ruby-identifier">destroy</span>
+135:           <span class="ruby-identifier">create_packages</span>
+136:           <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;GPG password incorrect&quot;</span>
+137:         <span class="ruby-keyword kw">end</span>
+138:       <span class="ruby-keyword kw">end</span>
+139:     <span class="ruby-keyword kw">end</span></pre>
 					</div>
 					
 				</div>
@@ -396,6 +476,45 @@ Deletes all existing metafiles
 47:         <span class="ruby-constant">FileUtils</span>.<span class="ruby-identifier">rm_f</span>(<span class="ruby-identifier">file</span>)
 48:       <span class="ruby-keyword kw">end</span>
 49:     <span class="ruby-keyword kw">end</span></pre>
+					</div>
+					
+				</div>
+
+				
+
+				
+			</div>
+
+		
+			<div id="sign-method" class="method-detail ">
+				<a name="method-i-sign"></a>
+
+				<div class="method-heading">
+				
+					<span class="method-name">sign</span><span
+						class="method-args">(file)</span>
+					<span class="method-click-advice">click to toggle source</span>
+				
+				</div>
+
+				<div class="method-description">
+					
+					<p>
+Sign a file
+</p>
+					
+
+					
+					<div class="method-source-code"
+						id="sign-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/repomate/metafile.rb, line 142</span>
+142:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">sign</span>(<span class="ruby-identifier">file</span>)
+143:       <span class="ruby-identifier">crypto</span> = <span class="ruby-constant">GPGME</span><span class="ruby-operator">::</span><span class="ruby-constant">Crypto</span>.<span class="ruby-identifier">new</span> <span class="ruby-value">:password</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-ivar">@config</span>.<span class="ruby-identifier">get</span>[<span class="ruby-value">:gpg_password</span>]
+144:       <span class="ruby-identifier">outfile</span> = <span class="ruby-node">&quot;#{file}.gpg&quot;</span>
+145:       <span class="ruby-identifier">output</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">outfile</span>, <span class="ruby-value str">'w'</span>)
+146:       <span class="ruby-identifier">crypto</span>.<span class="ruby-identifier">sign</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">file</span>, <span class="ruby-value str">'r'</span>), <span class="ruby-value">:symmetric</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-keyword kw">false</span>, <span class="ruby-value">:output</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">output</span>, <span class="ruby-value">:signer</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-ivar">@config</span>.<span class="ruby-identifier">get</span>[<span class="ruby-value">:gpg_email</span>], <span class="ruby-value">:mode</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-constant">GPGME</span><span class="ruby-operator">::</span><span class="ruby-constant">SIG_MODE_DETACH</span>
+147:     <span class="ruby-keyword kw">end</span></pre>
 					</div>
 					
 				</div>
