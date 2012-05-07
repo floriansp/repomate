@@ -242,7 +242,7 @@ Choose a checkpoint to restore.
  90:       <span class="ruby-identifier">list</span> = <span class="ruby-ivar">@repomate</span>.<span class="ruby-identifier">get_checkpoints</span>
  91: 
  92:       <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">list</span>.<span class="ruby-identifier">empty?</span>
- 93:         <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;We can't restore because we don't have checkpoints&quot;</span>
+ 93:         <span class="ruby-constant">STDERR</span>.<span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;We can't restore because we don't have checkpoints&quot;</span>
  94:         <span class="ruby-identifier">exit</span> <span class="ruby-value">1</span>
  95:       <span class="ruby-keyword kw">end</span>
  96: 
@@ -260,7 +260,7 @@ Choose a checkpoint to restore.
 108:       <span class="ruby-identifier">number</span> = <span class="ruby-identifier">input</span>.<span class="ruby-identifier">to_i</span>
 109: 
 110:       <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">input</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp re">/(q|quit)/</span>
-111:         <span class="ruby-constant">STDERR</span>.<span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;Aborting...&quot;</span>
+111:         <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;Aborting...&quot;</span>
 112:         <span class="ruby-identifier">exit</span> <span class="ruby-value">0</span>
 113:       <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">list</span>[<span class="ruby-identifier">number</span>].<span class="ruby-identifier">nil?</span>
 114:         <span class="ruby-constant">STDERR</span>.<span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;Invalid number&quot;</span>
@@ -307,7 +307,7 @@ List all packages, see cli output
 80:         <span class="ruby-identifier">packages</span> = <span class="ruby-ivar">@repomate</span>.<span class="ruby-identifier">get_packagelist</span>(<span class="ruby-identifier">options</span>[<span class="ruby-value">:repodir</span>])
 81:         <span class="ruby-identifier">packages</span>.<span class="ruby-identifier">each</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">package</span><span class="ruby-operator">|</span> <span class="ruby-identifier">printf</span> <span class="ruby-value str">&quot;%-50s%-20s%s\n&quot;</span>, <span class="ruby-identifier">package</span>[<span class="ruby-value">:controlfile</span>][<span class="ruby-value str">'Package'</span>], <span class="ruby-identifier">package</span>[<span class="ruby-value">:controlfile</span>][<span class="ruby-value str">'Version'</span>], <span class="ruby-node">&quot;#{package[:suitename]}/#{package[:component]}&quot;</span>}
 82:       <span class="ruby-keyword kw">else</span>
-83:         <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;Specify a category with [-r|--repodir]&quot;</span>
+83:         <span class="ruby-constant">STDERR</span>.<span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;Specify a category with [-r|--repodir]&quot;</span>
 84:         <span class="ruby-identifier">exit</span> <span class="ruby-value">1</span>
 85:       <span class="ruby-keyword kw">end</span>
 86:     <span class="ruby-keyword kw">end</span></pre>
@@ -443,7 +443,7 @@ Sets up the base directory structure by calling the repository class
 22:       <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">options</span>.<span class="ruby-identifier">suitename?</span>
 23:         <span class="ruby-ivar">@repository</span>.<span class="ruby-identifier">create</span>(<span class="ruby-identifier">options</span>[<span class="ruby-value">:suitename</span>], <span class="ruby-identifier">options</span>[<span class="ruby-value">:component</span>], <span class="ruby-identifier">options</span>[<span class="ruby-value">:architecture</span>])
 24:       <span class="ruby-keyword kw">else</span>
-25:         <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;Specify a suitename with [-s|--suitname]&quot;</span>
+25:         <span class="ruby-constant">STDERR</span>.<span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;Specify a suitename with [-s|--suitname]&quot;</span>
 26:         <span class="ruby-identifier">exit</span> <span class="ruby-value">1</span>
 27:       <span class="ruby-keyword kw">end</span>
 28:     <span class="ruby-keyword kw">end</span></pre>
@@ -489,7 +489,7 @@ Adds a given package to the staging area by calling the base class
 37: 
 38:         <span class="ruby-ivar">@repomate</span>.<span class="ruby-identifier">stage</span>(<span class="ruby-identifier">workload</span>)
 39:       <span class="ruby-keyword kw">else</span>
-40:         <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;Specify a suitename with [-s|--suitname]&quot;</span>
+40:         <span class="ruby-constant">STDERR</span>.<span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;Specify a suitename with [-s|--suitname]&quot;</span>
 41:         <span class="ruby-identifier">exit</span> <span class="ruby-value">1</span>
 42:       <span class="ruby-keyword kw">end</span>
 43:     <span class="ruby-keyword kw">end</span></pre>
