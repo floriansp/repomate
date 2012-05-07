@@ -101,7 +101,6 @@ module RepoMate
       now = Time.new.strftime("%a, %d %b %Y %H:%M:%S %Z")
 
       Architecture.dataset(source_category).each do |entry|
-        source      = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], source_category)
         releasefile = File.join(entry[:fullpath], "Release")
 
         suites << entry[:suitename] unless suites.include?(entry[:suitename])
@@ -122,7 +121,6 @@ module RepoMate
           end
         end
 
-        source      = Suite.new(suite, "dists")
         releasefile = File.join(@config.get[:rootdir], source_category, suite, "Release")
 
         File.open(releasefile, 'w') do |file|
@@ -134,6 +132,7 @@ module RepoMate
           destroy
           create_packages
           puts "GPG password incorrect"
+          return
         end
       end
     end
