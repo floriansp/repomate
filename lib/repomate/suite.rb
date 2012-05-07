@@ -34,6 +34,19 @@ module RepoMate
       self.allowed.include?(@suitename)
     end
 
+    # Checks if directory is unused
+    def is_unused?(dir)
+      status  = true
+
+      path = Dir.glob(File.join(dir, "*"))
+      path.each do |dirorfile|
+        status = false if File.directory?(dirorfile)
+        status = false if File.basename(dirorfile) =~ /\.deb$/
+      end
+
+      status
+    end
+
     # Creates the directory strcuture of the suite including all lower layers
     def create
       FileUtils.mkdir_p(directory) unless exist?

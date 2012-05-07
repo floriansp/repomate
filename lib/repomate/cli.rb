@@ -22,7 +22,7 @@ module RepoMate
       if options.suitename?
         @repository.create(options[:suitename], options[:component], options[:architecture])
       else
-        puts "Specify a suitename with [-s|--suitname]"
+        STDERR.puts "Specify a suitename with [-s|--suitname]"
         exit 1
       end
     end
@@ -37,7 +37,7 @@ module RepoMate
 
         @repomate.stage(workload)
       else
-        puts "Specify a suitename with [-s|--suitname]"
+        STDERR.puts "Specify a suitename with [-s|--suitname]"
         exit 1
       end
     end
@@ -80,7 +80,7 @@ module RepoMate
         packages = @repomate.get_packagelist(options[:repodir])
         packages.each {|package| printf "%-50s%-20s%s\n", package[:controlfile]['Package'], package[:controlfile]['Version'], "#{package[:suitename]}/#{package[:component]}"}
       else
-        puts "Specify a category with [-r|--repodir]"
+        STDERR.puts "Specify a category with [-r|--repodir]"
         exit 1
       end
     end
@@ -90,7 +90,7 @@ module RepoMate
       list = @repomate.get_checkpoints
 
       if list.empty?
-        puts "We can't restore because we don't have checkpoints"
+        STDERR.puts "We can't restore because we don't have checkpoints"
         exit 1
       end
 
@@ -108,7 +108,7 @@ Everything between the last two \"publish (-P) commands\" will be lost if you pr
       number = input.to_i
 
       if input =~ /(q|quit)/
-        STDERR.puts "Aborting..."
+        puts "Aborting..."
         exit 0
       elsif list[number].nil?
         STDERR.puts "Invalid number"

@@ -71,7 +71,6 @@ module RepoMate
         destination = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], "dists")
         basename    = File.split(entry[:source_fullname])[1]
 
-        # puts "Package: #{basename} publishing"
         @repository.create(entry[:suitename], entry[:component], entry[:architecture])
 
         newworkload << {
@@ -100,6 +99,8 @@ module RepoMate
       action = false
 
       workload.each do |entry|
+        @repository.create(entry[:suitename], entry[:component], entry[:architecture])
+
         source_package       = Package.new(entry[:source_fullname], entry[:suitename], entry[:component])
         destination_fullname = File.join(entry[:destination_dir], source_package.newbasename)
 
@@ -113,9 +114,9 @@ module RepoMate
               :newbasename          => target_package.newbasename
             }
           elsif system("#{dpkg} --compare-versions #{source_package.version} eq #{target_package.version}")
-          puts "Package: #{source_package.newbasename} already exists with same version"
+            puts "Package: #{source_package.newbasename} already exists with same version"
           elsif system("#{dpkg} --compare-versions #{source_package.version} lt #{target_package.version}")
-          puts "Package: #{source_package.newbasename} already exists with higher version"
+            puts "Package: #{source_package.newbasename} already exists with higher version"
           end
         end
 
@@ -143,6 +144,7 @@ module RepoMate
       end
 
       if action
+        cleandirs
         @metafile.create
       end
     end
@@ -205,7 +207,7 @@ module RepoMate
     # Returns a list of checkpoints for the cli
     def get_checkpoints
       unless File.exists?(redolog)
-        puts "We can't restore because we don't have checkpoints"
+        STDERR.puts "We can't restore because we don't have checkpoints"
         exit 1
       end
 
@@ -245,6 +247,37 @@ module RepoMate
         end
       end
       packages
+    end
+
+    # cleans up unused directories
+    def cleandirs
+      action = false
+
+      @repository.categories.each do |category|
+        Architecture.dataset(category).each do |entry|
+          directory = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], category)
+          if directory.is_unused?(entry[:fullpath])
+            action = true
+            directory.destroy
+          end
+        end
+        Component.dataset(category).each do |entry|
+          directory = Component.new(entry[:component], entry[:suitename], category)
+          if directory.is_unused?(entry[:fullpath])
+            action = true
+            directory.destroy
+          end
+        end
+        Suite.dataset(category).each do |entry|
+          directory = Suite.new(entry[:suitename], category)
+          if directory.is_unused?(entry[:fullpath])
+            action = true
+            directory.destroy
+          end
+        end
+
+        @metafile.create if action
+      end
     end
   end
 end

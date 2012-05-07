@@ -10,6 +10,8 @@ module RepoMate
   # Class for creating the repository structure
   class Repository
 
+    attr_reader :categories
+
     # Init
     def initialize
       @config     = Configuration.new
@@ -19,18 +21,18 @@ module RepoMate
     # Creates the base structure
     def create(suitename=nil, component=nil, architecture=nil)
       unless Suite.allowed.include?(suitename)
-        $stderr.puts "Suitename (#{suitename}) is not configured"
+        STDERR.puts "Suitename (#{suitename}) is not configured"
         exit 1
       end
 
       unless Component.allowed.include?(component)
-        $stderr.puts "Component (#{component}) is not configured"
+        STDERR.puts "Component (#{component}) is not configured"
         exit 1
       end
 
       unless architecture.nil?
         unless Architecture.allowed.include?(architecture)
-          $stderr.puts "Architecture (#{architecture}) is not configured"
+          STDERR.puts "Architecture (#{architecture}) is not configured"
           exit 1
         end
       end
@@ -39,10 +41,10 @@ module RepoMate
         if category.eql?("stage")
           Component.new(component, suitename, category).create
         else
-          unless architecture.nil? || component.nil? || suitename.nil?
+          unless architecture.nil? && component.nil? && suitename.nil?
             Architecture.new(architecture, component, suitename, category).create
           end
-          unless component.nil? || suitename.nil?
+          unless component.nil? && suitename.nil?
             Component.new(component, suitename, category).create
           end
           unless suitename.nil?
