@@ -8,4 +8,4 @@
 
 * Add backup function for the pool
 * Enhance user documentation
-* Create remove and clenaup functionalities
+* Create remove functionality
