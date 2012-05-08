@@ -43,9 +43,7 @@ module RepoMate
 
     # Deletes all existing metafiles
     def destroy
-      all.each do |file|
-        FileUtils.rm_f(file)
-      end
+      all.each { |file| FileUtils.rm_f(file) }
     end
 
     # Creates all metafiles
@@ -79,10 +77,7 @@ module RepoMate
           path         = File.join("dists", entry[:suitename], entry[:component], entry[:architecture_dir], package.newbasename)
 
           File.open(packagesfile, 'a') do |file|
-            package.controlfile.each do |key, value|
-              file.puts "#{key}: #{value}"
-            end
-
+            package.controlfile.each { |key, value| file.puts "#{key}: #{value}" }
             file.puts packages_template.result(binding)
           end
           raise "Could not gzip" unless system "gzip -9 -c #{packagesfile} > #{packagesfile}.gz"
@@ -105,9 +100,7 @@ module RepoMate
 
         suites << entry[:suitename] unless suites.include?(entry[:suitename])
 
-        File.open(releasefile, 'w') do |file|
-          file.puts archrelease_template.result(binding)
-        end
+        File.open(releasefile, 'w') { |file| file.puts archrelease_template.result(binding) }
       end
 
       suites.each do |suite|
@@ -123,9 +116,7 @@ module RepoMate
 
         releasefile = File.join(@config.get[:rootdir], source_category, suite, "Release")
 
-        File.open(releasefile, 'w') do |file|
-          file.puts suiterelease_template.result(binding).gsub(/^\s+\n|^\n|^\s{3}/, '')
-        end
+        File.open(releasefile, 'w') { |file| file.puts suiterelease_template.result(binding).gsub(/^\s+\n|^\n|^\s{3}/, '') }
         begin
           sign(releasefile)
         rescue

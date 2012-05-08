@@ -143,10 +143,7 @@ module RepoMate
         end
       end
 
-      if action
-        cleandirs
-        @metafile.create
-      end
+      cleandirs if action
     end
 
     # Saves a checkpoint
@@ -275,9 +272,9 @@ module RepoMate
             directory.destroy
           end
         end
-
-        @metafile.create if action
       end
+
+      @metafile.create if action
     end
   end
 end
