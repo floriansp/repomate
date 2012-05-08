@@ -105,7 +105,7 @@ module RepoMate
         destination_fullname = File.join(entry[:destination_dir], source_package.newbasename)
 
         Dir.glob("#{entry[:destination_dir]}/#{source_package.name}*.deb") do |target_fullname|
-          target_package = Package.new(destination_fullname, entry[:suitename], entry[:component] )
+          target_package = Package.new(target_fullname, entry[:suitename], entry[:component] )
 
          if system("#{dpkg} --compare-versions #{source_package.version} gt #{target_package.version}")
             puts "Package: #{target_package.newbasename} will be replaced with #{source_package.newbasename}"
