@@ -143,7 +143,10 @@ module RepoMate
         end
       end
 
-      cleandirs if action
+      if action
+        cleandirs
+        @metafile.create
+      end
     end
 
     # Saves a checkpoint
@@ -250,6 +253,8 @@ module RepoMate
     def cleandirs
       action = false
 
+      next if category.eql?("stage")
+
       @repository.categories.each do |category|
         Architecture.dataset(category).each do |entry|
           directory = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], category)
@@ -274,7 +279,7 @@ module RepoMate
         end
       end
 
-      @metafile.create if action
+      # @metafile.create if action
     end
   end
 end

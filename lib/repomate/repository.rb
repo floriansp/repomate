@@ -41,13 +41,11 @@ module RepoMate
         if category.eql?("stage")
           Component.new(component, suitename, category).create
         else
-          unless architecture.nil? && component.nil? && suitename.nil?
+          if architecture && component && suitename
             Architecture.new(architecture, component, suitename, category).create
-          end
-          unless component.nil? && suitename.nil?
+          elsif component && suitename
             Component.new(component, suitename, category).create
-          end
-          unless suitename.nil?
+          elsif suitename.nil?
             Suite.new(suitename, category).create
           end
         end
