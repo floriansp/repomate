@@ -277,7 +277,7 @@ module RepoMate
           end
         end
       end
-
+      puts "Cleaning structure" if action
       # @metafile.create if action
     end
   end
