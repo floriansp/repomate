@@ -253,9 +253,8 @@ module RepoMate
     def cleandirs
       action = false
 
-      next if category.eql?("stage")
-
       @repository.categories.each do |category|
+        next if category.eql?("stage")
         Architecture.dataset(category).each do |entry|
           directory = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], category)
           if directory.is_unused?(entry[:fullpath])
