@@ -1,4 +1,3 @@
-require 'yaml'
 require 'tempfile'
 
 # RepoMate module
@@ -29,7 +28,6 @@ module RepoMate
 
     # Checks if the given package is a debian package
     def check_package
-      #p @fullname
       unless `file --dereference #{@fullname}` =~ /Debian binary package/i
         puts "File does not exist or is not a Debian package!"
         false
@@ -44,15 +42,25 @@ module RepoMate
       gzfullname  = File.join(tmpdir, gzbasename)
       fullname    = File.join(tmpdir, basename)
 
+      controlfile = {}
+
       FileUtils.mkdir_p(tmpdir)
+
       begin
         raise "Could not untar" unless system "ar -p #{@fullname} #{gzbasename} > #{gzfullname}"
         raise Errno::ENOENT, "Package file does not exist" unless File.exists?(gzfullname)
         raise "Could not untar" unless system "tar xfz #{gzfullname} -C #{tmpdir}"
-        YAML::load_file(fullname)
+
+        File.open(fullname) do |file|
+          while(line = file.gets)
+            line =~ %r{(.*):\s(.*)}
+            controlfile[$1] = $2
+          end
+        end
       ensure
         FileUtils.rm_rf(tmpdir)
       end
+      controlfile
     end
   end
 end
