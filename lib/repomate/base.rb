@@ -232,18 +232,34 @@ module RepoMate
     # Returns a list of packages
     def get_packagelist(category)
       packages = []
+      if category.eql?("stage")
+        Component.dataset(category).each do |entry|
+          source = Component.new(entry[:component], entry[:suitename], category)
+          source.files.each do |fullname|
+            package = Package.new(fullname, entry[:suitename], entry[:component])
 
-      Architecture.dataset(category).each do |entry|
-        source = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], category)
-        source.files.each do |fullname|
-          package = Package.new(fullname, entry[:suitename], entry[:component])
+            packages << {
+              :fullname    => fullname,
+              :controlfile => package.controlfile,
+              :component   => entry[:component],
+              :suitename   => entry[:suitename]
+            }
+          end
+        end
+      else
+        Architecture.dataset(category).each do |entry|
+          source = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], category)
+          source.files.each do |fullname|
+            package = Package.new(fullname, entry[:suitename], entry[:component])
 
-          packages << {
-            :fullname    => fullname,
-            :controlfile => package.controlfile,
-            :component   => entry[:component],
-            :suitename   => entry[:suitename],
-          }
+            packages << {
+              :fullname     => fullname,
+              :controlfile  => package.controlfile,
+              :component    => entry[:component],
+              :suitename    => entry[:suitename],
+              :architecture => entry[:architecture]
+            }
+          end
         end
       end
       packages
