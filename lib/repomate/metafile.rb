@@ -79,7 +79,7 @@ module RepoMate
           path         = File.join("dists", entry[:suitename], entry[:component], entry[:architecture_dir], package.newbasename)
 
           File.open(packagesfile, 'a') do |file|
-            package.controlfile.each { |key, value| file.puts "#{key}: #{value}" }
+            package.controlfile.each { |key, value| file.puts "#{key}: #{value}" if key }
             file.puts packages_template.result(binding)
           end
           raise "Could not gzip" unless system "gzip -9 -c #{packagesfile} > #{packagesfile}.gz"
