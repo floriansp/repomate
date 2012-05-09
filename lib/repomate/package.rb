@@ -17,11 +17,10 @@ module RepoMate
       @suitename  = suitename
       @component  = component
       @basename   = File.basename(fullname)
-      @packagesdb = File.join(@config.get[:rootdir], @config.get[:checksumsdb])
-      @db         = Database.new(@packagesdb)
+      @db         = Database.new
 
       check_package
-      create_db
+      create_table
 
       @controlfile  = read_controlfile
       @name         = @controlfile['Package']
@@ -30,28 +29,25 @@ module RepoMate
       @newbasename  = "#{@name}-#{@version}_#{@architecture}.deb"
     end
 
-    # Get's the location of the checksum logfile
-    def checksumlog
-      File.join(@config.get[:logdir], @config.get[:checksumlog])
-    end
-
-    def create_db
-      sql = "create table if not exists packages ( basename varchar2(70), md5 varchar(32), sha1 varchar(40), sha265 varchar(64) )"
+    # Create the package table
+    def create_table
+      sql = "create table if not exists checksums ( basename varchar2(70), md5 varchar(32), sha1 varchar(40), sha265 varchar(64) )"
       @db.query(sql)
     end
 
+    # Gets checksums for the given package
     def checksums
       basename  = File.basename(@fullname)
       mtime     = File.mtime(@fullname)
-      result    = nil
+      result    = []
 
-      @db.query("select * from packages where basename = '#{basename}'").each do |row|
+      @db.query("select * from checksums where basename = '#{basename}'").each do |row|
         result = row
 
         # puts "Hit: #{basename} #{result}"
       end
 
-      if result.nil?
+      if result.empty?
         #puts "Ins: #{basename}"
 
         md5      = Digest::MD5.file(@fullname).to_s

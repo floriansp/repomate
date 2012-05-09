@@ -11,7 +11,8 @@ module RepoMate
     def initialize(fullname)
       @fullname   = fullname
       @config     = Configuration.new
-      @db         = SQLite3::Database.new(@fullname)
+      @dbfile     = File.join(@config.get[:rootdir], @config.get[:repomatedb])
+      @db         = SQLite3::Database.new(@dbfile)
       @basename   = File.basename(@fullname)
     end
 

@@ -1,13 +1,14 @@
-Wed, 09 May 2012 09:37:15 +0200
-./bin/repomate	Wed, 09 May 2012 08:25:01 +0200
-./Gemfile	Sat, 05 May 2012 14:07:25 +0200
-./lib/repomate/architecture.rb	Wed, 09 May 2012 09:37:02 +0200
-./lib/repomate/base.rb	Tue, 08 May 2012 17:55:44 +0200
-./lib/repomate/category.rb	Wed, 09 May 2012 09:36:52 +0200
+Wed, 09 May 2012 20:25:48 +0200
+./bin/repomate	Wed, 09 May 2012 19:00:19 +0200
+./Gemfile	Wed, 09 May 2012 18:48:29 +0200
+./lib/repomate/architecture.rb	Wed, 09 May 2012 09:39:42 +0200
+./lib/repomate/base.rb	Wed, 09 May 2012 20:25:20 +0200
+./lib/repomate/category.rb	Wed, 09 May 2012 09:59:31 +0200
 ./lib/repomate/cli.rb	Tue, 08 May 2012 15:21:25 +0200
-./lib/repomate/component.rb	Wed, 09 May 2012 09:36:45 +0200
+./lib/repomate/component.rb	Wed, 09 May 2012 09:48:53 +0200
 ./lib/repomate/configuration.rb	Sat, 05 May 2012 16:15:11 +0200
-./lib/repomate/metafile.rb	Wed, 09 May 2012 09:33:01 +0200
-./lib/repomate/package.rb	Wed, 09 May 2012 09:32:59 +0200
+./lib/repomate/database.rb	Wed, 09 May 2012 20:21:20 +0200
+./lib/repomate/metafile.rb	Wed, 09 May 2012 18:56:18 +0200
+./lib/repomate/package.rb	Wed, 09 May 2012 20:24:27 +0200
 ./lib/repomate/repository.rb	Tue, 08 May 2012 11:35:30 +0200
-./lib/repomate/suite.rb	Wed, 09 May 2012 09:36:37 +0200
+./lib/repomate/suite.rb	Wed, 09 May 2012 09:48:44 +0200

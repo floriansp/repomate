@@ -30,10 +30,10 @@ module RepoMate
     # Add's a package to the staging area
     def stage(workload)
       workload.each do |entry|
+        @repository.create(entry[:suitename], entry[:component])
+
         package     = Package.new(entry[:package_fullname], entry[:suitename], entry[:component])
         destination = Component.new(entry[:component], entry[:suitename], "stage")
-
-        @repository.create(entry[:suitename], entry[:component])
 
         FileUtils.copy(entry[:package_fullname], File.join(destination.directory, package.newbasename))
       end

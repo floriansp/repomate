@@ -141,6 +141,8 @@
 				
 					<li><a href="../RepoMate/Configuration.html">RepoMate::Configuration</a></li>
 				
+					<li><a href="../RepoMate/Database.html">RepoMate::Database</a></li>
+				
 					<li><a href="../RepoMate/Metafile.html">RepoMate::Metafile</a></li>
 				
 					<li><a href="../RepoMate/Package.html">RepoMate::Package</a></li>
@@ -795,10 +797,10 @@ Add&#8217;s a package to the staging area
     <span class="ruby-comment cmt"># File lib/repomate/base.rb, line 31</span>
 31:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">stage</span>(<span class="ruby-identifier">workload</span>)
 32:       <span class="ruby-identifier">workload</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">entry</span><span class="ruby-operator">|</span>
-33:         <span class="ruby-identifier">package</span>     = <span class="ruby-constant">Package</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">entry</span>[<span class="ruby-value">:package_fullname</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:suitename</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:component</span>])
-34:         <span class="ruby-identifier">destination</span> = <span class="ruby-constant">Component</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">entry</span>[<span class="ruby-value">:component</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:suitename</span>], <span class="ruby-value str">&quot;stage&quot;</span>)
-35: 
-36:         <span class="ruby-ivar">@repository</span>.<span class="ruby-identifier">create</span>(<span class="ruby-identifier">entry</span>[<span class="ruby-value">:suitename</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:component</span>])
+33:         <span class="ruby-ivar">@repository</span>.<span class="ruby-identifier">create</span>(<span class="ruby-identifier">entry</span>[<span class="ruby-value">:suitename</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:component</span>])
+34: 
+35:         <span class="ruby-identifier">package</span>     = <span class="ruby-constant">Package</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">entry</span>[<span class="ruby-value">:package_fullname</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:suitename</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:component</span>])
+36:         <span class="ruby-identifier">destination</span> = <span class="ruby-constant">Component</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">entry</span>[<span class="ruby-value">:component</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:suitename</span>], <span class="ruby-value str">&quot;stage&quot;</span>)
 37: 
 38:         <span class="ruby-constant">FileUtils</span>.<span class="ruby-identifier">copy</span>(<span class="ruby-identifier">entry</span>[<span class="ruby-value">:package_fullname</span>], <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">destination</span>.<span class="ruby-identifier">directory</span>, <span class="ruby-identifier">package</span>.<span class="ruby-identifier">newbasename</span>))
 39:       <span class="ruby-keyword kw">end</span>
