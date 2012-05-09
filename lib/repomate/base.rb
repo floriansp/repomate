@@ -18,13 +18,9 @@ module RepoMate
       @repository = Repository.new
       @metafile   = Metafile.new
       @logdir     = @config.get[:logdir]
+      @redolog    = File.join(@config.get[:logdir], @config.get[:redolog])
 
       FileUtils.mkdir_p(@logdir) unless Dir.exists?(@logdir)
-    end
-
-    # Get's the location of the redo logfile
-    def redolog
-      File.join(@config.get[:logdir], @config.get[:redolog])
     end
 
     # Add's a package to the staging area
@@ -154,7 +150,7 @@ module RepoMate
       datetime        = DateTime.now
       source_category = "dists"
 
-      File.open(redolog, 'a') do |file|
+      File.open(@redolog, 'a') do |file|
         Architecture.dataset(source_category).each do |entry|
           source = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], source_category)
           source.files.each do |fullname|
@@ -180,7 +176,7 @@ module RepoMate
         end
       end
 
-      File.open(redolog, 'r') do |file|
+      File.open(@redolog, 'r') do |file|
         while (line = file.gets)
           if line.split[0] == list[number]
             suitename    = line.split[1]
@@ -206,7 +202,7 @@ module RepoMate
 
     # Returns a list of checkpoints for the cli
     def get_checkpoints
-      unless File.exists?(redolog)
+      unless File.exists?(@redolog)
         STDERR.puts "We can't restore because we don't have checkpoints"
         exit 1
       end
@@ -215,7 +211,7 @@ module RepoMate
       dates = []
       list  = {}
 
-      File.open(redolog, 'r') do |file|
+      File.open(@redolog, 'r') do |file|
         while (line = file.gets)
           dates << line.split[0] unless dates.include?(line.split[0])
         end

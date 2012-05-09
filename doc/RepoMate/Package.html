@@ -361,7 +361,7 @@ Gets checksums for the given package
 53:         <span class="ruby-identifier">md5</span>      = <span class="ruby-constant">Digest</span><span class="ruby-operator">::</span><span class="ruby-constant">MD5</span>.<span class="ruby-identifier">file</span>(<span class="ruby-ivar">@fullname</span>).<span class="ruby-identifier">to_s</span>
 54:         <span class="ruby-identifier">sha1</span>     = <span class="ruby-constant">Digest</span><span class="ruby-operator">::</span><span class="ruby-constant">SHA1</span>.<span class="ruby-identifier">file</span>(<span class="ruby-ivar">@fullname</span>).<span class="ruby-identifier">to_s</span>
 55:         <span class="ruby-identifier">sha256</span>   = <span class="ruby-constant">Digest</span><span class="ruby-operator">::</span><span class="ruby-constant">SHA256</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">256</span>).<span class="ruby-identifier">file</span>(<span class="ruby-ivar">@fullname</span>).<span class="ruby-identifier">to_s</span>
-56:         <span class="ruby-ivar">@db</span>.<span class="ruby-identifier">query</span>(<span class="ruby-node">&quot;insert into packages values ( '#{basename}', '#{md5}', '#{sha1}', '#{sha256}' )&quot;</span>)
+56:         <span class="ruby-ivar">@db</span>.<span class="ruby-identifier">query</span>(<span class="ruby-node">&quot;insert into checksums values ( '#{basename}', '#{md5}', '#{sha1}', '#{sha256}' )&quot;</span>)
 57:       <span class="ruby-keyword kw">end</span>
 58:       <span class="ruby-identifier">result</span>
 59:     <span class="ruby-keyword kw">end</span></pre>
@@ -498,7 +498,7 @@ Extracts the controlfile and returns is
 88: 
 89:         <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">fullname</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">file</span><span class="ruby-operator">|</span>
 90:           <span class="ruby-keyword kw">while</span>(<span class="ruby-identifier">line</span> = <span class="ruby-identifier">file</span>.<span class="ruby-identifier">gets</span>)
-91:             <span class="ruby-identifier">line</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp re">%{(.*):\s(.*)}</span>
+91:             <span class="ruby-identifier">line</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp re">%{([a-zA-Z]+):\s(.*)}</span>
 92:             <span class="ruby-identifier">controlfile</span>[<span class="ruby-node">$1</span>] = <span class="ruby-node">$2</span>
 93:           <span class="ruby-keyword kw">end</span>
 94:         <span class="ruby-keyword kw">end</span>
