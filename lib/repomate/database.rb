@@ -8,17 +8,16 @@ module RepoMate
   class Database
 
     # Init
-    def initialize(fullname)
-      @fullname   = fullname
+    def initialize
       @config     = Configuration.new
       @dbfile     = File.join(@config.get[:rootdir], @config.get[:repomatedb])
       @db         = SQLite3::Database.new(@dbfile)
-      @basename   = File.basename(@fullname)
+      @basename   = File.basename(@dbfile)
     end
 
     # Checks if the database file already exists
     def exists?
-      File.exists?(@fullname)
+      File.exists?(@dbfile)
     end
 
     # Executes a query
@@ -28,7 +27,7 @@ module RepoMate
 
     # Deletes a categories directory
     def destroy
-      FileUtils.rm_r(@fullname) if exists?
+      FileUtils.rm_r(@dbfile) if exists?
     end
   end
 end

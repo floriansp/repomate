@@ -53,7 +53,7 @@ module RepoMate
         md5      = Digest::MD5.file(@fullname).to_s
         sha1     = Digest::SHA1.file(@fullname).to_s
         sha256   = Digest::SHA256.new(256).file(@fullname).to_s
-        @db.query("insert into packages values ( '#{basename}', '#{md5}', '#{sha1}', '#{sha256}' )")
+        @db.query("insert into checksums values ( '#{basename}', '#{md5}', '#{sha1}', '#{sha256}' )")
       end
       result
     end
