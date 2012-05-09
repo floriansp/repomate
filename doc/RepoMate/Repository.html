@@ -270,18 +270,16 @@ Creates the base structure
 41:         <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">category</span>.<span class="ruby-identifier">eql?</span>(<span class="ruby-value str">&quot;stage&quot;</span>)
 42:           <span class="ruby-constant">Component</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">component</span>, <span class="ruby-identifier">suitename</span>, <span class="ruby-identifier">category</span>).<span class="ruby-identifier">create</span>
 43:         <span class="ruby-keyword kw">else</span>
-44:           <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">architecture</span>.<span class="ruby-identifier">nil?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">component</span>.<span class="ruby-identifier">nil?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">suitename</span>.<span class="ruby-identifier">nil?</span>
+44:           <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">architecture</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">component</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">suitename</span>
 45:             <span class="ruby-constant">Architecture</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">architecture</span>, <span class="ruby-identifier">component</span>, <span class="ruby-identifier">suitename</span>, <span class="ruby-identifier">category</span>).<span class="ruby-identifier">create</span>
-46:           <span class="ruby-keyword kw">end</span>
-47:           <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">component</span>.<span class="ruby-identifier">nil?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">suitename</span>.<span class="ruby-identifier">nil?</span>
-48:             <span class="ruby-constant">Component</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">component</span>, <span class="ruby-identifier">suitename</span>, <span class="ruby-identifier">category</span>).<span class="ruby-identifier">create</span>
-49:           <span class="ruby-keyword kw">end</span>
-50:           <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">suitename</span>.<span class="ruby-identifier">nil?</span>
-51:             <span class="ruby-constant">Suite</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">suitename</span>, <span class="ruby-identifier">category</span>).<span class="ruby-identifier">create</span>
-52:           <span class="ruby-keyword kw">end</span>
-53:         <span class="ruby-keyword kw">end</span>
-54:       <span class="ruby-keyword kw">end</span>
-55:     <span class="ruby-keyword kw">end</span></pre>
+46:           <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">component</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">suitename</span>
+47:             <span class="ruby-constant">Component</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">component</span>, <span class="ruby-identifier">suitename</span>, <span class="ruby-identifier">category</span>).<span class="ruby-identifier">create</span>
+48:           <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">suitename</span>.<span class="ruby-identifier">nil?</span>
+49:             <span class="ruby-constant">Suite</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">suitename</span>, <span class="ruby-identifier">category</span>).<span class="ruby-identifier">create</span>
+50:           <span class="ruby-keyword kw">end</span>
+51:         <span class="ruby-keyword kw">end</span>
+52:       <span class="ruby-keyword kw">end</span>
+53:     <span class="ruby-keyword kw">end</span></pre>
 					</div>
 					
 				</div>

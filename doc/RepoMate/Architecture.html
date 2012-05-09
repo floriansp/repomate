@@ -277,8 +277,8 @@ Gets all configured architectures
 				<div class="method-description">
 					
 					<p>
-Returns a dataset including the name of the architecture, the basepath and
-the fullpath recursive through all lower layers
+Returns a dataset including the name of the architecture and the fullpath
+recursive through all lower layers
 </p>
 					
 
@@ -291,17 +291,17 @@ the fullpath recursive through all lower layers
 71:       <span class="ruby-identifier">config</span> = <span class="ruby-constant">Configuration</span>.<span class="ruby-identifier">new</span>
 72:       <span class="ruby-identifier">data</span>   = []
 73:       <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">all</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">entry</span><span class="ruby-operator">|</span>
-74:         <span class="ruby-identifier">parts</span> = <span class="ruby-identifier">entry</span>.<span class="ruby-identifier">split</span>(<span class="ruby-regexp re">/\//</span>)
-75:         <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">parts</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">&lt;</span> <span class="ruby-value">4</span>
-76:           <span class="ruby-keyword kw">next</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">parts</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">eql?</span>(<span class="ruby-identifier">category</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">category</span>.<span class="ruby-identifier">eql?</span>(<span class="ruby-value str">&quot;all&quot;</span>)
-77:           <span class="ruby-identifier">architecture</span> = <span class="ruby-identifier">parts</span>[<span class="ruby-value">3</span>].<span class="ruby-identifier">split</span>(<span class="ruby-regexp re">/-/</span>)
-78:           <span class="ruby-identifier">data</span> <span class="ruby-operator">&lt;&lt;</span> {
-79:             <span class="ruby-value">:category</span>         =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">parts</span>[<span class="ruby-value">0</span>],
-80:             <span class="ruby-value">:suitename</span>        =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">parts</span>[<span class="ruby-value">1</span>],
-81:             <span class="ruby-value">:component</span>        =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">parts</span>[<span class="ruby-value">2</span>],
-82:             <span class="ruby-value">:architecture_dir</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">parts</span>[<span class="ruby-value">3</span>],
-83:             <span class="ruby-value">:architecture</span>     =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">architecture</span>[<span class="ruby-value">1</span>],
-84:             <span class="ruby-value">:basepath</span>         =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">entry</span>,
+74:         <span class="ruby-comment cmt">#p entry</span>
+75:         <span class="ruby-identifier">parts</span> = <span class="ruby-identifier">entry</span>.<span class="ruby-identifier">split</span>(<span class="ruby-regexp re">/\//</span>)
+76:         <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">parts</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">&lt;</span> <span class="ruby-value">4</span>
+77:           <span class="ruby-keyword kw">next</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">parts</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">eql?</span>(<span class="ruby-identifier">category</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">category</span>.<span class="ruby-identifier">eql?</span>(<span class="ruby-value str">&quot;all&quot;</span>)
+78:           <span class="ruby-identifier">architecture</span> = <span class="ruby-identifier">parts</span>[<span class="ruby-value">3</span>].<span class="ruby-identifier">split</span>(<span class="ruby-regexp re">/-/</span>)
+79:           <span class="ruby-identifier">data</span> <span class="ruby-operator">&lt;&lt;</span> {
+80:             <span class="ruby-value">:category</span>         =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">parts</span>[<span class="ruby-value">0</span>],
+81:             <span class="ruby-value">:suitename</span>        =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">parts</span>[<span class="ruby-value">1</span>],
+82:             <span class="ruby-value">:component</span>        =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">parts</span>[<span class="ruby-value">2</span>],
+83:             <span class="ruby-value">:architecture_dir</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">parts</span>[<span class="ruby-value">3</span>],
+84:             <span class="ruby-value">:architecture</span>     =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">architecture</span>[<span class="ruby-value">1</span>],
 85:             <span class="ruby-value">:fullpath</span>         =<span class="ruby-operator">&gt;</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">config</span>.<span class="ruby-identifier">get</span>[<span class="ruby-value">:rootdir</span>], <span class="ruby-identifier">entry</span>)
 86:           }
 87:         <span class="ruby-keyword kw">end</span>

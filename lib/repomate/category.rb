@@ -37,7 +37,7 @@ module RepoMate
       FileUtils.rm_r(directory) if exist?
     end
 
-    # Returns a dataset including the name of the category, the basepath and the fullpath
+    # Returns a dataset including the name of the category and the fullpath
     def self.dataset(category=nil)
       config = Configuration.new
       data   = []
@@ -46,7 +46,6 @@ module RepoMate
           next unless entry.eql?(category) || category.eql?("all")
           data << {
             :category     => entry,
-            :basepath     => entry,
             :fullpath     => File.join(config.get[:rootdir], entry)
           }
         end
@@ -58,7 +57,7 @@ module RepoMate
     def self.all
       config = Configuration.new
       dirs   = Dir.glob(File.join(config.get[:rootdir], "*"))
-      dirs.map{ |dir| File.basename(dir) }
+      dirs.map{ |dir| File.basename(dir) unless dirs.include?(File.basename(dir)) }
     end
 
   end

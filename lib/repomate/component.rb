@@ -64,7 +64,7 @@ module RepoMate
       Dir.glob(File.join(directory, "*.deb"))
     end
 
-    # Returns a dataset including the name of the component, the basepath and the fullpath recursive through all lower layers
+    # Returns a dataset including the name of the component, the fullpath recursive through all lower layers
     def self.dataset(category=nil)
       config = Configuration.new
       data  = []
@@ -76,7 +76,6 @@ module RepoMate
             :category     => parts[0],
             :suitename    => parts[1],
             :component    => parts[2],
-            :basepath     => entry,
             :fullpath     => File.join(config.get[:rootdir], entry)
           }
         end

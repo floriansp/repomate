@@ -57,11 +57,12 @@ module RepoMate
       FileUtils.rm_r(directory) if exist?
     end
 
-    # Returns a dataset including the name of the suite, the basepath and the fullpath recursive through all lower layers
+    # Returns a dataset including the name of the suite, the fullpath recursive through all lower layers
     def self.dataset(category=nil)
       config = Configuration.new
       data   = []
       self.all.each do |entry|
+        # p entry
         parts = entry.split(/\//)
         unless parts.length < 2
           next unless parts[0].eql?(category) || category.eql?("all")
@@ -69,7 +70,6 @@ module RepoMate
           data << {
             :category     => parts[0],
             :suitename    => parts[1],
-            :basepath     => entry,
             :fullpath     => File.join(config.get[:rootdir], entry),
           }
         end

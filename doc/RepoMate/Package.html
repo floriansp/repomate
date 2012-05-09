@@ -73,7 +73,15 @@
 					
 					<li><a href="#method-i-check_package">#check_package</a></li>
 					
+					<li><a href="#method-i-checksumlog">#checksumlog</a></li>
+					
+					<li><a href="#method-i-get_checksums">#get_checksums</a></li>
+					
+					<li><a href="#method-i-has_checksums%3F">#has_checksums?</a></li>
+					
 					<li><a href="#method-i-read_controlfile">#read_controlfile</a></li>
+					
+					<li><a href="#method-i-save_checksums">#save_checksums</a></li>
 					
 				</ul>
 			</div>
@@ -205,36 +213,6 @@ Class for reading debian packages
 				</div>
 			</div>
 			
-			<div id="suitename-attribute-method" class="method-detail">
-				<a name="suitename"></a>
-				
-				<div class="method-heading attribute-method-heading">
-					<span class="method-name">suitename</span><span
-						class="attribute-access-type">[R]</span>
-				</div>
-
-				<div class="method-description">
-				
-				
-				
-				</div>
-			</div>
-			
-			<div id="component-attribute-method" class="method-detail">
-				<a name="component"></a>
-				
-				<div class="method-heading attribute-method-heading">
-					<span class="method-name">component</span><span
-						class="attribute-access-type">[R]</span>
-				</div>
-
-				<div class="method-description">
-				
-				
-				
-				</div>
-			</div>
-			
 			<div id="version-attribute-method" class="method-detail">
 				<a name="version"></a>
 				
@@ -298,19 +276,200 @@ Init
 <pre>
     <span class="ruby-comment cmt"># File lib/repomate/package.rb, line 13</span>
 13:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">fullname</span>, <span class="ruby-identifier">suitename</span>, <span class="ruby-identifier">component</span>)
-14:       <span class="ruby-ivar">@fullname</span>  = <span class="ruby-identifier">fullname</span>
-15:       <span class="ruby-ivar">@suitename</span> = <span class="ruby-identifier">suitename</span>
-16:       <span class="ruby-ivar">@component</span> = <span class="ruby-identifier">component</span>
-17:       <span class="ruby-ivar">@basename</span>  = <span class="ruby-constant">File</span>.<span class="ruby-identifier">basename</span>(<span class="ruby-identifier">fullname</span>)
-18: 
-19:       <span class="ruby-identifier">check_package</span>
-20: 
-21:       <span class="ruby-ivar">@controlfile</span>  = <span class="ruby-identifier">read_controlfile</span>
-22:       <span class="ruby-ivar">@name</span>         = <span class="ruby-ivar">@controlfile</span>[<span class="ruby-value str">'Package'</span>]
-23:       <span class="ruby-ivar">@version</span>      = <span class="ruby-ivar">@controlfile</span>[<span class="ruby-value str">'Version'</span>]
-24:       <span class="ruby-ivar">@architecture</span> = <span class="ruby-ivar">@controlfile</span>[<span class="ruby-value str">'Architecture'</span>]
-25:       <span class="ruby-ivar">@newbasename</span>  = <span class="ruby-node">&quot;#{@name}-#{@version}_#{@architecture}.deb&quot;</span>
-26:     <span class="ruby-keyword kw">end</span></pre>
+14:       <span class="ruby-ivar">@config</span>    = <span class="ruby-constant">Configuration</span>.<span class="ruby-identifier">new</span>
+15:       <span class="ruby-ivar">@fullname</span>  = <span class="ruby-identifier">fullname</span>
+16:       <span class="ruby-ivar">@suitename</span> = <span class="ruby-identifier">suitename</span>
+17:       <span class="ruby-ivar">@component</span> = <span class="ruby-identifier">component</span>
+18:       <span class="ruby-ivar">@basename</span>  = <span class="ruby-constant">File</span>.<span class="ruby-identifier">basename</span>(<span class="ruby-identifier">fullname</span>)
+19: 
+20:       <span class="ruby-identifier">check_package</span>
+21: 
+22:       <span class="ruby-ivar">@controlfile</span>  = <span class="ruby-identifier">read_controlfile</span>
+23:       <span class="ruby-ivar">@name</span>         = <span class="ruby-ivar">@controlfile</span>[<span class="ruby-value str">'Package'</span>]
+24:       <span class="ruby-ivar">@version</span>      = <span class="ruby-ivar">@controlfile</span>[<span class="ruby-value str">'Version'</span>]
+25:       <span class="ruby-ivar">@architecture</span> = <span class="ruby-ivar">@controlfile</span>[<span class="ruby-value str">'Architecture'</span>]
+26:       <span class="ruby-ivar">@newbasename</span>  = <span class="ruby-node">&quot;#{@name}-#{@version}_#{@architecture}.deb&quot;</span>
+27:     <span class="ruby-keyword kw">end</span></pre>
+					</div>
+					
+				</div>
+
+				
+
+				
+			</div>
+
+		
+		</div>
+	
+		<div id="public-instance-method-details" class="method-section section">
+			<h3 class="section-header">Public Instance Methods</h3>
+
+		
+			<div id="checksumlog-method" class="method-detail ">
+				<a name="method-i-checksumlog"></a>
+
+				<div class="method-heading">
+				
+					<span class="method-name">checksumlog</span><span
+						class="method-args">()</span>
+					<span class="method-click-advice">click to toggle source</span>
+				
+				</div>
+
+				<div class="method-description">
+					
+					<p>
+Get&#8217;s the location of the checksum logfile
+</p>
+					
+
+					
+					<div class="method-source-code"
+						id="checksumlog-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/repomate/package.rb, line 30</span>
+30:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">checksumlog</span>
+31:       <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-ivar">@config</span>.<span class="ruby-identifier">get</span>[<span class="ruby-value">:logdir</span>], <span class="ruby-ivar">@config</span>.<span class="ruby-identifier">get</span>[<span class="ruby-value">:checksumlog</span>])
+32:     <span class="ruby-keyword kw">end</span></pre>
+					</div>
+					
+				</div>
+
+				
+
+				
+			</div>
+
+		
+			<div id="get-checksums-method" class="method-detail ">
+				<a name="method-i-get_checksums"></a>
+
+				<div class="method-heading">
+				
+					<span class="method-name">get_checksums</span><span
+						class="method-args">()</span>
+					<span class="method-click-advice">click to toggle source</span>
+				
+				</div>
+
+				<div class="method-description">
+					
+					
+					
+
+					
+					<div class="method-source-code"
+						id="get-checksums-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/repomate/package.rb, line 69</span>
+69:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">get_checksums</span>
+70:       <span class="ruby-identifier">basename</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">basename</span>(<span class="ruby-ivar">@fullname</span>)
+71:       <span class="ruby-identifier">mtime</span>    = <span class="ruby-constant">File</span>.<span class="ruby-identifier">mtime</span>(<span class="ruby-ivar">@fullname</span>)
+72: 
+73:       <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">checksumlog</span>, <span class="ruby-value str">'r'</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">file</span><span class="ruby-operator">|</span>
+74:         <span class="ruby-keyword kw">while</span> (<span class="ruby-identifier">line</span> = <span class="ruby-identifier">file</span>.<span class="ruby-identifier">gets</span>)
+75:           <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">line</span>.<span class="ruby-identifier">split</span>.<span class="ruby-identifier">first</span>.<span class="ruby-identifier">eql?</span>(<span class="ruby-identifier">basename</span>)
+76:             <span class="ruby-keyword kw">return</span> [<span class="ruby-identifier">line</span>.<span class="ruby-identifier">split</span>[<span class="ruby-value">2</span>], <span class="ruby-identifier">line</span>.<span class="ruby-identifier">split</span>[<span class="ruby-value">3</span>], <span class="ruby-identifier">line</span>.<span class="ruby-identifier">split</span>[<span class="ruby-value">4</span>]]
+77:           <span class="ruby-keyword kw">end</span>
+78:         <span class="ruby-keyword kw">end</span>
+79:       <span class="ruby-keyword kw">end</span>
+80:     <span class="ruby-keyword kw">end</span></pre>
+					</div>
+					
+				</div>
+
+				
+
+				
+			</div>
+
+		
+			<div id="has-checksums--method" class="method-detail ">
+				<a name="method-i-has_checksums%3F"></a>
+
+				<div class="method-heading">
+				
+					<span class="method-name">has_checksums?</span><span
+						class="method-args">()</span>
+					<span class="method-click-advice">click to toggle source</span>
+				
+				</div>
+
+				<div class="method-description">
+					
+					
+					
+
+					
+					<div class="method-source-code"
+						id="has-checksums--source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/repomate/package.rb, line 50</span>
+50:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">has_checksums?</span>
+51:       <span class="ruby-identifier">basename</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">basename</span>(<span class="ruby-ivar">@fullname</span>)
+52:       <span class="ruby-identifier">mtime</span>    = <span class="ruby-constant">File</span>.<span class="ruby-identifier">mtime</span>(<span class="ruby-ivar">@fullname</span>)
+53: 
+54:       <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">checksumlog</span>, <span class="ruby-value str">&quot;w&quot;</span>) {} <span class="ruby-keyword kw">unless</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">exists?</span> <span class="ruby-identifier">checksumlog</span>
+55: 
+56:       <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">checksumlog</span>, <span class="ruby-value str">'r'</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">file</span><span class="ruby-operator">|</span>
+57:         <span class="ruby-keyword kw">while</span> (<span class="ruby-identifier">line</span> = <span class="ruby-identifier">file</span>.<span class="ruby-identifier">gets</span>)
+58:           <span class="ruby-comment cmt">#p line</span>
+59:           <span class="ruby-comment cmt"># p basename</span>
+60:           <span class="ruby-comment cmt"># p line.split.first</span>
+61:           <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">line</span>.<span class="ruby-identifier">split</span>.<span class="ruby-identifier">first</span>.<span class="ruby-identifier">eql?</span>(<span class="ruby-identifier">basename</span>) <span class="ruby-comment cmt"># &amp;&amp; line.split[1].eql?(mtime)</span>
+62:             <span class="ruby-comment cmt">#p &quot;has checksums #{basename}&quot;</span>
+63:             <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">true</span>
+64:           <span class="ruby-keyword kw">end</span>
+65:         <span class="ruby-keyword kw">end</span>
+66:       <span class="ruby-keyword kw">end</span>
+67:     <span class="ruby-keyword kw">end</span></pre>
+					</div>
+					
+				</div>
+
+				
+
+				
+			</div>
+
+		
+			<div id="save-checksums-method" class="method-detail ">
+				<a name="method-i-save_checksums"></a>
+
+				<div class="method-heading">
+				
+					<span class="method-name">save_checksums</span><span
+						class="method-args">()</span>
+					<span class="method-click-advice">click to toggle source</span>
+				
+				</div>
+
+				<div class="method-description">
+					
+					
+					
+
+					
+					<div class="method-source-code"
+						id="save-checksums-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/repomate/package.rb, line 34</span>
+34:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">save_checksums</span>
+35:     <span class="ruby-comment cmt"># filebasename file.mtime md5 sha1 sha256</span>
+36:       <span class="ruby-identifier">source_category</span> = <span class="ruby-value str">&quot;dists&quot;</span>
+37: 
+38:       <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Making checksum for #{@fullname}&quot;</span>
+39: 
+40:       <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">checksumlog</span>, <span class="ruby-value str">'a'</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">file</span><span class="ruby-operator">|</span>
+41:         <span class="ruby-identifier">basename</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">basename</span>(<span class="ruby-ivar">@fullname</span>)
+42:         <span class="ruby-identifier">mtime</span>    = <span class="ruby-constant">File</span>.<span class="ruby-identifier">mtime</span>(<span class="ruby-ivar">@fullname</span>)
+43:         <span class="ruby-identifier">md5</span>      = <span class="ruby-constant">Digest</span><span class="ruby-operator">::</span><span class="ruby-constant">MD5</span>.<span class="ruby-identifier">file</span>(<span class="ruby-ivar">@fullname</span>).<span class="ruby-identifier">to_s</span>
+44:         <span class="ruby-identifier">sha1</span>     = <span class="ruby-constant">Digest</span><span class="ruby-operator">::</span><span class="ruby-constant">SHA1</span>.<span class="ruby-identifier">file</span>(<span class="ruby-ivar">@fullname</span>).<span class="ruby-identifier">to_s</span>
+45:         <span class="ruby-identifier">sha256</span>   = <span class="ruby-constant">Digest</span><span class="ruby-operator">::</span><span class="ruby-constant">SHA256</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">256</span>).<span class="ruby-identifier">file</span>(<span class="ruby-ivar">@fullname</span>).<span class="ruby-identifier">to_s</span>
+46:         <span class="ruby-identifier">file</span>.<span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;#{basename} #{mtime.iso8601} #{md5} #{sha1} #{sha256}&quot;</span>
+47:       <span class="ruby-keyword kw">end</span>
+48:     <span class="ruby-keyword kw">end</span></pre>
 					</div>
 					
 				</div>
@@ -349,14 +508,13 @@ Checks if the given package is a debian package
 					<div class="method-source-code"
 						id="check-package-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/repomate/package.rb, line 31</span>
-31:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">check_package</span>
-32:       <span class="ruby-comment cmt">#p @fullname</span>
-33:       <span class="ruby-keyword kw">unless</span> <span class="ruby-node">`file --dereference #{@fullname}`</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp re">/Debian binary package/</span>
-34:         <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;File does not exist or is not a Debian package!&quot;</span>
-35:         <span class="ruby-keyword kw">false</span>
-36:       <span class="ruby-keyword kw">end</span>
-37:     <span class="ruby-keyword kw">end</span></pre>
+    <span class="ruby-comment cmt"># File lib/repomate/package.rb, line 85</span>
+85:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">check_package</span>
+86:       <span class="ruby-keyword kw">unless</span> <span class="ruby-node">`file --dereference #{@fullname}`</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp re">/Debian binary package/</span>
+87:         <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;File does not exist or is not a Debian package!&quot;</span>
+88:         <span class="ruby-keyword kw">false</span>
+89:       <span class="ruby-keyword kw">end</span>
+90:     <span class="ruby-keyword kw">end</span></pre>
 					</div>
 					
 				</div>
@@ -389,24 +547,34 @@ Extracts the controlfile and returns is
 					<div class="method-source-code"
 						id="read-controlfile-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/repomate/package.rb, line 40</span>
-40:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">read_controlfile</span>
-41:       <span class="ruby-identifier">gzbasename</span>  = <span class="ruby-value str">&quot;control.tar.gz&quot;</span>
-42:       <span class="ruby-identifier">basename</span>    = <span class="ruby-value str">&quot;control&quot;</span>
-43:       <span class="ruby-identifier">tmpdir</span>      = <span class="ruby-constant">File</span>.<span class="ruby-identifier">expand_path</span> <span class="ruby-node">&quot;#{Dir.tmpdir}/#{Time.now.to_i}#{rand(1000)}/&quot;</span>
-44:       <span class="ruby-identifier">gzfullname</span>  = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">tmpdir</span>, <span class="ruby-identifier">gzbasename</span>)
-45:       <span class="ruby-identifier">fullname</span>    = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">tmpdir</span>, <span class="ruby-identifier">basename</span>)
-46: 
-47:       <span class="ruby-constant">FileUtils</span>.<span class="ruby-identifier">mkdir_p</span>(<span class="ruby-identifier">tmpdir</span>)
-48:       <span class="ruby-keyword kw">begin</span>
-49:         <span class="ruby-identifier">raise</span> <span class="ruby-value str">&quot;Could not untar&quot;</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">system</span> <span class="ruby-node">&quot;ar -p #{@fullname} #{gzbasename} &gt; #{gzfullname}&quot;</span>
-50:         <span class="ruby-identifier">raise</span> <span class="ruby-constant">Errno</span><span class="ruby-operator">::</span><span class="ruby-constant">ENOENT</span>, <span class="ruby-value str">&quot;Package file does not exist&quot;</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">exists?</span>(<span class="ruby-identifier">gzfullname</span>)
-51:         <span class="ruby-identifier">raise</span> <span class="ruby-value str">&quot;Could not untar&quot;</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">system</span> <span class="ruby-node">&quot;tar xfz #{gzfullname} -C #{tmpdir}&quot;</span>
-52:         <span class="ruby-constant">YAML</span><span class="ruby-operator">::</span><span class="ruby-identifier">load_file</span>(<span class="ruby-identifier">fullname</span>)
-53:       <span class="ruby-keyword kw">ensure</span>
-54:         <span class="ruby-constant">FileUtils</span>.<span class="ruby-identifier">rm_rf</span>(<span class="ruby-identifier">tmpdir</span>)
-55:       <span class="ruby-keyword kw">end</span>
-56:     <span class="ruby-keyword kw">end</span></pre>
+     <span class="ruby-comment cmt"># File lib/repomate/package.rb, line 93</span>
+ 93:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">read_controlfile</span>
+ 94:       <span class="ruby-identifier">gzbasename</span>  = <span class="ruby-value str">&quot;control.tar.gz&quot;</span>
+ 95:       <span class="ruby-identifier">basename</span>    = <span class="ruby-value str">&quot;control&quot;</span>
+ 96:       <span class="ruby-identifier">tmpdir</span>      = <span class="ruby-constant">File</span>.<span class="ruby-identifier">expand_path</span> <span class="ruby-node">&quot;#{Dir.tmpdir}/#{Time.now.to_i}#{rand(1000)}/&quot;</span>
+ 97:       <span class="ruby-identifier">gzfullname</span>  = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">tmpdir</span>, <span class="ruby-identifier">gzbasename</span>)
+ 98:       <span class="ruby-identifier">fullname</span>    = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">tmpdir</span>, <span class="ruby-identifier">basename</span>)
+ 99: 
+100:       <span class="ruby-identifier">controlfile</span> = {}
+101: 
+102:       <span class="ruby-constant">FileUtils</span>.<span class="ruby-identifier">mkdir_p</span>(<span class="ruby-identifier">tmpdir</span>)
+103: 
+104:       <span class="ruby-keyword kw">begin</span>
+105:         <span class="ruby-identifier">raise</span> <span class="ruby-value str">&quot;Could not untar&quot;</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">system</span> <span class="ruby-node">&quot;ar -p #{@fullname} #{gzbasename} &gt; #{gzfullname}&quot;</span>
+106:         <span class="ruby-identifier">raise</span> <span class="ruby-constant">Errno</span><span class="ruby-operator">::</span><span class="ruby-constant">ENOENT</span>, <span class="ruby-value str">&quot;Package file does not exist&quot;</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">exists?</span>(<span class="ruby-identifier">gzfullname</span>)
+107:         <span class="ruby-identifier">raise</span> <span class="ruby-value str">&quot;Could not untar&quot;</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">system</span> <span class="ruby-node">&quot;tar xfz #{gzfullname} -C #{tmpdir}&quot;</span>
+108: 
+109:         <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">fullname</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">file</span><span class="ruby-operator">|</span>
+110:           <span class="ruby-keyword kw">while</span>(<span class="ruby-identifier">line</span> = <span class="ruby-identifier">file</span>.<span class="ruby-identifier">gets</span>)
+111:             <span class="ruby-identifier">line</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp re">%{(.*):\s(.*)}</span>
+112:             <span class="ruby-identifier">controlfile</span>[<span class="ruby-node">$1</span>] = <span class="ruby-node">$2</span>
+113:           <span class="ruby-keyword kw">end</span>
+114:         <span class="ruby-keyword kw">end</span>
+115:       <span class="ruby-keyword kw">ensure</span>
+116:         <span class="ruby-constant">FileUtils</span>.<span class="ruby-identifier">rm_rf</span>(<span class="ruby-identifier">tmpdir</span>)
+117:       <span class="ruby-keyword kw">end</span>
+118:       <span class="ruby-identifier">controlfile</span>
+119:     <span class="ruby-keyword kw">end</span></pre>
 					</div>
 					
 				</div>

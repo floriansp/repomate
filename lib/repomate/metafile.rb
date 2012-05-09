@@ -65,12 +65,14 @@ module RepoMate
     def create_packages
       source_category = "dists"
 
-      packages_template     = ERB.new File.new(File.join(File.dirname(__FILE__), "templates/packages.erb")).read, nil, "%"
+      packages_template = ERB.new File.new(File.join(File.dirname(__FILE__), "templates/packages.erb")).read, nil, "%"
 
       Architecture.dataset(source_category).each do |entry|
         source  = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], source_category)
         source.files.each do |fullname|
           package = Package.new(fullname, entry[:suitename], entry[:component])
+
+          checksums = package.checksums
 
           packagesfile = File.join(entry[:fullpath], "Packages")
           size         = File.size(fullname)
@@ -122,7 +124,7 @@ module RepoMate
         rescue
           destroy
           create_packages
-          puts "GPG password incorrect"
+          puts "GPG email/password incorrect"
           return
         end
       end
@@ -135,5 +137,6 @@ module RepoMate
       output = File.open(outfile, 'w')
       crypto.sign File.open(file, 'r'), :symmetric => false, :output => output, :signer => @config.get[:gpg_email], :mode => GPGME::SIG_MODE_DETACH
     end
+
   end
 end

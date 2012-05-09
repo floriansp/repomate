@@ -69,7 +69,7 @@ module RepoMate
       newworkload = []
       workload.each do |entry|
         destination = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], "dists")
-        basename    = File.split(entry[:source_fullname])[1]
+        basename    = File.basename(entry[:source_fullname])
 
         @repository.create(entry[:suitename], entry[:component], entry[:architecture])
 

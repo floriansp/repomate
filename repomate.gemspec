@@ -1,7 +1,7 @@
 Gem::Specification.new do |spec|
   spec.license                = 'MIT'
   spec.name                   = 'repomate'
-  spec.version                = '0.0.1'
+  spec.version                = '0.0.3'
   spec.files                  = Dir["bin/*"] + Dir["etc/*"] + Dir["lib/**/*"]
   spec.summary                = 'A tool to manage Debian repositories'
   spec.description            = File.read(File.expand_path('README.md'))
@@ -17,12 +17,15 @@ Gem::Specification.new do |spec|
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       spec.add_runtime_dependency(%q<slop>, ["~> 3.0.4"])
       spec.add_runtime_dependency(%q<gpgme>, ["~> 2.0.0"])
+      spec.add_runtime_dependency(%q<sqlite3>, ["~> 1.3.6"])
     else
       spec.add_dependency(%q<slop>, ["~> 3.0.4"])
       spec.add_dependency(%q<gpgme>, ["~> 2.0.0"])
+      spec.add_dependency(%q<sqlite3>, ["~> 1.3.6"])
     end
   else
     spec.add_dependency(%q<slop>, ["~> 3.0.4"])
     spec.add_dependency(%q<gpgme>, ["~> 2.0.0"])
+    spec.add_dependency(%q<sqlite3>, ["~> 1.3.6"])
   end
 end
