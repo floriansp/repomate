@@ -1,6 +1,3 @@
-# require 'repomate/configuration'
-# require 'repomate/repository'
-# require 'repomate/base'
 require 'date'
 require 'time'
 

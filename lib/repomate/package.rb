@@ -1,5 +1,3 @@
-# require 'repomate/configuration'
-# require 'repomate/database'
 require 'digest/md5'
 require 'digest/sha1'
 require 'digest/sha2'

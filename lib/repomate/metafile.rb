@@ -1,7 +1,3 @@
-# require 'repomate/configuration'
-# require 'repomate/architecture'
-# require 'repomate/repository'
-# require 'repomate/package'
 require 'erb'
 require 'date'
 require 'time'

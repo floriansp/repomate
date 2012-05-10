@@ -1,5 +1,3 @@
-#require 'repomate/configuration'
-
 # RepoMate module
 module RepoMate
 

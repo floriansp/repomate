@@ -1,4 +1,3 @@
-# require 'repomate/configuration'
 require 'sqlite3'
 
 # RepoMate module

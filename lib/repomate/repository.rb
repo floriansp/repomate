@@ -1,9 +1,3 @@
-# require 'repomate/configuration'
-# require 'repomate/architecture'
-# require 'repomate/component'
-# require 'repomate/category'
-# require 'repomate/suite'
-
 # RepoMate module
 module RepoMate
 

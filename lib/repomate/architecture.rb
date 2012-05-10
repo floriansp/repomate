@@ -1,5 +1,3 @@
-#require 'repomate'
-
 # RepoMate module
 module RepoMate
 
