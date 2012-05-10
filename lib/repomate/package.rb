@@ -1,6 +1,11 @@
 require_relative 'configuration'
 require_relative 'database'
+require 'digest/md5'
+require 'digest/sha1'
+require 'digest/sha2'
 require 'tempfile'
+require 'date'
+require 'time'
 
 # RepoMate module
 module RepoMate
@@ -31,29 +36,37 @@ module RepoMate
 
     # Create the package table
     def create_table
-      sql = "create table if not exists checksums ( basename varchar2(70), md5 varchar(32), sha1 varchar(40), sha265 varchar(64) )"
+      sql = "create table if not exists checksums (
+              date varchar(25),
+              basename varchar(70),
+              mtime varchar(25),
+              md5 varchar(32),
+              sha1 varchar(40),
+              sha256 varchar(64)
+      )"
       @db.query(sql)
     end
 
     # Gets checksums for the given package
     def checksums
+      now       = DateTime.now
       basename  = File.basename(@fullname)
       mtime     = File.mtime(@fullname)
       result    = []
 
-      @db.query("select * from checksums where basename = '#{basename}'").each do |row|
+      @db.query("select md5, sha1, sha256 from checksums where basename = '#{basename}'").each do |row|
         result = row
 
         # puts "Hit: #{basename} #{result}"
       end
 
       if result.empty?
-        #puts "Ins: #{basename}"
+        # puts "Ins: #{basename}"
 
         md5      = Digest::MD5.file(@fullname).to_s
         sha1     = Digest::SHA1.file(@fullname).to_s
         sha256   = Digest::SHA256.new(256).file(@fullname).to_s
-        @db.query("insert into checksums values ( '#{basename}', '#{md5}', '#{sha1}', '#{sha256}' )")
+        @db.query("insert into checksums values ( '#{now}', '#{basename}', '#{mtime.iso8601}', '#{md5}', '#{sha1}', '#{sha256}' )")
       end
       result
     end
