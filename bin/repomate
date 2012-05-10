@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 
-require 'repomate'
+require_relative '../lib/repomate/configuration'
+require_relative '../lib/repomate/base'
+require_relative '../lib/repomate/cli'
 require 'rubygems'
 require 'slop'
 
@@ -58,4 +60,3 @@ elsif ARGV.include?("setup")
 else
   puts options.help
 end
-

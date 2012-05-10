@@ -1,4 +1,4 @@
-require 'repomate'
+require_relative '../repomate'
 require 'date'
 require 'time'
 
