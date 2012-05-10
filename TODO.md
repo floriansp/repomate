@@ -9,3 +9,4 @@
 * Add backup function for the pool
 * Enhance user documentation
 * Create remove functionality
+* Create methods to clean up the database
