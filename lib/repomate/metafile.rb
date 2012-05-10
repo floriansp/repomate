@@ -72,7 +72,7 @@ module RepoMate
         source.files.each do |fullname|
           package = Package.new(fullname, entry[:suitename], entry[:component])
 
-          checksums = package.checksums
+          checksums = package.get_checksums
 
           packagesfile = File.join(entry[:fullpath], "Packages")
           size         = File.size(fullname)

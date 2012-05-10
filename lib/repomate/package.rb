@@ -22,6 +22,7 @@ module RepoMate
       @suitename  = suitename
       @component  = component
       @basename   = File.basename(fullname)
+      @mtime      = File.mtime(fullname)
       @db         = Database.new
 
       check_package
@@ -48,29 +49,31 @@ module RepoMate
     end
 
     # Gets checksums for the given package
-    def checksums
+    def get_checksums
       now       = DateTime.now
-      basename  = File.basename(@fullname)
-      mtime     = File.mtime(@fullname)
       result    = []
 
-      @db.query("select md5, sha1, sha256 from checksums where basename = '#{basename}'").each do |row|
+      @db.query("select md5, sha1, sha256 from checksums where basename = '#{@basename}' and mtime = '#{@mtime.iso8601}'").each do |row|
         result = row
 
-        # puts "Hit: #{basename} #{result}"
+        # puts "Hit: #{@basename} #{result}"
       end
 
       if result.empty?
-        # puts "Ins: #{basename}"
+        # puts "Ins: #{@basename}"
 
         md5      = Digest::MD5.file(@fullname).to_s
         sha1     = Digest::SHA1.file(@fullname).to_s
         sha256   = Digest::SHA256.new(256).file(@fullname).to_s
-        @db.query("insert into checksums values ( '#{now}', '#{basename}', '#{mtime.iso8601}', '#{md5}', '#{sha1}', '#{sha256}' )")
+        @db.query("insert into checksums values ( '#{now}', '#{@basename}', '#{@mtime.iso8601}', '#{md5}', '#{sha1}', '#{sha256}' )")
       end
       result
     end
 
+    # Gets checksums for the given package
+    def delete_checksums
+      @db.query("delete from checksums where name = '#{@basename}")
+    end
 
     protected
 
