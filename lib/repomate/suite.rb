@@ -1,5 +1,5 @@
-require_relative 'configuration'
-require_relative 'category'
+# require 'repomate/configuration'
+# require 'repomate/category'
 
 # RepoMate module
 module RepoMate

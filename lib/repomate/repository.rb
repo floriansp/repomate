@@ -1,8 +1,8 @@
-require_relative 'configuration'
-require_relative 'architecture'
-require_relative 'component'
-require_relative 'category'
-require_relative 'suite'
+# require 'repomate/configuration'
+# require 'repomate/architecture'
+# require 'repomate/component'
+# require 'repomate/category'
+# require 'repomate/suite'
 
 # RepoMate module
 module RepoMate

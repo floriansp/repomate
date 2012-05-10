@@ -1,7 +1,4 @@
-require_relative 'configuration'
-require_relative 'component'
-require_relative 'category'
-require_relative 'suite'
+#require 'repomate'
 
 # RepoMate module
 module RepoMate

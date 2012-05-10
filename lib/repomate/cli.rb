@@ -1,6 +1,6 @@
-require_relative 'configuration'
-require_relative 'repository'
-require_relative 'base'
+# require 'repomate/configuration'
+# require 'repomate/repository'
+# require 'repomate/base'
 require 'date'
 require 'time'
 

@@ -1,5 +1,5 @@
-require_relative 'configuration'
-require_relative 'database'
+# require 'repomate/configuration'
+# require 'repomate/database'
 require 'digest/md5'
 require 'digest/sha1'
 require 'digest/sha2'
@@ -112,3 +112,4 @@ module RepoMate
     end
   end
 end
+
