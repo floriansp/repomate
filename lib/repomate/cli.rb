@@ -1,6 +1,3 @@
-require_relative 'configuration'
-require_relative 'repository'
-require_relative 'base'
 require 'date'
 require 'time'
 

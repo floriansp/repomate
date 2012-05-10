@@ -1,4 +1,3 @@
-require_relative 'configuration'
 require 'sqlite3'
 
 # RepoMate module
@@ -31,3 +30,4 @@ module RepoMate
     end
   end
 end
+

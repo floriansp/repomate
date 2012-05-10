@@ -1,7 +1,3 @@
-require_relative 'configuration'
-require_relative 'architecture'
-require_relative 'repository'
-require_relative 'package'
 require 'erb'
 require 'date'
 require 'time'
@@ -140,3 +136,4 @@ module RepoMate
 
   end
 end
+

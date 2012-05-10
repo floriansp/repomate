@@ -1,8 +1,4 @@
-require_relative 'configuration'
-require_relative 'architecture'
-require_relative 'repository'
-require_relative 'metafile'
-require_relative 'package'
+require 'repomate'
 require 'date'
 require 'time'
 

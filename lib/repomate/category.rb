@@ -1,5 +1,3 @@
-require_relative 'configuration'
-
 # RepoMate module
 module RepoMate
 
@@ -62,3 +60,4 @@ module RepoMate
 
   end
 end
+
