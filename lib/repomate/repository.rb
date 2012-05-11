@@ -8,7 +8,6 @@ module RepoMate
 
     # Init
     def initialize
-      @config     = Configuration.new
       @categories = ["stage", "pool", "dists"]
     end
 

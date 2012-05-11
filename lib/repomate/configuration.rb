@@ -10,10 +10,6 @@ module RepoMate
 
     # Init
     def initialize
-
-      # will be removed soon
-      @configfiles = [File.join(ENV['HOME'], '.repomate'), File.join(File.dirname(__FILE__), '..', '..', 'etc', 'config.yml')]
-
       @configfile = File.join(ENV['HOME'], '.repomate')
 
       configure(@configfile)
@@ -70,16 +66,12 @@ module RepoMate
         send setter, value
       end
     end
-
-    # Returns configured values as hash, keys are symbols
-    def get
-      @configfiles.each do |file|
-        if File.exist?(file)
-          return YAML::load_file(file)
-        end
-      end
-    end
-
   end
+
+  Cfg = Configuration.new
+
 end
+
+
+
 

@@ -6,7 +6,6 @@ module RepoMate
 
     # Init
     def initialize(architecture, component, suitename, category)
-      @config       = Configuration.new
       @architecture = architecture
       @component    = component
       @suitename    = suitename
@@ -20,7 +19,7 @@ module RepoMate
 
     # Returns the directory strcuture of the architecture including all lower layers
     def directory
-      File.join(@config.get[:rootdir], @category, @suitename, @component, "binary-#{name}")
+      File.join(Cfg.rootdir, @category, @suitename, @component, "binary-#{name}")
     end
 
     # Checks if the architecture directory exists
@@ -63,7 +62,6 @@ module RepoMate
 
     # Returns a dataset including the name of the architecture and the fullpath recursive through all lower layers
     def self.dataset(category=nil)
-      config = Configuration.new
       data   = []
       self.all.each do |entry|
         parts = entry.split(/\//)
@@ -76,7 +74,7 @@ module RepoMate
             :component        => parts[2],
             :architecture_dir => parts[3],
             :architecture     => architecture[1],
-            :fullpath         => File.join(config.get[:rootdir], entry)
+            :fullpath         => File.join(Cfg.rootdir, entry)
           }
         end
       end
@@ -85,10 +83,9 @@ module RepoMate
 
     # Returns all directories without @rootdir
     def self.all
-      config      = Configuration.new
       components  = Component.all
       dirs        = []
-      rootdir     = config.get[:rootdir]
+      rootdir     = Cfg.rootdir
       components.each do |component|
         architectures = Dir.glob(File.join(rootdir, component, "*"))
         architectures.each do |architecture|
@@ -100,7 +97,7 @@ module RepoMate
 
     # Gets all configured architectures
     def self.allowed
-      Configuration.new.get[:architectures].uniq
+      Cfg.architectures.uniq
     end
 
   end

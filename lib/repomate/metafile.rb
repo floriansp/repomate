@@ -14,14 +14,12 @@ module RepoMate
 
     # Init
     def initialize
-      @config     = Configuration.new
       @repository = Repository.new
     end
 
     # Returns a lit of all existing metafiles as array
     def all
-      config   = Configuration.new
-      rootdir  = config.get[:rootdir]
+      rootdir  = Cfg.rootdir
       dirlist  = ["#{rootdir}/*/*", "#{rootdir}/*/*/*/*"]
       filelist = ["Packages", "Packages.gz", "Release", "Release.gpg" ]
       files = []
@@ -47,8 +45,8 @@ module RepoMate
       destroy
       create_packages
 
-      if @config.get[:gpg_enable]
-        if @config.get[:gpg_password].nil? || @config.get[:gpg_email].nil?
+      if Cfg.gpg_enable
+        if Cfg.gpg_password.nil? || Cfg.gpg_email.nil?
           puts "Configure password and email for GPG!"
           exit 1
         else
@@ -112,7 +110,7 @@ module RepoMate
           end
         end
 
-        releasefile = File.join(@config.get[:rootdir], source_category, suite, "Release")
+        releasefile = File.join(Cfg.rootdir, source_category, suite, "Release")
 
         File.open(releasefile, 'w') { |file| file.puts suiterelease_template.result(binding).gsub(/^\s+\n|^\n|^\s{3}/, '') }
         begin
@@ -128,10 +126,10 @@ module RepoMate
 
     # Sign a file
     def sign(file)
-      crypto = GPGME::Crypto.new :password => @config.get[:gpg_password]
+      crypto = GPGME::Crypto.new :password => Cfg.gpg_password
       outfile = "#{file}.gpg"
       output = File.open(outfile, 'w')
-      crypto.sign File.open(file, 'r'), :symmetric => false, :output => output, :signer => @config.get[:gpg_email], :mode => GPGME::SIG_MODE_DETACH
+      crypto.sign File.open(file, 'r'), :symmetric => false, :output => output, :signer => Cfg.gpg_email, :mode => GPGME::SIG_MODE_DETACH
     end
 
   end

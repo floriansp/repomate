@@ -15,7 +15,6 @@ module RepoMate
 
     # Init
     def initialize(fullname, suitename, component)
-      @config     = Configuration.new
       @fullname   = fullname
       @suitename  = suitename
       @component  = component

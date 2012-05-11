@@ -6,7 +6,6 @@ module RepoMate
 
     # Init
     def initialize(component, suitename, category)
-      @config     = Configuration.new
       @component  = component
       @suitename  = suitename
       @category   = category
@@ -19,7 +18,7 @@ module RepoMate
 
     # Returns the directory strcuture of the component including all lower layers
     def directory
-      File.join(@config.get[:rootdir], @category, @suitename, @component)
+      File.join(Cfg.rootdir, @category, @suitename, @component)
     end
 
     # Checks if the component directory exists
@@ -62,7 +61,6 @@ module RepoMate
 
     # Returns a dataset including the name of the component, the fullpath recursive through all lower layers
     def self.dataset(category=nil)
-      config = Configuration.new
       data  = []
       self.all.each do |entry|
         parts = entry.split(/\//)
@@ -72,7 +70,7 @@ module RepoMate
             :category     => parts[0],
             :suitename    => parts[1],
             :component    => parts[2],
-            :fullpath     => File.join(config.get[:rootdir], entry)
+            :fullpath     => File.join(Cfg.rootdir, entry)
           }
         end
       end
@@ -84,7 +82,7 @@ module RepoMate
       config  = Configuration.new
       suites  = Suite.all
       dirs    = []
-      rootdir = config.get[:rootdir]
+      rootdir = Cfg.rootdir
       suites.each do |suite|
         components = Dir.glob(File.join(rootdir, suite, "*"))
         components.each do |component|
@@ -96,7 +94,7 @@ module RepoMate
 
     # Gets all configured architectures
     def self.allowed
-      Configuration.new.get[:components].uniq
+      Cfg.components.uniq
     end
 
   end

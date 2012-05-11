@@ -11,7 +11,6 @@ module RepoMate
     def initialize
       @repomate   = Base.new
       @repository = Repository.new
-      @config     = Configuration.new
     end
 
     # Sets up the base directory structure by calling the repository class

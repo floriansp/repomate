@@ -6,7 +6,6 @@ module RepoMate
 
     # Init
     def initialize(category)
-      @config   = Configuration.new
       @category = category
     end
 
@@ -17,7 +16,7 @@ module RepoMate
 
     # Returns the full path of the categories directory
     def directory
-      File.join(@config.get[:rootdir], @category)
+      File.join(Cfg.rootdir, @category)
     end
 
     # Checks if the category directory exists
@@ -37,14 +36,13 @@ module RepoMate
 
     # Returns a dataset including the name of the category and the fullpath
     def self.dataset(category=nil)
-      config = Configuration.new
       data   = []
       self.all.each do |entry|
         unless entry.nil?
           next unless entry.eql?(category) || category.eql?("all")
           data << {
             :category     => entry,
-            :fullpath     => File.join(config.get[:rootdir], entry)
+            :fullpath     => File.join(Cfg.rootdir, entry)
           }
         end
       end
@@ -53,8 +51,7 @@ module RepoMate
 
     # Returns all directories
     def self.all
-      config = Configuration.new
-      dirs   = Dir.glob(File.join(config.get[:rootdir], "*"))
+      dirs   = Dir.glob(File.join(Cfg.rootdir, "*"))
       dirs.map{ |dir| File.basename(dir) unless dirs.include?(File.basename(dir)) }
     end
 

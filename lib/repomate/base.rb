@@ -11,13 +11,11 @@ module RepoMate
 
     # Init
     def initialize
-      @config     = Configuration.new
       @repository = Repository.new
       @metafile   = Metafile.new
-      @logdir     = @config.get[:logdir]
-      @redolog    = File.join(@config.get[:logdir], @config.get[:redolog])
-      
-      unless Dir.exists?(@logdir)
+      @redolog    = File.join(Cfg.logdir, Cfg.redolog)
+
+      unless Dir.exists?(Cfg.logdir)
         puts
         puts "\tPlease run \"repomate setup\" first!".hl(:red)
         puts
@@ -87,7 +85,7 @@ module RepoMate
 
     # Does the link job after checking versions through dpkg
     def check_versions(workload)
-      dpkg   = @config.get[:dpkg]
+      dpkg = Cfg.dpkg
 
       raise "dpkg is not installed" unless File.exists?(dpkg)
 
