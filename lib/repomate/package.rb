@@ -20,7 +20,8 @@ module RepoMate
       @component  = component
       @basename   = File.basename(fullname)
       @mtime      = File.mtime(fullname)
-      @db         = Database.new
+      @packagesdb = File.join(Cfg.rootdir, "packages.db")
+      @db         = Database.new(@packagesdb)
 
       check_package
       create_table
@@ -56,7 +57,7 @@ module RepoMate
       result
     end
 
-    # Creates the checksums for a package file
+    # Creates the checksums for a package
     def create_checksums
       # puts "Ins: #{@basename}"
       now      = DateTime.now

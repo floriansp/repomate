@@ -29,8 +29,6 @@ module RepoMate
       defaults = {
         :rootdir       => '/var/lib/repomate/repository',
         :logdir        => '/var/log/repomate',
-        :redolog       => 'redo.log',
-        :database      => 'repomate.db',
         :dpkg          => '/usr/bin/dpkg',
         :suites        => [ "lenny", "squeeze" ],
         :components    => [ "main", "contrib" ],

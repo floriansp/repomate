@@ -11,15 +11,21 @@ module RepoMate
 
     # Init
     def initialize
-      @repository = Repository.new
-      @metafile   = Metafile.new
-      @redolog    = File.join(Cfg.logdir, Cfg.redolog)
+      FileUtils.mkdir_p(Cfg.rootdir)
+
+      @repository    = Repository.new
+      @metafile      = Metafile.new
+      @checkpointsdb = File.join(Cfg.rootdir, "checkpoints.db")
+      @db            = Database.new(@checkpointsdb)
 
       unless Dir.exists?(Cfg.logdir)
         puts
         puts "\tPlease run \"repomate setup\" first!".hl(:red)
         puts
       end
+
+      create_checkpoints_table
+
     end
 
     # Add's a package to the staging area
@@ -138,7 +144,7 @@ module RepoMate
           package.create_checksums
 
           File.symlink(entry[:source_fullname], entry[:destination_fullname])
-          puts "Package: #{entry[:newbasename]} linked to production => #{entry[:suitename]}/#{entry[:component]}"
+          puts "Package: #{package.newbasename} linked to production => #{entry[:suitename]}/#{entry[:component]}"
           action = true
         end
       end
@@ -167,18 +173,28 @@ module RepoMate
       end
     end
 
+    # Create the checkpoint table
+    def create_checkpoints_table
+      sql = "create table if not exists checkpoints (
+              date varchar(25),
+              suitename varchar(10),
+              component varchar(10),
+              architecture varchar(10),
+              basename varchar(70)
+      )"
+      @db.query(sql)
+    end
+
     # Saves a checkpoint
     def save_checkpoint
       datetime        = DateTime.now
       source_category = "dists"
 
-      File.open(@redolog, 'a') do |file|
-        Architecture.dataset(source_category).each do |entry|
-          source = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], source_category)
-          source.files.each do |fullname|
-            basename = File.basename(fullname)
-            file.puts "#{datetime} #{entry[:suitename]} #{entry[:component]} #{entry[:architecture]} #{basename}"
-          end
+      Architecture.dataset(source_category).each do |entry|
+        source = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], source_category)
+        source.files.each do |fullname|
+          basename = File.basename(fullname)
+          @db.query("insert into checkpoints values ( '#{datetime}', '#{entry[:suitename]}', '#{entry[:component]}', '#{entry[:architecture]}', '#{basename}' )")
         end
       end
 
@@ -204,13 +220,12 @@ module RepoMate
         end
       end
 
-      File.open(@redolog, 'r') do |file|
-        while (line = file.gets)
-          if line.split[0] == list[number]
-            suitename    = line.split[1]
-            component    = line.split[2]
-            architecture = line.split[3]
-            basename     = line.split[4]
+      @db.query("select date, suitename, component, architecture, basename from checkpoints").each do |row|
+        if row[0] == list[number]
+            suitename    = row[1]
+            component    = row[2]
+            architecture = row[3]
+            basename     = row[4]
             source       = Architecture.new(architecture, component, suitename, "pool")
             destination  = Architecture.new(architecture, component, suitename, "dists")
 
@@ -221,7 +236,6 @@ module RepoMate
               :suitename            => suitename,
               :architecture         => architecture
             }
-          end
         end
       end
 
@@ -231,19 +245,12 @@ module RepoMate
 
     # Returns a list of checkpoints for the cli
     def get_checkpoints
-      unless File.exists?(@redolog)
-        STDERR.puts "We can't restore because we don't have checkpoints"
-        exit 1
-      end
-
       order = 0
       dates = []
       list  = {}
 
-      File.open(@redolog, 'r') do |file|
-        while (line = file.gets)
-          dates << line.split[0] unless dates.include?(line.split[0])
-        end
+      @db.query("select date from checkpoints group by date order by date asc").each do |row|
+        dates << row.first
       end
 
       dates.each do |date|
@@ -318,8 +325,10 @@ module RepoMate
           end
         end
       end
-      puts "Cleaning structure" if action
-      # @metafile.create if action
+      if action
+        puts "Cleaning structure"
+        @metafile.create
+      end
     end
   end
 end

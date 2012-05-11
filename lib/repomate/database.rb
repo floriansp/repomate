@@ -7,10 +7,9 @@ module RepoMate
   class Database
 
     # Init
-    def initialize
-      @dbfile     = File.join(Cfg.rootdir, Cfg.database)
-      @db         = SQLite3::Database.new(@dbfile)
-      @basename   = File.basename(@dbfile)
+    def initialize(dbfile)
+      @db         = SQLite3::Database.new(dbfile)
+      @basename   = File.basename(dbfile)
     end
 
     # Checks if the database file already exists
