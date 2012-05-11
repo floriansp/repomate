@@ -9,4 +9,4 @@
 * Add backup function for the pool
 * Enhance user documentation
 * Create remove functionality
-* Create methods to clean up the database
+* Make checkpoints use the sqlite3 db instead of a logfile
