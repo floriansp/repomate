@@ -2,7 +2,7 @@
 :rootdir: /var/lib/repomate/repository
 :logdir: /var/log/repomate
 :redolog: redo.log
-:repomatedb: repomate.db
+:database: repomate.db
 :dpkg: /usr/bin/dpkg
 :suites:
     - lenny

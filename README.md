@@ -47,6 +47,7 @@ Please make sure you have the following packages installed:
 
 * ruby
 * dpkg
+* libsqlite3-dev
 
 #### Get RepoMate
     
@@ -60,7 +61,33 @@ Please make sure you have the following packages installed:
 
 GPG ist enabled by default. If you don't want it, just set the value of gpg_enable to "no" otherwise generate a gpg key and add the needed values to the configfile.
 
-    vi etc/config.yml
+Create the config file if you don't want the default configuration.
+    
+    vi ~/.repomate.yml
+    
+Sample config:
+       
+    ---
+    :rootdir: /var/lib/repomate/repository
+    :logdir: /var/log/repomate
+    :redolog: redo.log
+    :database: repomate.db
+    :dpkg: /usr/bin/dpkg
+    :suites:
+        - lenny
+        - squeeze
+    :components:
+        - main
+        - contrib
+    :architectures:
+        - all
+        - amd64
+    :origin: Repository
+    :label: Repository
+    :gpg_enable: yes
+    :gpg_email: someone@example.net
+    :gpg_password: secret
+ 
     
 #### Configure webserver
 

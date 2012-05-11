@@ -207,20 +207,19 @@ Returns all directories without @rootdir
 					<div class="method-source-code"
 						id="all-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/repomate/architecture.rb, line 87</span>
-87:     <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">all</span>
-88:       <span class="ruby-identifier">config</span>      = <span class="ruby-constant">Configuration</span>.<span class="ruby-identifier">new</span>
-89:       <span class="ruby-identifier">components</span>  = <span class="ruby-constant">Component</span>.<span class="ruby-identifier">all</span>
-90:       <span class="ruby-identifier">dirs</span>        = []
-91:       <span class="ruby-identifier">rootdir</span>     = <span class="ruby-identifier">config</span>.<span class="ruby-identifier">get</span>[<span class="ruby-value">:rootdir</span>]
-92:       <span class="ruby-identifier">components</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">component</span><span class="ruby-operator">|</span>
-93:         <span class="ruby-identifier">architectures</span> = <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">glob</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">rootdir</span>, <span class="ruby-identifier">component</span>, <span class="ruby-value str">&quot;*&quot;</span>))
-94:         <span class="ruby-identifier">architectures</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">architecture</span><span class="ruby-operator">|</span>
-95:           <span class="ruby-identifier">dirs</span>.<span class="ruby-identifier">push</span> <span class="ruby-identifier">architecture</span>.<span class="ruby-identifier">gsub</span>(<span class="ruby-node">/#{rootdir}\//</span>, <span class="ruby-value str">''</span>) <span class="ruby-keyword kw">if</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">directory?</span> <span class="ruby-identifier">architecture</span>
-96:         <span class="ruby-keyword kw">end</span>
-97:       <span class="ruby-keyword kw">end</span>
-98:       <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">dirs</span>
-99:     <span class="ruby-keyword kw">end</span></pre>
+    <span class="ruby-comment cmt"># File lib/repomate/architecture.rb, line 85</span>
+85:     <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">all</span>
+86:       <span class="ruby-identifier">components</span>  = <span class="ruby-constant">Component</span>.<span class="ruby-identifier">all</span>
+87:       <span class="ruby-identifier">dirs</span>        = []
+88:       <span class="ruby-identifier">rootdir</span>     = <span class="ruby-constant">Cfg</span>.<span class="ruby-identifier">rootdir</span>
+89:       <span class="ruby-identifier">components</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">component</span><span class="ruby-operator">|</span>
+90:         <span class="ruby-identifier">architectures</span> = <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">glob</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">rootdir</span>, <span class="ruby-identifier">component</span>, <span class="ruby-value str">&quot;*&quot;</span>))
+91:         <span class="ruby-identifier">architectures</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">architecture</span><span class="ruby-operator">|</span>
+92:           <span class="ruby-identifier">dirs</span>.<span class="ruby-identifier">push</span> <span class="ruby-identifier">architecture</span>.<span class="ruby-identifier">gsub</span>(<span class="ruby-node">/#{rootdir}\//</span>, <span class="ruby-value str">''</span>) <span class="ruby-keyword kw">if</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">directory?</span> <span class="ruby-identifier">architecture</span>
+93:         <span class="ruby-keyword kw">end</span>
+94:       <span class="ruby-keyword kw">end</span>
+95:       <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">dirs</span>
+96:     <span class="ruby-keyword kw">end</span></pre>
 					</div>
 					
 				</div>
@@ -253,10 +252,10 @@ Gets all configured architectures
 					<div class="method-source-code"
 						id="allowed-source">
 <pre>
-     <span class="ruby-comment cmt"># File lib/repomate/architecture.rb, line 102</span>
-102:     <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">allowed</span>
-103:       <span class="ruby-constant">Configuration</span>.<span class="ruby-identifier">new</span>.<span class="ruby-identifier">get</span>[<span class="ruby-value">:architectures</span>].<span class="ruby-identifier">uniq</span>
-104:     <span class="ruby-keyword kw">end</span></pre>
+     <span class="ruby-comment cmt"># File lib/repomate/architecture.rb, line 99</span>
+ 99:     <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">allowed</span>
+100:       <span class="ruby-constant">Cfg</span>.<span class="ruby-identifier">architectures</span>.<span class="ruby-identifier">uniq</span>
+101:     <span class="ruby-keyword kw">end</span></pre>
 					</div>
 					
 				</div>
@@ -290,27 +289,26 @@ recursive through all lower layers
 					<div class="method-source-code"
 						id="dataset-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/repomate/architecture.rb, line 65</span>
-65:     <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">dataset</span>(<span class="ruby-identifier">category</span>=<span class="ruby-keyword kw">nil</span>)
-66:       <span class="ruby-identifier">config</span> = <span class="ruby-constant">Configuration</span>.<span class="ruby-identifier">new</span>
-67:       <span class="ruby-identifier">data</span>   = []
-68:       <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">all</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">entry</span><span class="ruby-operator">|</span>
-69:         <span class="ruby-identifier">parts</span> = <span class="ruby-identifier">entry</span>.<span class="ruby-identifier">split</span>(<span class="ruby-regexp re">/\//</span>)
-70:         <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">parts</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">&lt;</span> <span class="ruby-value">4</span>
-71:           <span class="ruby-keyword kw">next</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">parts</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">eql?</span>(<span class="ruby-identifier">category</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">category</span>.<span class="ruby-identifier">eql?</span>(<span class="ruby-value str">&quot;all&quot;</span>)
-72:           <span class="ruby-identifier">architecture</span> = <span class="ruby-identifier">parts</span>[<span class="ruby-value">3</span>].<span class="ruby-identifier">split</span>(<span class="ruby-regexp re">/-/</span>)
-73:           <span class="ruby-identifier">data</span> <span class="ruby-operator">&lt;&lt;</span> {
-74:             <span class="ruby-value">:category</span>         =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">parts</span>[<span class="ruby-value">0</span>],
-75:             <span class="ruby-value">:suitename</span>        =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">parts</span>[<span class="ruby-value">1</span>],
-76:             <span class="ruby-value">:component</span>        =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">parts</span>[<span class="ruby-value">2</span>],
-77:             <span class="ruby-value">:architecture_dir</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">parts</span>[<span class="ruby-value">3</span>],
-78:             <span class="ruby-value">:architecture</span>     =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">architecture</span>[<span class="ruby-value">1</span>],
-79:             <span class="ruby-value">:fullpath</span>         =<span class="ruby-operator">&gt;</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">config</span>.<span class="ruby-identifier">get</span>[<span class="ruby-value">:rootdir</span>], <span class="ruby-identifier">entry</span>)
-80:           }
-81:         <span class="ruby-keyword kw">end</span>
-82:       <span class="ruby-keyword kw">end</span>
-83:       <span class="ruby-identifier">data</span>
-84:     <span class="ruby-keyword kw">end</span></pre>
+    <span class="ruby-comment cmt"># File lib/repomate/architecture.rb, line 64</span>
+64:     <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">dataset</span>(<span class="ruby-identifier">category</span>=<span class="ruby-keyword kw">nil</span>)
+65:       <span class="ruby-identifier">data</span>   = []
+66:       <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">all</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">entry</span><span class="ruby-operator">|</span>
+67:         <span class="ruby-identifier">parts</span> = <span class="ruby-identifier">entry</span>.<span class="ruby-identifier">split</span>(<span class="ruby-regexp re">/\//</span>)
+68:         <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">parts</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">&lt;</span> <span class="ruby-value">4</span>
+69:           <span class="ruby-keyword kw">next</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">parts</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">eql?</span>(<span class="ruby-identifier">category</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">category</span>.<span class="ruby-identifier">eql?</span>(<span class="ruby-value str">&quot;all&quot;</span>)
+70:           <span class="ruby-identifier">architecture</span> = <span class="ruby-identifier">parts</span>[<span class="ruby-value">3</span>].<span class="ruby-identifier">split</span>(<span class="ruby-regexp re">/-/</span>)
+71:           <span class="ruby-identifier">data</span> <span class="ruby-operator">&lt;&lt;</span> {
+72:             <span class="ruby-value">:category</span>         =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">parts</span>[<span class="ruby-value">0</span>],
+73:             <span class="ruby-value">:suitename</span>        =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">parts</span>[<span class="ruby-value">1</span>],
+74:             <span class="ruby-value">:component</span>        =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">parts</span>[<span class="ruby-value">2</span>],
+75:             <span class="ruby-value">:architecture_dir</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">parts</span>[<span class="ruby-value">3</span>],
+76:             <span class="ruby-value">:architecture</span>     =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">architecture</span>[<span class="ruby-value">1</span>],
+77:             <span class="ruby-value">:fullpath</span>         =<span class="ruby-operator">&gt;</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-constant">Cfg</span>.<span class="ruby-identifier">rootdir</span>, <span class="ruby-identifier">entry</span>)
+78:           }
+79:         <span class="ruby-keyword kw">end</span>
+80:       <span class="ruby-keyword kw">end</span>
+81:       <span class="ruby-identifier">data</span>
+82:     <span class="ruby-keyword kw">end</span></pre>
 					</div>
 					
 				</div>
@@ -345,12 +343,11 @@ Init
 <pre>
     <span class="ruby-comment cmt"># File lib/repomate/architecture.rb, line 8</span>
  8:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">architecture</span>, <span class="ruby-identifier">component</span>, <span class="ruby-identifier">suitename</span>, <span class="ruby-identifier">category</span>)
- 9:       <span class="ruby-ivar">@config</span>       = <span class="ruby-constant">Configuration</span>.<span class="ruby-identifier">new</span>
-10:       <span class="ruby-ivar">@architecture</span> = <span class="ruby-identifier">architecture</span>
-11:       <span class="ruby-ivar">@component</span>    = <span class="ruby-identifier">component</span>
-12:       <span class="ruby-ivar">@suitename</span>    = <span class="ruby-identifier">suitename</span>
-13:       <span class="ruby-ivar">@category</span>     = <span class="ruby-identifier">category</span>
-14:     <span class="ruby-keyword kw">end</span></pre>
+ 9:       <span class="ruby-ivar">@architecture</span> = <span class="ruby-identifier">architecture</span>
+10:       <span class="ruby-ivar">@component</span>    = <span class="ruby-identifier">component</span>
+11:       <span class="ruby-ivar">@suitename</span>    = <span class="ruby-identifier">suitename</span>
+12:       <span class="ruby-ivar">@category</span>     = <span class="ruby-identifier">category</span>
+13:     <span class="ruby-keyword kw">end</span></pre>
 					</div>
 					
 				</div>
@@ -390,10 +387,10 @@ layers
 					<div class="method-source-code"
 						id="create-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/repomate/architecture.rb, line 50</span>
-50:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">create</span>
-51:       <span class="ruby-constant">FileUtils</span>.<span class="ruby-identifier">mkdir_p</span>(<span class="ruby-identifier">directory</span>) <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">exist?</span>
-52:     <span class="ruby-keyword kw">end</span></pre>
+    <span class="ruby-comment cmt"># File lib/repomate/architecture.rb, line 49</span>
+49:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">create</span>
+50:       <span class="ruby-constant">FileUtils</span>.<span class="ruby-identifier">mkdir_p</span>(<span class="ruby-identifier">directory</span>) <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">exist?</span>
+51:     <span class="ruby-keyword kw">end</span></pre>
 					</div>
 					
 				</div>
@@ -426,10 +423,10 @@ Deletes the architecture directory including all lower layers
 					<div class="method-source-code"
 						id="destroy-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/repomate/architecture.rb, line 55</span>
-55:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">destroy</span>
-56:       <span class="ruby-constant">FileUtils</span>.<span class="ruby-identifier">rm_r</span>(<span class="ruby-identifier">directory</span>) <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">exist?</span>
-57:     <span class="ruby-keyword kw">end</span></pre>
+    <span class="ruby-comment cmt"># File lib/repomate/architecture.rb, line 54</span>
+54:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">destroy</span>
+55:       <span class="ruby-constant">FileUtils</span>.<span class="ruby-identifier">rm_r</span>(<span class="ruby-identifier">directory</span>) <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">exist?</span>
+56:     <span class="ruby-keyword kw">end</span></pre>
 					</div>
 					
 				</div>
@@ -463,10 +460,10 @@ layers
 					<div class="method-source-code"
 						id="directory-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/repomate/architecture.rb, line 22</span>
-22:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">directory</span>
-23:       <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-ivar">@config</span>.<span class="ruby-identifier">get</span>[<span class="ruby-value">:rootdir</span>], <span class="ruby-ivar">@category</span>, <span class="ruby-ivar">@suitename</span>, <span class="ruby-ivar">@component</span>, <span class="ruby-node">&quot;binary-#{name}&quot;</span>)
-24:     <span class="ruby-keyword kw">end</span></pre>
+    <span class="ruby-comment cmt"># File lib/repomate/architecture.rb, line 21</span>
+21:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">directory</span>
+22:       <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-constant">Cfg</span>.<span class="ruby-identifier">rootdir</span>, <span class="ruby-ivar">@category</span>, <span class="ruby-ivar">@suitename</span>, <span class="ruby-ivar">@component</span>, <span class="ruby-node">&quot;binary-#{name}&quot;</span>)
+23:     <span class="ruby-keyword kw">end</span></pre>
 					</div>
 					
 				</div>
@@ -499,10 +496,10 @@ Checks if the architecture directory exists
 					<div class="method-source-code"
 						id="exist--source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/repomate/architecture.rb, line 27</span>
-27:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">exist?</span>
-28:       <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">exist?</span>(<span class="ruby-identifier">directory</span>)
-29:     <span class="ruby-keyword kw">end</span></pre>
+    <span class="ruby-comment cmt"># File lib/repomate/architecture.rb, line 26</span>
+26:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">exist?</span>
+27:       <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">exist?</span>(<span class="ruby-identifier">directory</span>)
+28:     <span class="ruby-keyword kw">end</span></pre>
 					</div>
 					
 				</div>
@@ -535,10 +532,10 @@ Returns a list of all debian files in the architecture directory
 					<div class="method-source-code"
 						id="files-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/repomate/architecture.rb, line 60</span>
-60:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">files</span>
-61:       <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">glob</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">directory</span>, <span class="ruby-value str">&quot;*.deb&quot;</span>))
-62:     <span class="ruby-keyword kw">end</span></pre>
+    <span class="ruby-comment cmt"># File lib/repomate/architecture.rb, line 59</span>
+59:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">files</span>
+60:       <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">glob</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">directory</span>, <span class="ruby-value str">&quot;*.deb&quot;</span>))
+61:     <span class="ruby-keyword kw">end</span></pre>
 					</div>
 					
 				</div>
@@ -571,10 +568,10 @@ Checks if the architecture is allowed (See: configurationfile)
 					<div class="method-source-code"
 						id="is-allowed--source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/repomate/architecture.rb, line 32</span>
-32:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">is_allowed?</span>
-33:       <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">allowed</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-ivar">@architecture</span>)
-34:     <span class="ruby-keyword kw">end</span></pre>
+    <span class="ruby-comment cmt"># File lib/repomate/architecture.rb, line 31</span>
+31:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">is_allowed?</span>
+32:       <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">allowed</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-ivar">@architecture</span>)
+33:     <span class="ruby-keyword kw">end</span></pre>
 					</div>
 					
 				</div>
@@ -607,18 +604,18 @@ Checks if directory is unused
 					<div class="method-source-code"
 						id="is-unused--source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/repomate/architecture.rb, line 37</span>
-37:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">is_unused?</span>(<span class="ruby-identifier">dir</span>)
-38:       <span class="ruby-identifier">status</span>  = <span class="ruby-keyword kw">true</span>
-39: 
-40:       <span class="ruby-identifier">path</span> = <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">glob</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">dir</span>, <span class="ruby-value str">&quot;*&quot;</span>))
-41:       <span class="ruby-identifier">path</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">dirorfile</span><span class="ruby-operator">|</span>
-42:         <span class="ruby-identifier">status</span> = <span class="ruby-keyword kw">false</span> <span class="ruby-keyword kw">if</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">directory?</span>(<span class="ruby-identifier">dirorfile</span>)
-43:         <span class="ruby-identifier">status</span> = <span class="ruby-keyword kw">false</span> <span class="ruby-keyword kw">if</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">basename</span>(<span class="ruby-identifier">dirorfile</span>) <span class="ruby-operator">=~</span> <span class="ruby-regexp re">/\.deb$/</span>
-44:       <span class="ruby-keyword kw">end</span>
-45: 
-46:       <span class="ruby-identifier">status</span>
-47:     <span class="ruby-keyword kw">end</span></pre>
+    <span class="ruby-comment cmt"># File lib/repomate/architecture.rb, line 36</span>
+36:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">is_unused?</span>(<span class="ruby-identifier">dir</span>)
+37:       <span class="ruby-identifier">status</span>  = <span class="ruby-keyword kw">true</span>
+38: 
+39:       <span class="ruby-identifier">path</span> = <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">glob</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">dir</span>, <span class="ruby-value str">&quot;*&quot;</span>))
+40:       <span class="ruby-identifier">path</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">dirorfile</span><span class="ruby-operator">|</span>
+41:         <span class="ruby-identifier">status</span> = <span class="ruby-keyword kw">false</span> <span class="ruby-keyword kw">if</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">directory?</span>(<span class="ruby-identifier">dirorfile</span>)
+42:         <span class="ruby-identifier">status</span> = <span class="ruby-keyword kw">false</span> <span class="ruby-keyword kw">if</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">basename</span>(<span class="ruby-identifier">dirorfile</span>) <span class="ruby-operator">=~</span> <span class="ruby-regexp re">/\.deb$/</span>
+43:       <span class="ruby-keyword kw">end</span>
+44: 
+45:       <span class="ruby-identifier">status</span>
+46:     <span class="ruby-keyword kw">end</span></pre>
 					</div>
 					
 				</div>
@@ -651,10 +648,10 @@ Returns the given architecture name (eg. all, amd64)
 					<div class="method-source-code"
 						id="name-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/repomate/architecture.rb, line 17</span>
-17:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">name</span>
-18:       <span class="ruby-ivar">@architecture</span>
-19:     <span class="ruby-keyword kw">end</span></pre>
+    <span class="ruby-comment cmt"># File lib/repomate/architecture.rb, line 16</span>
+16:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">name</span>
+17:       <span class="ruby-ivar">@architecture</span>
+18:     <span class="ruby-keyword kw">end</span></pre>
 					</div>
 					
 				</div>

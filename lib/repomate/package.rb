@@ -56,6 +56,7 @@ module RepoMate
       result
     end
 
+    # Creates the checksums for a package file
     def create_checksums
       # puts "Ins: #{@basename}"
       now      = DateTime.now

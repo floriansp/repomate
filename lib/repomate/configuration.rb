@@ -18,6 +18,7 @@ module RepoMate
     # Loads configfile
     def configure(configfile)
       filecontent = []
+
       filecontent = YAML::load_file(configfile) if File.exists?(configfile)
 
       merge(filecontent)
@@ -31,7 +32,7 @@ module RepoMate
         :rootdir       => '/var/lib/repomate/repository',
         :logdir        => '/var/log/repomate',
         :redolog       => 'redo.log',
-        :repomatedb    => 'repomate.db',
+        :database      => 'repomate.db',
         :dpkg          => '/usr/bin/dpkg',
         :suites        => [ "lenny", "squeeze" ],
         :components    => [ "main", "contrib" ],
@@ -68,6 +69,7 @@ module RepoMate
     end
   end
 
+  # Returns
   Cfg = Configuration.new
 
 end
