@@ -99,7 +99,7 @@ module RepoMate
         Dir.glob("#{entry[:destination_dir]}/#{source_package.name}*.deb") do |target_fullname|
           target_package = Package.new(target_fullname, entry[:suitename], entry[:component] )
 
-         if system("#{dpkg} --compare-versions #{source_package.version} gt #{target_package.version}")
+          if system("#{dpkg} --compare-versions #{source_package.version} gt #{target_package.version}")
             puts "Package: #{target_package.newbasename} will be replaced with #{source_package.newbasename}"
             unlink_workload << {
               :destination_fullname => target_fullname,
@@ -107,8 +107,10 @@ module RepoMate
             }
           elsif system("#{dpkg} --compare-versions #{source_package.version} eq #{target_package.version}")
             puts "Package: #{source_package.newbasename} already exists with same version"
+            return
           elsif system("#{dpkg} --compare-versions #{source_package.version} lt #{target_package.version}")
             puts "Package: #{source_package.newbasename} already exists with higher version"
+            return
           end
         end
 
