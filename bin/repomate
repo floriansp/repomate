@@ -2,7 +2,7 @@
 
 # expand path if in development mode
 if File.exists?(File.join(File.join(File.dirname(__FILE__), '..', '.git')))
-  $: << File.join(File.dirname(__FILE__), '..', 'lib')  
+  $: << File.join(File.dirname(__FILE__), '..', 'lib')
 end
 
 require 'repomate'

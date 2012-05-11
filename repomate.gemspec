@@ -1,7 +1,7 @@
 Gem::Specification.new do |spec|
   spec.license                = 'MIT'
   spec.name                   = 'repomate'
-  spec.version                = '0.0.5'
+  spec.version                = '0.0.6'
   spec.files                  = Dir["bin/*"] + Dir["etc/*"] + Dir["lib/**/*"]
   spec.summary                = 'A tool to manage Debian repositories'
   spec.description            = File.read(File.expand_path('README.md'))
@@ -23,12 +23,12 @@ Gem::Specification.new do |spec|
       spec.add_dependency(%q<slop>, ["~> 3.0.4"])
       spec.add_dependency(%q<gpgme>, ["~> 2.0.0"])
       spec.add_dependency(%q<sqlite3>, ["~> 1.3.6"])
-      spec.add_dependency(%q<colors>, ["~> 0.0.6"])      
+      spec.add_dependency(%q<colors>, ["~> 0.0.6"])
     end
   else
     spec.add_dependency(%q<slop>, ["~> 3.0.4"])
     spec.add_dependency(%q<gpgme>, ["~> 2.0.0"])
     spec.add_dependency(%q<sqlite3>, ["~> 1.3.6"])
-    spec.add_dependency(%q<colors>, ["~> 0.0.6"])    
+    spec.add_dependency(%q<colors>, ["~> 0.0.6"])
   end
 end
