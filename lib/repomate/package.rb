@@ -11,7 +11,7 @@ module RepoMate
   # Class for reading debian packages
   class Package
 
-    attr_reader :name, :basename, :newbasename, :controlfile, :architecture, :version
+    attr_reader :name, :basename, :newbasename, :controlfile, :architecture, :version, :suitename, :component, :fullname
 
     # Init
     def initialize(fullname, suitename, component)
@@ -48,29 +48,28 @@ module RepoMate
 
     # Gets checksums for the given package
     def get_checksums
-      now       = DateTime.now
-      result    = []
+      result = []
 
       @db.query("select md5, sha1, sha256 from checksums where basename = '#{@basename}' and mtime = '#{@mtime.iso8601}'").each do |row|
         result = row
-
         # puts "Hit: #{@basename} #{result}"
-      end
-
-      if result.empty?
-        # puts "Ins: #{@basename}"
-
-        md5      = Digest::MD5.file(@fullname).to_s
-        sha1     = Digest::SHA1.file(@fullname).to_s
-        sha256   = Digest::SHA256.new(256).file(@fullname).to_s
-        @db.query("insert into checksums values ( '#{now}', '#{@basename}', '#{@mtime.iso8601}', '#{md5}', '#{sha1}', '#{sha256}' )")
       end
       result
     end
 
+    def create_checksums
+      # puts "Ins: #{@basename}"
+      now      = DateTime.now
+      md5      = Digest::MD5.file(@fullname).to_s
+      sha1     = Digest::SHA1.file(@fullname).to_s
+      sha256   = Digest::SHA256.new(256).file(@fullname).to_s
+      @db.query("insert into checksums values ( '#{now}', '#{@basename}', '#{@mtime.iso8601}', '#{md5}', '#{sha1}', '#{sha256}' )")
+    end
+
     # Gets checksums for the given package
     def delete_checksums
-      @db.query("delete from checksums where name = '#{@basename}")
+      # puts "Del: #{@basename}"
+      @db.query("delete from checksums where basename = '#{@basename}'")
     end
 
     protected

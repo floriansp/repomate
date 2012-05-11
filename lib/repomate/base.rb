@@ -1,4 +1,4 @@
-require_relative '../repomate'
+require 'repomate'
 require 'date'
 require 'time'
 
@@ -77,62 +77,83 @@ module RepoMate
       workload = newworkload
 
       save_checkpoint
-      link(workload)
+      check_versions(workload)
     end
 
     # Does the link job after checking versions through dpkg
-    def link(workload)
+    def check_versions(workload)
       dpkg   = @config.get[:dpkg]
 
-      raise "dpkg is not installed" unless File.exists?(dpkg)
+      # raise "dpkg is not installed" unless File.exists?(dpkg)
 
-      link   = []
-      unlink = []
-      action = false
+      link_workload   = []
+      unlink_workload = []
 
       workload.each do |entry|
-        @repository.create(entry[:suitename], entry[:component], entry[:architecture])
-
         source_package       = Package.new(entry[:source_fullname], entry[:suitename], entry[:component])
         destination_fullname = File.join(entry[:destination_dir], source_package.newbasename)
 
         Dir.glob("#{entry[:destination_dir]}/#{source_package.name}*.deb") do |target_fullname|
           target_package = Package.new(target_fullname, entry[:suitename], entry[:component] )
 
-         if system("#{dpkg} --compare-versions #{source_package.version} gt #{target_package.version}")
+         # if system("#{dpkg} --compare-versions #{source_package.version} gt #{target_package.version}")
             puts "Package: #{target_package.newbasename} will be replaced with #{source_package.newbasename}"
-            unlink << {
+            unlink_workload << {
               :destination_fullname => target_fullname,
               :newbasename          => target_package.newbasename
             }
-          elsif system("#{dpkg} --compare-versions #{source_package.version} eq #{target_package.version}")
-            puts "Package: #{source_package.newbasename} already exists with same version"
-          elsif system("#{dpkg} --compare-versions #{source_package.version} lt #{target_package.version}")
-            puts "Package: #{source_package.newbasename} already exists with higher version"
-          end
+          # elsif system("#{dpkg} --compare-versions #{source_package.version} eq #{target_package.version}")
+          #   puts "Package: #{source_package.newbasename} already exists with same version"
+          # elsif system("#{dpkg} --compare-versions #{source_package.version} lt #{target_package.version}")
+          #   puts "Package: #{source_package.newbasename} already exists with higher version"
+          # end
         end
 
-        link << {
-          :source_fullname      => entry[:source_fullname],
+        link_workload << {
+          :source_fullname      => source_package.fullname,
           :destination_fullname => destination_fullname,
-          :suitename            => entry[:suitename],
-          :component            => entry[:component],
+          :suitename            => source_package.suitename,
+          :component            => source_package.component,
           :newbasename          => source_package.newbasename
         }
       end
 
-      unlink.each do |entry|
-        File.unlink(entry[:destination_fullname])
-        puts "Package: #{entry[:newbasename]} unlinked"
-        action = true
-      end
+      unlink(unlink_workload)
+      link(link_workload)
+    end
 
-      link.each do |entry|
+    # links the workload
+    def link(workload)
+      action = false
+
+      workload.each do |entry|
+        @repository.create(entry[:suitename], entry[:component], entry[:architecture])
         unless File.exists?(entry[:destination_fullname])
+          package = Package.new(entry[:source_fullname], entry[:suitename], entry[:component])
+          package.create_checksums
+
           File.symlink(entry[:source_fullname], entry[:destination_fullname])
           puts "Package: #{entry[:newbasename]} linked to production => #{entry[:suitename]}/#{entry[:component]}"
           action = true
         end
+      end
+
+      if action
+        @metafile.create
+      end
+    end
+
+    # unlinks workload
+    def unlink(workload)
+      action = false
+
+      workload.each do |entry|
+        package = Package.new(entry[:destination_fullname], entry[:suitename], entry[:component])
+        package.delete_checksums
+
+        File.unlink(entry[:destination_fullname])
+        puts "Package: #{package.newbasename} unlinked"
+        action = true
       end
 
       if action
@@ -162,13 +183,19 @@ module RepoMate
     # Loads a checkpoint
     def load_checkpoint(number)
       list            = get_checkpoints
-      workload        = []
+      link_workload   = []
+      unlink_workload = []
       source_category = "dists"
 
       Architecture.dataset(source_category).each do |entry|
         destination = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], source_category)
         destination.files.each do |fullname|
-          File.unlink fullname
+          unlink_workload << {
+            :destination_fullname => fullname,
+            :component            => entry[:component],
+            :suitename            => entry[:suitename],
+            :architecture         => entry[:architecture]
+          }
         end
       end
 
@@ -182,18 +209,19 @@ module RepoMate
             source       = Architecture.new(architecture, component, suitename, "pool")
             destination  = Architecture.new(architecture, component, suitename, "dists")
 
-            workload << {
-              :source_fullname  => File.join(source.directory, basename),
-              :destination_dir  => destination.directory,
-              :component        => component,
-              :suitename        => suitename,
-              :architecture     => architecture
+            link_workload << {
+              :source_fullname      => File.join(source.directory, basename),
+              :destination_fullname => File.join(destination.directory, basename),
+              :component            => component,
+              :suitename            => suitename,
+              :architecture         => architecture
             }
           end
         end
       end
 
-      link(workload)
+      unlink(unlink_workload)
+      link(link_workload)
     end
 
     # Returns a list of checkpoints for the cli
