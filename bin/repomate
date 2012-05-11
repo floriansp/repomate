@@ -1,5 +1,10 @@
 #!/usr/bin/env ruby
 
+# expand path if in development mode
+if File.exists?(File.join(File.join(File.dirname(__FILE__), '..', '.git')))
+  $: << File.join(File.dirname(__FILE__), '..', 'lib')  
+end
+
 require 'repomate'
 require 'rubygems'
 require 'slop'
