@@ -31,7 +31,7 @@ Checkpoints may help if you accidently published a bunch of packages to the wron
 
 If you did:
 
-    sbin/repomate load
+    repomate load
 
 Choose the last checkpoint and be happy again.
 
@@ -66,8 +66,6 @@ Sample config:
     ---
     :rootdir: /var/lib/repomate/repository
     :logdir: /var/log/repomate
-    :redolog: redo.log
-    :database: repomate.db
     :dpkg: /usr/bin/dpkg
     :suites:
         - lenny
@@ -91,8 +89,8 @@ Configure your favorite webserver by adding RepoMate's rootdirectory to a site o
 
 #### Adding packages
 
-    sbin/repomate add -s squeeze package.deb
-    sbin/repomate publish
+    repomate add -s squeeze package.deb
+    repomate publish
 
 
 ### Client
