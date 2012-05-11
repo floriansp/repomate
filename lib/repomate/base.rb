@@ -13,10 +13,10 @@ module RepoMate
     def initialize
       FileUtils.mkdir_p(Cfg.rootdir)
 
-      @repository    = Repository.new
-      @metafile      = Metafile.new
-      @checkpointsdb = File.join(Cfg.rootdir, "checkpoints.db")
-      @db            = Database.new(@checkpointsdb)
+      @repository = Repository.new
+      @metafile   = Metafile.new
+      @cpdbfile   = File.join(Cfg.rootdir, "checkpoints.db")
+      @cpdb       = Database.new(@cpdbfile)
 
       unless Dir.exists?(Cfg.logdir)
         puts
@@ -182,7 +182,7 @@ module RepoMate
               architecture varchar(10),
               basename varchar(70)
       )"
-      @db.query(sql)
+      @cpdb.query(sql)
     end
 
     # Saves a checkpoint
@@ -194,7 +194,7 @@ module RepoMate
         source = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], source_category)
         source.files.each do |fullname|
           basename = File.basename(fullname)
-          @db.query("insert into checkpoints values ( '#{datetime}', '#{entry[:suitename]}', '#{entry[:component]}', '#{entry[:architecture]}', '#{basename}' )")
+          @cpdb.query("insert into checkpoints values ( '#{datetime}', '#{entry[:suitename]}', '#{entry[:component]}', '#{entry[:architecture]}', '#{basename}' )")
         end
       end
 
@@ -220,7 +220,7 @@ module RepoMate
         end
       end
 
-      @db.query("select date, suitename, component, architecture, basename from checkpoints").each do |row|
+      @cpdb.query("select date, suitename, component, architecture, basename from checkpoints").each do |row|
         if row[0] == list[number]
             suitename    = row[1]
             component    = row[2]
@@ -249,7 +249,7 @@ module RepoMate
       dates = []
       list  = {}
 
-      @db.query("select date from checkpoints group by date order by date asc").each do |row|
+      @cpdb.query("select date from checkpoints group by date order by date asc").each do |row|
         dates << row.first
       end
 

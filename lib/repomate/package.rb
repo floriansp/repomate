@@ -20,8 +20,8 @@ module RepoMate
       @component  = component
       @basename   = File.basename(fullname)
       @mtime      = File.mtime(fullname)
-      @packagesdb = File.join(Cfg.rootdir, "packages.db")
-      @db         = Database.new(@packagesdb)
+      @pkgdbfile  = File.join(Cfg.rootdir, "packages.db")
+      @pkgdb      = Database.new(@pkgdbfile)
 
       check_package
       create_table
@@ -43,14 +43,14 @@ module RepoMate
               sha1 varchar(40),
               sha256 varchar(64)
       )"
-      @db.query(sql)
+      @pkgdb.query(sql)
     end
 
     # Gets checksums for the given package
     def get_checksums
       result = []
 
-      @db.query("select md5, sha1, sha256 from checksums where basename = '#{@basename}' and mtime = '#{@mtime.iso8601}'").each do |row|
+      @pkgdb.query("select md5, sha1, sha256 from checksums where basename = '#{@basename}' and mtime = '#{@mtime.iso8601}'").each do |row|
         result = row
         # puts "Hit: #{@basename} #{result}"
       end
@@ -64,13 +64,13 @@ module RepoMate
       md5      = Digest::MD5.file(@fullname).to_s
       sha1     = Digest::SHA1.file(@fullname).to_s
       sha256   = Digest::SHA256.new(256).file(@fullname).to_s
-      @db.query("insert into checksums values ( '#{now}', '#{@basename}', '#{@mtime.iso8601}', '#{md5}', '#{sha1}', '#{sha256}' )")
+      @pkgdb.query("insert into checksums values ( '#{now}', '#{@basename}', '#{@mtime.iso8601}', '#{md5}', '#{sha1}', '#{sha256}' )")
     end
 
     # Gets checksums for the given package
     def delete_checksums
       # puts "Del: #{@basename}"
-      @db.query("delete from checksums where basename = '#{@basename}'")
+      @pkgdb.query("delete from checksums where basename = '#{@basename}'")
     end
 
     protected
