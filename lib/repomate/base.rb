@@ -19,7 +19,7 @@ module RepoMate
       
       unless Dir.exists?(@logdir)
         puts
-        puts "\tPlease run \"#{$0} setup\" first!".hl(:red)
+        puts "\tPlease run \"repomate setup\" first!".hl(:red)
         puts
       end
     end
