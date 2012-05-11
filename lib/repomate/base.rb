@@ -1,6 +1,7 @@
 require 'repomate'
 require 'date'
 require 'time'
+require 'colors'
 
 # RepoMate module
 module RepoMate
@@ -15,8 +16,12 @@ module RepoMate
       @metafile   = Metafile.new
       @logdir     = @config.get[:logdir]
       @redolog    = File.join(@config.get[:logdir], @config.get[:redolog])
-
-      FileUtils.mkdir_p(@logdir) unless Dir.exists?(@logdir)
+      
+      unless Dir.exists?(@logdir)
+        puts
+        puts "\tPlease run \"#{$0} setup\" first!".hl(:red)
+        puts
+      end
     end
 
     # Add's a package to the staging area
