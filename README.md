@@ -51,11 +51,7 @@ Please make sure you have the following packages installed:
 
 #### Get RepoMate
     
-    cd /opt
-    git clone git@github.com:floriansp/repomate.git
-    
-    gem install bundler
-    bundle install
+    gem install repomate
     
 #### Configure RepoMate
 
