@@ -6,8 +6,6 @@ module RepoMate
   # Configuration class
   class Configuration
 
-    attr_reader :get
-
     # Init
     def initialize
       @configfile = File.join(ENV['HOME'], '.repomate')
