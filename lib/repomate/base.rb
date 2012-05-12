@@ -162,9 +162,13 @@ module RepoMate
         package = Package.new(entry[:destination_fullname], entry[:suitename], entry[:component])
         package.delete_checksums
 
-        File.unlink(entry[:destination_fullname])
-        puts "Package: #{package.newbasename} unlinked"
-        action = true
+        if File.exists?(entry[:destination_fullname])
+          File.unlink(entry[:destination_fullname])
+          puts "Package: #{package.newbasename} unlinked"
+          action = true
+        else
+          puts "Package: #{package.newbasename} was not linked"
+        end
       end
 
       if action
