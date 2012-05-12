@@ -59,7 +59,7 @@ GPG ist enabled by default. If you don't want it, just set the value of gpg_enab
 
 Create the config file if you don't want the default configuration.
     
-    vi ~/.repomate.yml
+    vi ~/.repomate
     
 Sample config:
        
