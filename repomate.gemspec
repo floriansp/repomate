@@ -4,7 +4,7 @@ Gem::Specification.new do |spec|
   spec.version                = '0.1.2'
   spec.files                  = Dir["bin/*"] + Dir["lib/**/*"]
   spec.summary                = 'A tool to manage Debian repositories'
-  spec.description            = File.read(File.expand_path('README.md'))
+  spec.description            = 'A tool to manage Debian repositories'
   spec.executables            = ['repomate']
   spec.required_ruby_version  = '> 1.9'
 
@@ -32,3 +32,4 @@ Gem::Specification.new do |spec|
     spec.add_dependency(%q<colors>, ["~> 0.0.6"])
   end
 end
+
