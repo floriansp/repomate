@@ -11,6 +11,7 @@ module RepoMate
     def initialize
       @repomate   = Base.new
       @repository = Repository.new
+      @checkpoint = Checkpoint.new
     end
 
     # Sets up the base directory structure by calling the repository class
@@ -67,7 +68,7 @@ module RepoMate
     # Save a checkpoint
     def save_checkpoint
       # Add verification and some output here
-      @repomate.save_checkpoint
+      @checkpoint.save_checkpoint
     end
 
     # List all packages, see cli output
@@ -88,7 +89,7 @@ module RepoMate
 
     # Choose a checkpoint to restore.
     def choose_checkpoint
-      list = @repomate.get_checkpoints
+      list = @checkpoint.get_checkpoints
 
       if list.empty?
         STDERR.puts "We can't restore because we don't have checkpoints"
@@ -115,7 +116,7 @@ Everything between the last two \"publish (-P) commands\" will be lost if you pr
         STDERR.puts "Invalid number"
         exit 1
       else
-        @repomate.load_checkpoint(number)
+        @checkpoint.load_checkpoint(number)
       end
     end
   end

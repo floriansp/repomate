@@ -14,7 +14,9 @@ module RepoMate
       FileUtils.mkdir_p(Cfg.rootdir)
 
       @repository = Repository.new
+      @checkpoint = Checkpoint.new
       @metafile   = Metafile.new
+      @link       = Link.new
       @cpdbfile   = File.join(Cfg.rootdir, "checkpoints.db")
       @cpdb       = Database.new(@cpdbfile)
 
@@ -24,7 +26,7 @@ module RepoMate
         puts
       end
 
-      create_checkpoints_table
+      @checkpoint.create_checkpoints_table
 
     end
 
@@ -85,7 +87,7 @@ module RepoMate
       end
       workload = newworkload
 
-      save_checkpoint
+      @checkpoint.save_checkpoint
       check_versions(workload)
     end
 
@@ -128,141 +130,8 @@ module RepoMate
           :newbasename          => source_package.newbasename
         }
       end
-
-      unlink(unlink_workload)
-      link(link_workload)
-    end
-
-    # links the workload
-    def link(workload)
-      action = false
-
-      workload.each do |entry|
-        @repository.create(entry[:suitename], entry[:component], entry[:architecture])
-        unless File.exists?(entry[:destination_fullname])
-          package = Package.new(entry[:source_fullname], entry[:suitename], entry[:component])
-          package.create_checksums
-
-          File.symlink(entry[:source_fullname], entry[:destination_fullname])
-          puts "Package: #{package.newbasename} linked to production => #{entry[:suitename]}/#{entry[:component]}"
-          action = true
-        end
-      end
-
-      if action
-        @metafile.create
-      end
-    end
-
-    # unlinks workload
-    def unlink(workload)
-      action = false
-
-      workload.each do |entry|
-        package = Package.new(entry[:destination_fullname], entry[:suitename], entry[:component])
-        package.delete_checksums
-
-        if File.exists?(entry[:destination_fullname])
-          File.unlink(entry[:destination_fullname])
-          puts "Package: #{package.newbasename} unlinked"
-          action = true
-        else
-          puts "Package: #{package.newbasename} was not linked"
-        end
-      end
-
-      if action
-        cleandirs
-        @metafile.create
-      end
-    end
-
-    # Create the checkpoint table
-    def create_checkpoints_table
-      sql = "create table if not exists checkpoints (
-              date varchar(25),
-              suitename varchar(10),
-              component varchar(10),
-              architecture varchar(10),
-              basename varchar(70)
-      )"
-      @cpdb.query(sql)
-    end
-
-    # Saves a checkpoint
-    def save_checkpoint
-      datetime        = DateTime.now
-      source_category = "dists"
-
-      Architecture.dataset(source_category).each do |entry|
-        source = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], source_category)
-        source.files.each do |fullname|
-          basename = File.basename(fullname)
-          @cpdb.query("insert into checkpoints values ( '#{datetime}', '#{entry[:suitename]}', '#{entry[:component]}', '#{entry[:architecture]}', '#{basename}' )")
-        end
-      end
-
-      puts "Checkpoint (#{datetime.strftime("%F %T")}) saved"
-    end
-
-    # Loads a checkpoint
-    def load_checkpoint(number)
-      list            = get_checkpoints
-      link_workload   = []
-      unlink_workload = []
-      source_category = "dists"
-
-      Architecture.dataset(source_category).each do |entry|
-        destination = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], source_category)
-        destination.files.each do |fullname|
-          unlink_workload << {
-            :destination_fullname => fullname,
-            :component            => entry[:component],
-            :suitename            => entry[:suitename],
-            :architecture         => entry[:architecture]
-          }
-        end
-      end
-
-      @cpdb.query("select date, suitename, component, architecture, basename from checkpoints").each do |row|
-        if row[0] == list[number]
-            suitename    = row[1]
-            component    = row[2]
-            architecture = row[3]
-            basename     = row[4]
-            source       = Architecture.new(architecture, component, suitename, "pool")
-            destination  = Architecture.new(architecture, component, suitename, "dists")
-
-            link_workload << {
-              :source_fullname      => File.join(source.directory, basename),
-              :destination_fullname => File.join(destination.directory, basename),
-              :component            => component,
-              :suitename            => suitename,
-              :architecture         => architecture
-            }
-        end
-      end
-
-      unlink(unlink_workload)
-      link(link_workload)
-    end
-
-    # Returns a list of checkpoints for the cli
-    def get_checkpoints
-      order = 0
-      dates = []
-      list  = {}
-
-      @cpdb.query("select date from checkpoints group by date order by date asc").each do |row|
-        dates << row.first
-      end
-
-      dates.each do |date|
-        order += 1
-        list[order] = date
-      end
-
-      list
+      @link.destroy(unlink_workload)
+      @link.create(link_workload)
     end
 
     # Returns a list of packages
@@ -299,40 +168,6 @@ module RepoMate
         end
       end
       packages
-    end
-
-    # cleans up unused directories
-    def cleandirs
-      action = false
-
-      @repository.categories.each do |category|
-        next if category.eql?("stage")
-        Architecture.dataset(category).each do |entry|
-          directory = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], category)
-          if directory.is_unused?(entry[:fullpath])
-            action = true
-            directory.destroy
-          end
-        end
-        Component.dataset(category).each do |entry|
-          directory = Component.new(entry[:component], entry[:suitename], category)
-          if directory.is_unused?(entry[:fullpath])
-            action = true
-            directory.destroy
-          end
-        end
-        Suite.dataset(category).each do |entry|
-          directory = Suite.new(entry[:suitename], category)
-          if directory.is_unused?(entry[:fullpath])
-            action = true
-            directory.destroy
-          end
-        end
-      end
-      if action
-        puts "Cleaning structure"
-        @metafile.create
-      end
     end
   end
 end
