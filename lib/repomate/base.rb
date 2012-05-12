@@ -15,10 +15,7 @@ module RepoMate
 
       @repository = Repository.new
       @checkpoint = Checkpoint.new
-      @metafile   = Metafile.new
       @link       = Link.new
-      @cpdbfile   = File.join(Cfg.rootdir, "checkpoints.db")
-      @cpdb       = Database.new(@cpdbfile)
 
       unless Dir.exists?(Cfg.logdir)
         puts
