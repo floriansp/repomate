@@ -1,7 +1,7 @@
 Gem::Specification.new do |spec|
   spec.license                = 'MIT'
   spec.name                   = 'repomate'
-  spec.version                = '0.1.1'
+  spec.version                = '0.1.2'
   spec.files                  = Dir["bin/*"] + Dir["lib/**/*"]
   spec.summary                = 'A tool to manage Debian repositories'
   spec.description            = File.read(File.expand_path('README.md'))
