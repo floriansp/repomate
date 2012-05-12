@@ -68,15 +68,15 @@ module RepoMate
     # Save a checkpoint
     def save_checkpoint
       # Add verification and some output here
-      @checkpoint.save_checkpoint
+      @checkpoint.create
     end
 
     # List all packages, see cli output
-    def list_packagelist(options)
+    def list_packages(options)
       if options.repodir?
         architecture = "unknown"
 
-        packages = @repomate.get_packagelist(options[:repodir])
+        packages = @repomate.list_packages(options[:repodir])
         packages.each do |package|
             architecture = package[:architecture] if package[:architecture]
             printf "%-50s%-20s%s\n", package[:controlfile]['Package'], package[:controlfile]['Version'], "#{package[:suitename]}/#{package[:component]}/#{architecture}"
@@ -89,7 +89,7 @@ module RepoMate
 
     # Choose a checkpoint to restore.
     def choose_checkpoint
-      list = @checkpoint.get_checkpoints
+      list = @checkpoint.list
 
       if list.empty?
         STDERR.puts "We can't restore because we don't have checkpoints"
@@ -116,7 +116,7 @@ Everything between the last two \"publish (-P) commands\" will be lost if you pr
         STDERR.puts "Invalid number"
         exit 1
       else
-        @checkpoint.load_checkpoint(number)
+        @checkpoint.load(number)
       end
     end
   end

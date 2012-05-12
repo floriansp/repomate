@@ -57,7 +57,7 @@ elsif ARGV.include?("save")
 elsif ARGV.include?("load")
   cli.choose_checkpoint
 elsif ARGV.include?("listpackages")
-  cli.list_packagelist(options)
+  cli.list_packages(options)
 elsif ARGV.include?("setup")
   cli.setup(options)
 else

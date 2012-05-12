@@ -35,7 +35,7 @@ module RepoMate
         :architectures => [ "all", "amd64" ],
         :origin        => 'Repository',
         :label         => 'Repository',
-        :gpg_enable    => 'yes',
+        :gpg_enable    => 'no',
         :gpg_email     => 'someone@example.net',
         :gpg_password  => 'secret',
       }

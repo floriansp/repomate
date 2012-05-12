@@ -25,9 +25,6 @@ module RepoMate
         puts "\tPlease run \"repomate setup\" first!".hl(:red)
         puts
       end
-
-      @checkpoint.create_checkpoints_table
-
     end
 
     # Add's a package to the staging area
@@ -87,7 +84,7 @@ module RepoMate
       end
       workload = newworkload
 
-      @checkpoint.save_checkpoint
+      @checkpoint.create
       check_versions(workload)
     end
 
@@ -135,7 +132,7 @@ module RepoMate
     end
 
     # Returns a list of packages
-    def get_packagelist(category)
+    def list_packages(category)
       packages = []
       if category.eql?("stage")
         Component.dataset(category).each do |entry|
