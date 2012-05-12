@@ -55,13 +55,11 @@ Please make sure you have the following packages installed:
     
 #### Configure RepoMate
 
-GPG ist enabled by default. If you don't want it, just set the value of gpg_enable to "no" otherwise generate a gpg key and add the needed values to the configfile.
-
-Create the config file if you don't want the default configuration.
+Create your own config file.
     
     vi ~/.repomate
     
-Sample config:
+Default config:
        
     ---
     :rootdir: /var/lib/repomate/repository
@@ -78,14 +76,33 @@ Sample config:
         - amd64
     :origin: Repository
     :label: Repository
-    :gpg_enable: yes
+    :gpg_enable: no
     :gpg_email: someone@example.net
     :gpg_password: secret
  
+I recommend you to enable GPG support. I'm sure you will find a lot of tutorials which describe the process of creating a GPG keypair.
     
 #### Configure webserver
 
 Configure your favorite webserver by adding RepoMate's rootdirectory to a site or vhost.
+
+Pretty basic apache2 example:
+
+    <VirtualHost *:80>
+        ServerAdmin webmaster@example.net
+        ServerName  repository.example.net
+        DocumentRoot /var/lib/repomate
+    
+        <Directory /var/lib/repomate/>
+            Options Indexes FollowSymLinks MultiViews
+            AllowOverride None
+            Order allow,deny
+            allow from all
+        </Directory>
+    
+        ErrorLog  /var/log/apache2/error.log
+        CustomLog /var/log/apache2/access.log combined
+    </VirtualHost>
 
 #### Adding packages
 
