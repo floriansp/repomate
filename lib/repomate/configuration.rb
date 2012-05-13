@@ -40,7 +40,7 @@ module RepoMate
         :gpg_password  => 'secret',
       }
 
-      if filecontent
+      unless filecontent.empty?
         defaults.each do |key, value|
           keysymbol = key.to_sym
           setter = "#{key}="
