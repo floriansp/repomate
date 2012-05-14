@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+<title>class RepoMate::Link - RDoc Documentation</title>
+
+<link type="text/css" media="screen" href="../rdoc.css" rel="stylesheet">
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "../";
+</script>
+
+<script type="text/javascript" charset="utf-8" src="../js/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="../js/navigation.js"></script>
+<script type="text/javascript" charset="utf-8" src="../js/search_index.js"></script>
+<script type="text/javascript" charset="utf-8" src="../js/search.js"></script>
+<script type="text/javascript" charset="utf-8" src="../js/searcher.js"></script>
+<script type="text/javascript" charset="utf-8" src="../js/darkfish.js"></script>
+
+
+<body id="top" class="class">
+<nav id="metadata">
+  <nav id="home-section" class="section">
+  <h3 class="section-header">
+    <a href="../index.html">Home</a>
+    <a href="../table_of_contents.html#classes">Classes</a>
+    <a href="../table_of_contents.html#methods">Methods</a>
+  </h3>
+</nav>
+
+
+  <nav id="search-section" class="section project-section" class="initially-hidden">
+  <form action="#" method="get" accept-charset="utf-8">
+    <h3 class="section-header">
+      <input type="text" name="search" placeholder="Search" id="search-field"
+             title="Type to search, Up and Down to navigate, Enter to load">
+    </h3>
+  </form>
+
+  <ul id="search-results" class="initially-hidden"></ul>
+</nav>
+
+
+  <div id="file-metadata">
+    <nav id="file-list-section" class="section">
+  <h3 class="section-header">Defined In</h3>
+  <ul>
+    <li>lib/repomate/link.rb
+  </ul>
+</nav>
+
+    
+  </div>
+
+  <div id="class-metadata">
+    
+    <nav id="parent-class-section" class="section">
+  <h3 class="section-header">Parent</h3>
+  
+  <p class="link">Object
+  
+</nav>
+
+    
+    <!-- Method Quickref -->
+<nav id="method-list-section" class="section">
+  <h3 class="section-header">Methods</h3>
+
+  <ul class="link-list">
+    
+    <li><a href="#method-c-new">::new</a>
+    
+    <li><a href="#method-i-cleanup">#cleanup</a>
+    
+    <li><a href="#method-i-create">#create</a>
+    
+    <li><a href="#method-i-destroy">#destroy</a>
+    
+    <li><a href="#method-i-exist-3F">#exist?</a>
+    
+  </ul>
+</nav>
+
+  </div>
+
+  <div id="project-metadata">
+    <nav id="fileindex-section" class="section project-section">
+  <h3 class="section-header">Pages</h3>
+
+  <ul>
+  
+    <li class="file"><a href="../Gemfile.html">Gemfile</a>
+  
+    <li class="file"><a href="../LICENSE.html">LICENSE</a>
+  
+  </ul>
+</nav>
+
+    <nav id="classindex-section" class="section project-section">
+  <h3 class="section-header">Class and Module Index</h3>
+
+  <ul class="link-list">
+  
+    <li><a href="../RepoMate.html">RepoMate</a>
+  
+    <li><a href="../RepoMate/Architecture.html">RepoMate::Architecture</a>
+  
+    <li><a href="../RepoMate/Base.html">RepoMate::Base</a>
+  
+    <li><a href="../RepoMate/Category.html">RepoMate::Category</a>
+  
+    <li><a href="../RepoMate/Checkpoint.html">RepoMate::Checkpoint</a>
+  
+    <li><a href="../RepoMate/Cli.html">RepoMate::Cli</a>
+  
+    <li><a href="../RepoMate/Component.html">RepoMate::Component</a>
+  
+    <li><a href="../RepoMate/Configuration.html">RepoMate::Configuration</a>
+  
+    <li><a href="../RepoMate/Database.html">RepoMate::Database</a>
+  
+    <li><a href="../RepoMate/Link.html">RepoMate::Link</a>
+  
+    <li><a href="../RepoMate/Metafile.html">RepoMate::Metafile</a>
+  
+    <li><a href="../RepoMate/Package.html">RepoMate::Package</a>
+  
+    <li><a href="../RepoMate/Repository.html">RepoMate::Repository</a>
+  
+    <li><a href="../RepoMate/Suite.html">RepoMate::Suite</a>
+  
+  </ul>
+</nav>
+
+  </div>
+</nav>
+
+<div id="documentation">
+  <h1 class="class">class RepoMate::Link</h1>
+
+  <div id="description" class="description">
+    
+<p>Class containing the main logic</p>
+
+  </div><!-- description -->
+
+  
+  
+  
+  <section id="5Buntitled-5D" class="documentation-section">
+    
+
+    
+
+    
+
+    
+
+    <!-- Methods -->
+    
+     <section id="public-class-5Buntitled-5D-method-details" class="method-section section">
+      <h3 class="section-header">Public Class Methods</h3>
+
+    
+      <div id="method-c-new" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">new</span><span
+            class="method-args">()</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Init</p>
+          
+
+          
+          <div class="method-source-code" id="new-source">
+            <pre><span class="ruby-comment"># File lib/repomate/link.rb, line 10</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>
+  <span class="ruby-ivar">@repository</span> = <span class="ruby-constant">Repository</span>.<span class="ruby-identifier">new</span>
+  <span class="ruby-ivar">@metafile</span>   = <span class="ruby-constant">Metafile</span>.<span class="ruby-identifier">new</span>
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- new-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- new-method -->
+
+    
+    </section><!-- public-class-method-details -->
+  
+     <section id="public-instance-5Buntitled-5D-method-details" class="method-section section">
+      <h3 class="section-header">Public Instance Methods</h3>
+
+    
+      <div id="method-i-cleanup" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">cleanup</span><span
+            class="method-args">()</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>cleans up unused directories</p>
+          
+
+          
+          <div class="method-source-code" id="cleanup-source">
+            <pre><span class="ruby-comment"># File lib/repomate/link.rb, line 65</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">cleanup</span>
+  <span class="ruby-identifier">action</span> = <span class="ruby-keyword">false</span>
+
+  <span class="ruby-ivar">@repository</span>.<span class="ruby-identifier">categories</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">category</span><span class="ruby-operator">|</span>
+    <span class="ruby-keyword">next</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">category</span>.<span class="ruby-identifier">eql?</span>(<span class="ruby-string">&quot;stage&quot;</span>)
+    <span class="ruby-constant">Architecture</span>.<span class="ruby-identifier">dataset</span>(<span class="ruby-identifier">category</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">entry</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">directory</span> = <span class="ruby-constant">Architecture</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">entry</span>[<span class="ruby-value">:architecture</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:component</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:suitename</span>], <span class="ruby-identifier">category</span>)
+      <span class="ruby-keyword">if</span> <span class="ruby-identifier">directory</span>.<span class="ruby-identifier">is_unused?</span>(<span class="ruby-identifier">entry</span>[<span class="ruby-value">:fullpath</span>])
+        <span class="ruby-identifier">action</span> = <span class="ruby-keyword">true</span>
+        <span class="ruby-identifier">directory</span>.<span class="ruby-identifier">destroy</span>
+      <span class="ruby-keyword">end</span>
+    <span class="ruby-keyword">end</span>
+    <span class="ruby-constant">Component</span>.<span class="ruby-identifier">dataset</span>(<span class="ruby-identifier">category</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">entry</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">directory</span> = <span class="ruby-constant">Component</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">entry</span>[<span class="ruby-value">:component</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:suitename</span>], <span class="ruby-identifier">category</span>)
+      <span class="ruby-keyword">if</span> <span class="ruby-identifier">directory</span>.<span class="ruby-identifier">is_unused?</span>(<span class="ruby-identifier">entry</span>[<span class="ruby-value">:fullpath</span>])
+        <span class="ruby-identifier">action</span> = <span class="ruby-keyword">true</span>
+        <span class="ruby-identifier">directory</span>.<span class="ruby-identifier">destroy</span>
+      <span class="ruby-keyword">end</span>
+    <span class="ruby-keyword">end</span>
+    <span class="ruby-constant">Suite</span>.<span class="ruby-identifier">dataset</span>(<span class="ruby-identifier">category</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">entry</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">directory</span> = <span class="ruby-constant">Suite</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">entry</span>[<span class="ruby-value">:suitename</span>], <span class="ruby-identifier">category</span>)
+      <span class="ruby-keyword">if</span> <span class="ruby-identifier">directory</span>.<span class="ruby-identifier">is_unused?</span>(<span class="ruby-identifier">entry</span>[<span class="ruby-value">:fullpath</span>])
+        <span class="ruby-identifier">action</span> = <span class="ruby-keyword">true</span>
+        <span class="ruby-identifier">directory</span>.<span class="ruby-identifier">destroy</span>
+      <span class="ruby-keyword">end</span>
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">action</span>
+    <span class="ruby-identifier">puts</span> <span class="ruby-string">&quot;Cleaning structure&quot;</span>
+    <span class="ruby-ivar">@metafile</span>.<span class="ruby-identifier">create</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- cleanup-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- cleanup-method -->
+
+    
+      <div id="method-i-create" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">create</span><span
+            class="method-args">(workload)</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>links the workload</p>
+          
+
+          
+          <div class="method-source-code" id="create-source">
+            <pre><span class="ruby-comment"># File lib/repomate/link.rb, line 20</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">create</span>(<span class="ruby-identifier">workload</span>)
+  <span class="ruby-identifier">action</span> = <span class="ruby-keyword">false</span>
+
+  <span class="ruby-identifier">workload</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">entry</span><span class="ruby-operator">|</span>
+    <span class="ruby-ivar">@repository</span>.<span class="ruby-identifier">create</span>(<span class="ruby-identifier">entry</span>[<span class="ruby-value">:suitename</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:component</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:architecture</span>])
+
+    <span class="ruby-keyword">unless</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">exists?</span>(<span class="ruby-identifier">entry</span>[<span class="ruby-value">:destination_fullname</span>])
+      <span class="ruby-identifier">package</span> = <span class="ruby-constant">Package</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">entry</span>[<span class="ruby-value">:source_fullname</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:suitename</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:component</span>])
+      <span class="ruby-identifier">package</span>.<span class="ruby-identifier">create_checksums</span>
+
+      <span class="ruby-constant">File</span>.<span class="ruby-identifier">symlink</span>(<span class="ruby-identifier">entry</span>[<span class="ruby-value">:source_fullname</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:destination_fullname</span>])
+      <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Package: #{package.newbasename} linked to production =&gt; #{entry[:suitename]}/#{entry[:component]}&quot;</span>
+      <span class="ruby-identifier">action</span> = <span class="ruby-keyword">true</span>
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">action</span>
+    <span class="ruby-ivar">@metafile</span>.<span class="ruby-identifier">create</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- create-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- create-method -->
+
+    
+      <div id="method-i-destroy" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">destroy</span><span
+            class="method-args">(workload)</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>unlinks workload</p>
+          
+
+          
+          <div class="method-source-code" id="destroy-source">
+            <pre><span class="ruby-comment"># File lib/repomate/link.rb, line 42</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">destroy</span>(<span class="ruby-identifier">workload</span>)
+  <span class="ruby-identifier">action</span> = <span class="ruby-keyword">false</span>
+
+  <span class="ruby-identifier">workload</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">entry</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">package</span> = <span class="ruby-constant">Package</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">entry</span>[<span class="ruby-value">:destination_fullname</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:suitename</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:component</span>])
+    <span class="ruby-identifier">package</span>.<span class="ruby-identifier">delete_checksums</span>
+
+    <span class="ruby-keyword">if</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">exists?</span>(<span class="ruby-identifier">entry</span>[<span class="ruby-value">:destination_fullname</span>])
+      <span class="ruby-constant">File</span>.<span class="ruby-identifier">unlink</span>(<span class="ruby-identifier">entry</span>[<span class="ruby-value">:destination_fullname</span>])
+      <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Package: #{package.newbasename} unlinked&quot;</span>
+      <span class="ruby-identifier">action</span> = <span class="ruby-keyword">true</span>
+    <span class="ruby-keyword">else</span>
+      <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Package: #{package.newbasename} was not linked&quot;</span>
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">action</span>
+    <span class="ruby-identifier">cleanup</span>
+    <span class="ruby-ivar">@metafile</span>.<span class="ruby-identifier">create</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- destroy-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- destroy-method -->
+
+    
+      <div id="method-i-exist-3F" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">exist?</span><span
+            class="method-args">(fullname)</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+
+          
+          <div class="method-source-code" id="exist-3F-source">
+            <pre><span class="ruby-comment"># File lib/repomate/link.rb, line 15</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">exist?</span>(<span class="ruby-identifier">fullname</span>)
+  <span class="ruby-constant">File</span>.<span class="ruby-identifier">exists?</span>(<span class="ruby-identifier">fullname</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- exist-3F-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- exist-3F-method -->
+
+    
+    </section><!-- public-instance-method-details -->
+  
+  </section><!-- 5Buntitled-5D -->
+
+</div><!-- documentation -->
+
+
+<footer id="validator-badges">
+  <p><a href="http://validator.w3.org/check/referer">[Validate]</a>
+  <p>Generated by <a href="https://github.com/rdoc/rdoc">RDoc</a> 3.12.
+  <p>Generated with the <a href="http://deveiate.org/projects/Darkfish-Rdoc/">Darkfish Rdoc Generator</a> 3.
+</footer>
+

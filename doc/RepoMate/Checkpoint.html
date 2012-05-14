@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+<title>class RepoMate::Checkpoint - RDoc Documentation</title>
+
+<link type="text/css" media="screen" href="../rdoc.css" rel="stylesheet">
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "../";
+</script>
+
+<script type="text/javascript" charset="utf-8" src="../js/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="../js/navigation.js"></script>
+<script type="text/javascript" charset="utf-8" src="../js/search_index.js"></script>
+<script type="text/javascript" charset="utf-8" src="../js/search.js"></script>
+<script type="text/javascript" charset="utf-8" src="../js/searcher.js"></script>
+<script type="text/javascript" charset="utf-8" src="../js/darkfish.js"></script>
+
+
+<body id="top" class="class">
+<nav id="metadata">
+  <nav id="home-section" class="section">
+  <h3 class="section-header">
+    <a href="../index.html">Home</a>
+    <a href="../table_of_contents.html#classes">Classes</a>
+    <a href="../table_of_contents.html#methods">Methods</a>
+  </h3>
+</nav>
+
+
+  <nav id="search-section" class="section project-section" class="initially-hidden">
+  <form action="#" method="get" accept-charset="utf-8">
+    <h3 class="section-header">
+      <input type="text" name="search" placeholder="Search" id="search-field"
+             title="Type to search, Up and Down to navigate, Enter to load">
+    </h3>
+  </form>
+
+  <ul id="search-results" class="initially-hidden"></ul>
+</nav>
+
+
+  <div id="file-metadata">
+    <nav id="file-list-section" class="section">
+  <h3 class="section-header">Defined In</h3>
+  <ul>
+    <li>lib/repomate/checkpoint.rb
+  </ul>
+</nav>
+
+    
+  </div>
+
+  <div id="class-metadata">
+    
+    <nav id="parent-class-section" class="section">
+  <h3 class="section-header">Parent</h3>
+  
+  <p class="link">Object
+  
+</nav>
+
+    
+    <!-- Method Quickref -->
+<nav id="method-list-section" class="section">
+  <h3 class="section-header">Methods</h3>
+
+  <ul class="link-list">
+    
+    <li><a href="#method-c-new">::new</a>
+    
+    <li><a href="#method-i-create">#create</a>
+    
+    <li><a href="#method-i-create_table">#create_table</a>
+    
+    <li><a href="#method-i-list">#list</a>
+    
+    <li><a href="#method-i-load">#load</a>
+    
+  </ul>
+</nav>
+
+  </div>
+
+  <div id="project-metadata">
+    <nav id="fileindex-section" class="section project-section">
+  <h3 class="section-header">Pages</h3>
+
+  <ul>
+  
+    <li class="file"><a href="../Gemfile.html">Gemfile</a>
+  
+    <li class="file"><a href="../LICENSE.html">LICENSE</a>
+  
+  </ul>
+</nav>
+
+    <nav id="classindex-section" class="section project-section">
+  <h3 class="section-header">Class and Module Index</h3>
+
+  <ul class="link-list">
+  
+    <li><a href="../RepoMate.html">RepoMate</a>
+  
+    <li><a href="../RepoMate/Architecture.html">RepoMate::Architecture</a>
+  
+    <li><a href="../RepoMate/Base.html">RepoMate::Base</a>
+  
+    <li><a href="../RepoMate/Category.html">RepoMate::Category</a>
+  
+    <li><a href="../RepoMate/Checkpoint.html">RepoMate::Checkpoint</a>
+  
+    <li><a href="../RepoMate/Cli.html">RepoMate::Cli</a>
+  
+    <li><a href="../RepoMate/Component.html">RepoMate::Component</a>
+  
+    <li><a href="../RepoMate/Configuration.html">RepoMate::Configuration</a>
+  
+    <li><a href="../RepoMate/Database.html">RepoMate::Database</a>
+  
+    <li><a href="../RepoMate/Link.html">RepoMate::Link</a>
+  
+    <li><a href="../RepoMate/Metafile.html">RepoMate::Metafile</a>
+  
+    <li><a href="../RepoMate/Package.html">RepoMate::Package</a>
+  
+    <li><a href="../RepoMate/Repository.html">RepoMate::Repository</a>
+  
+    <li><a href="../RepoMate/Suite.html">RepoMate::Suite</a>
+  
+  </ul>
+</nav>
+
+  </div>
+</nav>
+
+<div id="documentation">
+  <h1 class="class">class RepoMate::Checkpoint</h1>
+
+  <div id="description" class="description">
+    
+<p>Class containing the main logic</p>
+
+  </div><!-- description -->
+
+  
+  
+  
+  <section id="5Buntitled-5D" class="documentation-section">
+    
+
+    
+
+    
+
+    
+
+    <!-- Methods -->
+    
+     <section id="public-class-5Buntitled-5D-method-details" class="method-section section">
+      <h3 class="section-header">Public Class Methods</h3>
+
+    
+      <div id="method-c-new" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">new</span><span
+            class="method-args">()</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Init</p>
+          
+
+          
+          <div class="method-source-code" id="new-source">
+            <pre><span class="ruby-comment"># File lib/repomate/checkpoint.rb, line 12</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>
+  <span class="ruby-ivar">@link</span>       = <span class="ruby-constant">Link</span>.<span class="ruby-identifier">new</span>
+  <span class="ruby-ivar">@cpdbfile</span>   = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-constant">Cfg</span>.<span class="ruby-identifier">rootdir</span>, <span class="ruby-string">&quot;checkpoints.db&quot;</span>)
+  <span class="ruby-ivar">@cpdb</span>       = <span class="ruby-constant">Database</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@cpdbfile</span>)
+
+  <span class="ruby-identifier">create_table</span>
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- new-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- new-method -->
+
+    
+    </section><!-- public-class-method-details -->
+  
+     <section id="public-instance-5Buntitled-5D-method-details" class="method-section section">
+      <h3 class="section-header">Public Instance Methods</h3>
+
+    
+      <div id="method-i-create" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">create</span><span
+            class="method-args">()</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Saves a checkpoint</p>
+          
+
+          
+          <div class="method-source-code" id="create-source">
+            <pre><span class="ruby-comment"># File lib/repomate/checkpoint.rb, line 33</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">create</span>
+  <span class="ruby-identifier">datetime</span>        = <span class="ruby-constant">DateTime</span>.<span class="ruby-identifier">now</span>
+  <span class="ruby-identifier">source_category</span> = <span class="ruby-string">&quot;dists&quot;</span>
+
+  <span class="ruby-constant">Architecture</span>.<span class="ruby-identifier">dataset</span>(<span class="ruby-identifier">source_category</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">entry</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">source</span> = <span class="ruby-constant">Architecture</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">entry</span>[<span class="ruby-value">:architecture</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:component</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:suitename</span>], <span class="ruby-identifier">source_category</span>)
+    <span class="ruby-identifier">source</span>.<span class="ruby-identifier">files</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">fullname</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">basename</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">basename</span>(<span class="ruby-identifier">fullname</span>)
+      <span class="ruby-ivar">@cpdb</span>.<span class="ruby-identifier">query</span>(<span class="ruby-node">&quot;insert into checkpoints values ( '#{datetime}', '#{entry[:suitename]}', '#{entry[:component]}', '#{entry[:architecture]}', '#{basename}' )&quot;</span>)
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Checkpoint (#{datetime.strftime(&quot;%F %T&quot;)}) saved&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- create-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- create-method -->
+
+    
+      <div id="method-i-create_table" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">create_table</span><span
+            class="method-args">()</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Create the checkpoint table</p>
+          
+
+          
+          <div class="method-source-code" id="create_table-source">
+            <pre><span class="ruby-comment"># File lib/repomate/checkpoint.rb, line 21</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">create_table</span>
+  <span class="ruby-identifier">sql</span> = <span class="ruby-string">&quot;create table if not exists checkpoints (
+          date varchar(25),
+          suitename varchar(10),
+          component varchar(10),
+          architecture varchar(10),
+          basename varchar(70)
+  )&quot;</span>
+  <span class="ruby-ivar">@cpdb</span>.<span class="ruby-identifier">query</span>(<span class="ruby-identifier">sql</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- create_table-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- create_table-method -->
+
+    
+      <div id="method-i-list" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">list</span><span
+            class="method-args">()</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Returns a list of checkpoints for the cli</p>
+          
+
+          
+          <div class="method-source-code" id="list-source">
+            <pre><span class="ruby-comment"># File lib/repomate/checkpoint.rb, line 91</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">list</span>
+  <span class="ruby-identifier">order</span> = <span class="ruby-value">0</span>
+  <span class="ruby-identifier">dates</span> = []
+  <span class="ruby-identifier">list</span>  = {}
+
+  <span class="ruby-ivar">@cpdb</span>.<span class="ruby-identifier">query</span>(<span class="ruby-string">&quot;select date from checkpoints group by date order by date asc&quot;</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">row</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">dates</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">row</span>.<span class="ruby-identifier">first</span>
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-identifier">dates</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">date</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">order</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+    <span class="ruby-identifier">list</span>[<span class="ruby-identifier">order</span>] = <span class="ruby-identifier">date</span>
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-identifier">list</span>
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- list-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- list-method -->
+
+    
+      <div id="method-i-load" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">load</span><span
+            class="method-args">(number)</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Loads a checkpoint</p>
+          
+
+          
+          <div class="method-source-code" id="load-source">
+            <pre><span class="ruby-comment"># File lib/repomate/checkpoint.rb, line 49</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">load</span>(<span class="ruby-identifier">number</span>)
+  <span class="ruby-identifier">cplist</span>          = <span class="ruby-identifier">list</span>
+  <span class="ruby-identifier">link_workload</span>   = []
+  <span class="ruby-identifier">unlink_workload</span> = []
+  <span class="ruby-identifier">source_category</span> = <span class="ruby-string">&quot;dists&quot;</span>
+
+  <span class="ruby-constant">Architecture</span>.<span class="ruby-identifier">dataset</span>(<span class="ruby-identifier">source_category</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">entry</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">destination</span> = <span class="ruby-constant">Architecture</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">entry</span>[<span class="ruby-value">:architecture</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:component</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:suitename</span>], <span class="ruby-identifier">source_category</span>)
+    <span class="ruby-identifier">destination</span>.<span class="ruby-identifier">files</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">fullname</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">unlink_workload</span> <span class="ruby-operator">&lt;&lt;</span> {
+        <span class="ruby-value">:destination_fullname</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">fullname</span>,
+        <span class="ruby-value">:component</span>            =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">entry</span>[<span class="ruby-value">:component</span>],
+        <span class="ruby-value">:suitename</span>            =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">entry</span>[<span class="ruby-value">:suitename</span>],
+        <span class="ruby-value">:architecture</span>         =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">entry</span>[<span class="ruby-value">:architecture</span>]
+      }
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-ivar">@cpdb</span>.<span class="ruby-identifier">query</span>(<span class="ruby-string">&quot;select date, suitename, component, architecture, basename from checkpoints&quot;</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">row</span><span class="ruby-operator">|</span>
+    <span class="ruby-keyword">if</span> <span class="ruby-identifier">row</span>[<span class="ruby-value">0</span>] <span class="ruby-operator">==</span> <span class="ruby-identifier">cplist</span>[<span class="ruby-identifier">number</span>]
+        <span class="ruby-identifier">suitename</span>    = <span class="ruby-identifier">row</span>[<span class="ruby-value">1</span>]
+        <span class="ruby-identifier">component</span>    = <span class="ruby-identifier">row</span>[<span class="ruby-value">2</span>]
+        <span class="ruby-identifier">architecture</span> = <span class="ruby-identifier">row</span>[<span class="ruby-value">3</span>]
+        <span class="ruby-identifier">basename</span>     = <span class="ruby-identifier">row</span>[<span class="ruby-value">4</span>]
+        <span class="ruby-identifier">source</span>       = <span class="ruby-constant">Architecture</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">architecture</span>, <span class="ruby-identifier">component</span>, <span class="ruby-identifier">suitename</span>, <span class="ruby-string">&quot;pool&quot;</span>)
+        <span class="ruby-identifier">destination</span>  = <span class="ruby-constant">Architecture</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">architecture</span>, <span class="ruby-identifier">component</span>, <span class="ruby-identifier">suitename</span>, <span class="ruby-string">&quot;dists&quot;</span>)
+
+        <span class="ruby-identifier">link_workload</span> <span class="ruby-operator">&lt;&lt;</span> {
+          <span class="ruby-value">:source_fullname</span>      =<span class="ruby-operator">&gt;</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">source</span>.<span class="ruby-identifier">directory</span>, <span class="ruby-identifier">basename</span>),
+          <span class="ruby-value">:destination_fullname</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">destination</span>.<span class="ruby-identifier">directory</span>, <span class="ruby-identifier">basename</span>),
+          <span class="ruby-value">:component</span>            =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">component</span>,
+          <span class="ruby-value">:suitename</span>            =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">suitename</span>,
+          <span class="ruby-value">:architecture</span>         =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">architecture</span>
+        }
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-ivar">@link</span>.<span class="ruby-identifier">destroy</span>(<span class="ruby-identifier">unlink_workload</span>)
+  <span class="ruby-ivar">@link</span>.<span class="ruby-identifier">create</span>(<span class="ruby-identifier">link_workload</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- load-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- load-method -->
+
+    
+    </section><!-- public-instance-method-details -->
+  
+  </section><!-- 5Buntitled-5D -->
+
+</div><!-- documentation -->
+
+
+<footer id="validator-badges">
+  <p><a href="http://validator.w3.org/check/referer">[Validate]</a>
+  <p>Generated by <a href="https://github.com/rdoc/rdoc">RDoc</a> 3.12.
+  <p>Generated with the <a href="http://deveiate.org/projects/Darkfish-Rdoc/">Darkfish Rdoc Generator</a> 3.
+</footer>
+
