@@ -1,7 +1,6 @@
 require 'repomate'
 require 'date'
 require 'time'
-require 'colors'
 
 # RepoMate module
 module RepoMate
@@ -16,12 +15,6 @@ module RepoMate
       @repository = Repository.new
       @checkpoint = Checkpoint.new
       @link       = Link.new
-
-      unless Dir.exists?(Cfg.logdir)
-        puts
-        puts "\tPlease run \"repomate setup\" first!".hl(:red)
-        puts
-      end
     end
 
     # Add's a package to the staging area
