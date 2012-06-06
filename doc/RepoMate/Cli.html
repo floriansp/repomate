@@ -349,7 +349,7 @@ Choose a package
 				<div class="method-heading">
 				
 					<span class="method-name">list_packages</span><span
-						class="method-args">(repodir)</span>
+						class="method-args">(options)</span>
 					<span class="method-click-advice">click to toggle source</span>
 				
 				</div>
@@ -366,17 +366,17 @@ List all packages, see cli output
 						id="list-packages-source">
 <pre>
     <span class="ruby-comment cmt"># File lib/repomate/cli.rb, line 81</span>
-81:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">list_packages</span>(<span class="ruby-identifier">repodir</span>)
-82:       <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">repodir</span>
+81:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">list_packages</span>(<span class="ruby-identifier">options</span>)
+82:       <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">options</span>.<span class="ruby-identifier">category?</span>
 83:         <span class="ruby-identifier">architecture</span> = <span class="ruby-value str">&quot;unknown&quot;</span>
 84: 
-85:         <span class="ruby-identifier">packages</span> = <span class="ruby-ivar">@repomate</span>.<span class="ruby-identifier">list_packages</span>(<span class="ruby-identifier">repodir</span>)
+85:         <span class="ruby-identifier">packages</span> = <span class="ruby-ivar">@repomate</span>.<span class="ruby-identifier">list_packages</span>(<span class="ruby-identifier">options</span>[<span class="ruby-value">:category</span>])
 86:         <span class="ruby-identifier">packages</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">package</span><span class="ruby-operator">|</span>
 87:             <span class="ruby-identifier">architecture</span> = <span class="ruby-identifier">package</span>[<span class="ruby-value">:architecture</span>] <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">package</span>[<span class="ruby-value">:architecture</span>]
 88:             <span class="ruby-identifier">printf</span> <span class="ruby-value str">&quot;%-50s%-20s%s\n&quot;</span>, <span class="ruby-identifier">package</span>[<span class="ruby-value">:controlfile</span>][<span class="ruby-value str">'Package'</span>], <span class="ruby-identifier">package</span>[<span class="ruby-value">:controlfile</span>][<span class="ruby-value str">'Version'</span>], <span class="ruby-node">&quot;#{package[:suitename]}/#{package[:component]}/#{architecture}&quot;</span>
 89:         <span class="ruby-keyword kw">end</span>
 90:       <span class="ruby-keyword kw">else</span>
-91:         <span class="ruby-constant">STDERR</span>.<span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;Specify a category with [-r|--repodir]&quot;</span>
+91:         <span class="ruby-constant">STDERR</span>.<span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;Specify a category with [-r|--category]&quot;</span>
 92:         <span class="ruby-identifier">exit</span> <span class="ruby-value">1</span>
 93:       <span class="ruby-keyword kw">end</span>
 94:     <span class="ruby-keyword kw">end</span></pre>

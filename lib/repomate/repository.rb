@@ -8,7 +8,7 @@ module RepoMate
 
     # Init
     def initialize
-      @categories = ["stage", "pool", "dists"]
+      @categories = ["dists", "pool", "stage"]
     end
 
     # Creates the base structure

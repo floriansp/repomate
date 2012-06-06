@@ -78,17 +78,17 @@ module RepoMate
     end
 
     # List all packages, see cli output
-    def list_packages(repodir)
-      if repodir
+    def list_packages(options)
+      if options.category?
         architecture = "unknown"
 
-        packages = @repomate.list_packages(repodir)
+        packages = @repomate.list_packages(options[:category])
         packages.each do |package|
             architecture = package[:architecture] if package[:architecture]
             printf "%-50s%-20s%s\n", package[:controlfile]['Package'], package[:controlfile]['Version'], "#{package[:suitename]}/#{package[:component]}/#{architecture}"
         end
       else
-        STDERR.puts "Specify a category with [-r|--repodir]"
+        STDERR.puts "Specify a category with [-r|--category]"
         exit 1
       end
     end

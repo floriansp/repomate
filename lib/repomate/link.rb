@@ -49,7 +49,7 @@ module RepoMate
 
         if File.exists?(entry[:destination_fullname])
           File.unlink(entry[:destination_fullname])
-          puts "Package: #{package.newbasename} unlinked"
+          puts "Package: #{package.newbasename} unlinked from category #{entry[:category]}"
           action = true
         else
           puts "Package: #{package.newbasename} was not linked"

@@ -25,7 +25,7 @@ module RepoMate
         package     = Package.new(entry[:package_fullname], entry[:suitename], entry[:component])
         destination = Component.new(entry[:component], entry[:suitename], "stage")
 
-        FileUtils.copy(entry[:package_fullname], File.join(destination.directory, package.newbasename))
+        FileUtils.move(entry[:package_fullname], File.join(destination.directory, package.newbasename))
       end
     end
 
@@ -94,7 +94,9 @@ module RepoMate
             puts "Package: #{target_package.newbasename} will be replaced with #{source_package.newbasename}"
             unlink_workload << {
               :destination_fullname => target_fullname,
-              :newbasename          => target_package.newbasename
+              :newbasename          => target_package.newbasename,
+              :suitename            => target_package.suitename,
+              :component            => target_package.component
             }
           elsif system("#{dpkg} --compare-versions #{source_package.version} eq #{target_package.version}")
             puts "Package: #{source_package.newbasename} already exists with same version"
@@ -166,10 +168,17 @@ module RepoMate
     def remove(package)
       unlink_workload = []
 
-      path = Dir.glob(File.join(Cfg.rootdir, "dists", package[:suitename], package[:component], "*", package[:basename]))
+      @repository.categories.each do |category|
+        path = Dir.glob(File.join(Cfg.rootdir, category, package[:suitename], package[:component], "*", package[:basename]))
 
-      Dir.glob(path).each do |fullname|
-        unlink_workload << { :destination_fullname => fullname }
+        Dir.glob(path).each do |fullname|
+          unlink_workload << {
+            :destination_fullname => fullname,
+            :category  => category,
+            :suitename => package[:suitename],
+            :component => package[:component]
+          }
+        end
       end
 
       @checkpoint.delete_package(package)
