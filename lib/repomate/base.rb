@@ -80,12 +80,10 @@ module RepoMate
 
     # Does the link job after checking versions through dpkg
     def check_versions(workload)
-      dpkg = Cfg.dpkg
-
-      raise "dpkg is not installed" unless File.exists?(dpkg)
-
       link_workload   = []
       unlink_workload = []
+
+      dpkg = Cfg.dpkg
 
       workload.each do |entry|
         source_package       = Package.new(entry[:source_fullname], entry[:suitename], entry[:component])

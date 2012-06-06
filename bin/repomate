@@ -9,6 +9,9 @@ require 'repomate'
 require 'rubygems'
 require 'slop'
 
+# check for dpkg
+raise "dpkg is not installed or configured" unless File.exists?(RepoMate::Cfg.dpkg)
+
 options = Slop.parse do
   banner "RepoMate (A simple debian repository management tool)
 
