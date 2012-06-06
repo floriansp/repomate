@@ -117,7 +117,7 @@ module RepoMate
         rescue
           destroy
           create_packages
-          puts "GPG email/password incorrect"
+          puts "GPG email/password incorrect or gpg is not installed!"
           return
         end
       end
