@@ -12,6 +12,7 @@ module RepoMate
       @metafile   = Metafile.new
     end
 
+    # Checks if file exists
     def exist?(fullname)
       File.exists?(fullname)
     end

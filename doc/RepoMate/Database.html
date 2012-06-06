@@ -1,303 +1,346 @@
-<!DOCTYPE html>
-
-<html>
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+	<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
 
-<title>class RepoMate::Database - RDoc Documentation</title>
+	<title>Class: RepoMate::Database</title>
 
-<link type="text/css" media="screen" href="../rdoc.css" rel="stylesheet">
+	<link rel="stylesheet" href="../rdoc.css" type="text/css" media="screen" />
 
-<script type="text/javascript">
-  var rdoc_rel_prefix = "../";
-</script>
+	<script src="../js/jquery.js" type="text/javascript"
+		charset="utf-8"></script>
+	<script src="../js/thickbox-compressed.js" type="text/javascript"
+		charset="utf-8"></script>
+	<script src="../js/quicksearch.js" type="text/javascript"
+		charset="utf-8"></script>
+	<script src="../js/darkfish.js" type="text/javascript"
+		charset="utf-8"></script>
 
-<script type="text/javascript" charset="utf-8" src="../js/jquery.js"></script>
-<script type="text/javascript" charset="utf-8" src="../js/navigation.js"></script>
-<script type="text/javascript" charset="utf-8" src="../js/search_index.js"></script>
-<script type="text/javascript" charset="utf-8" src="../js/search.js"></script>
-<script type="text/javascript" charset="utf-8" src="../js/searcher.js"></script>
-<script type="text/javascript" charset="utf-8" src="../js/darkfish.js"></script>
+</head>
+<body class="class">
+
+	<div id="metadata">
+		<div id="home-metadata">
+			<div id="home-section" class="section">
+        <h3 class="section-header">
+          <a href="../index.html">Home</a>
+          <a href="../index.html#classes">Classes</a>
+          <a href="../index.html#methods">Methods</a>
+        </h3>
+			</div>
+		</div>
+
+		<div id="file-metadata">
+			<div id="file-list-section" class="section">
+				<h3 class="section-header">In Files</h3>
+				<div class="section-body">
+					<ul>
+					
+						<li><a href="../lib/repomate/database_rb.html?TB_iframe=true&amp;height=550&amp;width=785"
+							class="thickbox" title="lib/repomate/database.rb">lib/repomate/database.rb</a></li>
+					
+					</ul>
+				</div>
+			</div>
+
+			
+		</div>
+
+		<div id="class-metadata">
+
+			<!-- Parent Class -->
+			
+			<div id="parent-class-section" class="section">
+				<h3 class="section-header">Parent</h3>
+				
+				<p class="link">Object</p>
+				
+			</div>
+			
+
+			<!-- Namespace Contents -->
+			
+
+			<!-- Method Quickref -->
+			
+			<div id="method-list-section" class="section">
+				<h3 class="section-header">Methods</h3>
+				<ul class="link-list">
+					
+					<li><a href="#method-c-new">::new</a></li>
+					
+					<li><a href="#method-i-destroy">#destroy</a></li>
+					
+					<li><a href="#method-i-exists%3F">#exists?</a></li>
+					
+					<li><a href="#method-i-query">#query</a></li>
+					
+				</ul>
+			</div>
+			
+
+			<!-- Included Modules -->
+			
+		</div>
+
+		<div id="project-metadata">
+			
+			
+			<div id="fileindex-section" class="section project-section">
+				<h3 class="section-header">Files</h3>
+				<ul>
+				
+					<li class="file"><a href="../Gemfile.html">Gemfile</a></li>
+				
+					<li class="file"><a href="../LICENSE.html">LICENSE</a></li>
+				
+				</ul>
+			</div>
+			
+
+			<div id="classindex-section" class="section project-section">
+				<h3 class="section-header">Class Index
+					<span class="search-toggle"><img src="../images/find.png"
+						height="16" width="16" alt="[+]"
+						title="show/hide quicksearch" /></span></h3>
+				<form action="#" method="get" accept-charset="utf-8" class="initially-hidden">
+				<fieldset>
+					<legend>Quicksearch</legend>
+					<input type="text" name="quicksearch" value=""
+						class="quicksearch-field" />
+				</fieldset>
+				</form>
+
+				<ul class="link-list">
+				
+					<li><a href="../RepoMate.html">RepoMate</a></li>
+				
+					<li><a href="../RepoMate/Architecture.html">RepoMate::Architecture</a></li>
+				
+					<li><a href="../RepoMate/Base.html">RepoMate::Base</a></li>
+				
+					<li><a href="../RepoMate/Category.html">RepoMate::Category</a></li>
+				
+					<li><a href="../RepoMate/Checkpoint.html">RepoMate::Checkpoint</a></li>
+				
+					<li><a href="../RepoMate/Cli.html">RepoMate::Cli</a></li>
+				
+					<li><a href="../RepoMate/Component.html">RepoMate::Component</a></li>
+				
+					<li><a href="../RepoMate/Configuration.html">RepoMate::Configuration</a></li>
+				
+					<li><a href="../RepoMate/Database.html">RepoMate::Database</a></li>
+				
+					<li><a href="../RepoMate/Link.html">RepoMate::Link</a></li>
+				
+					<li><a href="../RepoMate/Metafile.html">RepoMate::Metafile</a></li>
+				
+					<li><a href="../RepoMate/Package.html">RepoMate::Package</a></li>
+				
+					<li><a href="../RepoMate/Repository.html">RepoMate::Repository</a></li>
+				
+					<li><a href="../RepoMate/Suite.html">RepoMate::Suite</a></li>
+				
+				</ul>
+				<div id="no-class-search-results" style="display: none;">No matching classes.</div>
+			</div>
+
+			
+		</div>
+	</div>
+
+	<div id="documentation">
+		<h1 class="class">RepoMate::Database</h1>
+
+		<div id="description">
+			<p>
+Class for the database
+</p>
+
+		</div>
+
+		<!-- Constants -->
+		
+
+		<!-- Attributes -->
+		
+
+		<!-- Methods -->
+		
+		<div id="public-class-method-details" class="method-section section">
+			<h3 class="section-header">Public Class Methods</h3>
+
+		
+			<div id="new-method" class="method-detail ">
+				<a name="method-c-new"></a>
+
+				<div class="method-heading">
+				
+					<span class="method-name">new</span><span
+						class="method-args">(dbfile)</span>
+					<span class="method-click-advice">click to toggle source</span>
+				
+				</div>
+
+				<div class="method-description">
+					
+					<p>
+Init
+</p>
+					
+
+					
+					<div class="method-source-code"
+						id="new-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/repomate/database.rb, line 10</span>
+10:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">dbfile</span>)
+11:       <span class="ruby-ivar">@db</span> = <span class="ruby-constant">SQLite3</span><span class="ruby-operator">::</span><span class="ruby-constant">Database</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">dbfile</span>)
+12:     <span class="ruby-keyword kw">end</span></pre>
+					</div>
+					
+				</div>
+
+				
+
+				
+			</div>
+
+		
+		</div>
+	
+		<div id="public-instance-method-details" class="method-section section">
+			<h3 class="section-header">Public Instance Methods</h3>
+
+		
+			<div id="destroy-method" class="method-detail ">
+				<a name="method-i-destroy"></a>
+
+				<div class="method-heading">
+				
+					<span class="method-name">destroy</span><span
+						class="method-args">()</span>
+					<span class="method-click-advice">click to toggle source</span>
+				
+				</div>
+
+				<div class="method-description">
+					
+					<p>
+Deletes a categories directory
+</p>
+					
+
+					
+					<div class="method-source-code"
+						id="destroy-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/repomate/database.rb, line 25</span>
+25:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">destroy</span>
+26:       <span class="ruby-constant">FileUtils</span>.<span class="ruby-identifier">rm_r</span>(<span class="ruby-ivar">@dbfile</span>) <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">exists?</span>
+27:     <span class="ruby-keyword kw">end</span></pre>
+					</div>
+					
+				</div>
+
+				
+
+				
+			</div>
+
+		
+			<div id="exists--method" class="method-detail ">
+				<a name="method-i-exists%3F"></a>
+
+				<div class="method-heading">
+				
+					<span class="method-name">exists?</span><span
+						class="method-args">()</span>
+					<span class="method-click-advice">click to toggle source</span>
+				
+				</div>
+
+				<div class="method-description">
+					
+					<p>
+Checks if the database file already exists
+</p>
+					
+
+					
+					<div class="method-source-code"
+						id="exists--source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/repomate/database.rb, line 15</span>
+15:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">exists?</span>
+16:       <span class="ruby-constant">File</span>.<span class="ruby-identifier">exists?</span>(<span class="ruby-ivar">@dbfile</span>)
+17:     <span class="ruby-keyword kw">end</span></pre>
+					</div>
+					
+				</div>
+
+				
+
+				
+			</div>
+
+		
+			<div id="query-method" class="method-detail ">
+				<a name="method-i-query"></a>
+
+				<div class="method-heading">
+				
+					<span class="method-name">query</span><span
+						class="method-args">(sql)</span>
+					<span class="method-click-advice">click to toggle source</span>
+				
+				</div>
+
+				<div class="method-description">
+					
+					<p>
+Executes a query
+</p>
+					
+
+					
+					<div class="method-source-code"
+						id="query-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/repomate/database.rb, line 20</span>
+20:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">query</span>(<span class="ruby-identifier">sql</span>)
+21:       <span class="ruby-ivar">@db</span>.<span class="ruby-identifier">execute</span>(<span class="ruby-identifier">sql</span>)
+22:     <span class="ruby-keyword kw">end</span></pre>
+					</div>
+					
+				</div>
+
+				
+
+				
+			</div>
+
+		
+		</div>
+	
+
+	</div>
 
 
-<body id="top" class="class">
-<nav id="metadata">
-  <nav id="home-section" class="section">
-  <h3 class="section-header">
-    <a href="../index.html">Home</a>
-    <a href="../table_of_contents.html#classes">Classes</a>
-    <a href="../table_of_contents.html#methods">Methods</a>
-  </h3>
-</nav>
+	<div id="rdoc-debugging-section-dump" class="debugging-section">
+	
+		<p>Disabled; run with --debug to generate this.</p>
+	
+	</div>
 
+	<div id="validator-badges">
+		<p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+		<p><small>Generated with the <a href="http://deveiate.org/projects/Darkfish-Rdoc/">Darkfish
+			Rdoc Generator</a> 1.1.6</small>.</p>
+	</div>
 
-  <nav id="search-section" class="section project-section" class="initially-hidden">
-  <form action="#" method="get" accept-charset="utf-8">
-    <h3 class="section-header">
-      <input type="text" name="search" placeholder="Search" id="search-field"
-             title="Type to search, Up and Down to navigate, Enter to load">
-    </h3>
-  </form>
-
-  <ul id="search-results" class="initially-hidden"></ul>
-</nav>
-
-
-  <div id="file-metadata">
-    <nav id="file-list-section" class="section">
-  <h3 class="section-header">Defined In</h3>
-  <ul>
-    <li>lib/repomate/database.rb
-  </ul>
-</nav>
-
-    
-  </div>
-
-  <div id="class-metadata">
-    
-    <nav id="parent-class-section" class="section">
-  <h3 class="section-header">Parent</h3>
-  
-  <p class="link">Object
-  
-</nav>
-
-    
-    <!-- Method Quickref -->
-<nav id="method-list-section" class="section">
-  <h3 class="section-header">Methods</h3>
-
-  <ul class="link-list">
-    
-    <li><a href="#method-c-new">::new</a>
-    
-    <li><a href="#method-i-destroy">#destroy</a>
-    
-    <li><a href="#method-i-exists-3F">#exists?</a>
-    
-    <li><a href="#method-i-query">#query</a>
-    
-  </ul>
-</nav>
-
-  </div>
-
-  <div id="project-metadata">
-    <nav id="fileindex-section" class="section project-section">
-  <h3 class="section-header">Pages</h3>
-
-  <ul>
-  
-    <li class="file"><a href="../Gemfile.html">Gemfile</a>
-  
-    <li class="file"><a href="../LICENSE.html">LICENSE</a>
-  
-  </ul>
-</nav>
-
-    <nav id="classindex-section" class="section project-section">
-  <h3 class="section-header">Class and Module Index</h3>
-
-  <ul class="link-list">
-  
-    <li><a href="../RepoMate.html">RepoMate</a>
-  
-    <li><a href="../RepoMate/Architecture.html">RepoMate::Architecture</a>
-  
-    <li><a href="../RepoMate/Base.html">RepoMate::Base</a>
-  
-    <li><a href="../RepoMate/Category.html">RepoMate::Category</a>
-  
-    <li><a href="../RepoMate/Checkpoint.html">RepoMate::Checkpoint</a>
-  
-    <li><a href="../RepoMate/Cli.html">RepoMate::Cli</a>
-  
-    <li><a href="../RepoMate/Component.html">RepoMate::Component</a>
-  
-    <li><a href="../RepoMate/Configuration.html">RepoMate::Configuration</a>
-  
-    <li><a href="../RepoMate/Database.html">RepoMate::Database</a>
-  
-    <li><a href="../RepoMate/Link.html">RepoMate::Link</a>
-  
-    <li><a href="../RepoMate/Metafile.html">RepoMate::Metafile</a>
-  
-    <li><a href="../RepoMate/Package.html">RepoMate::Package</a>
-  
-    <li><a href="../RepoMate/Repository.html">RepoMate::Repository</a>
-  
-    <li><a href="../RepoMate/Suite.html">RepoMate::Suite</a>
-  
-  </ul>
-</nav>
-
-  </div>
-</nav>
-
-<div id="documentation">
-  <h1 class="class">class RepoMate::Database</h1>
-
-  <div id="description" class="description">
-    
-<p>Class for the database</p>
-
-  </div><!-- description -->
-
-  
-  
-  
-  <section id="5Buntitled-5D" class="documentation-section">
-    
-
-    
-
-    
-
-    
-
-    <!-- Methods -->
-    
-     <section id="public-class-5Buntitled-5D-method-details" class="method-section section">
-      <h3 class="section-header">Public Class Methods</h3>
-
-    
-      <div id="method-c-new" class="method-detail ">
-        
-        <div class="method-heading">
-          <span class="method-name">new</span><span
-            class="method-args">(dbfile)</span>
-          <span class="method-click-advice">click to toggle source</span>
-        </div>
-        
-
-        <div class="method-description">
-          
-          <p>Init</p>
-          
-
-          
-          <div class="method-source-code" id="new-source">
-            <pre><span class="ruby-comment"># File lib/repomate/database.rb, line 10</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">dbfile</span>)
-  <span class="ruby-ivar">@db</span> = <span class="ruby-constant">SQLite3</span><span class="ruby-operator">::</span><span class="ruby-constant">Database</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">dbfile</span>)
-<span class="ruby-keyword">end</span></pre>
-          </div><!-- new-source -->
-          
-        </div>
-
-        
-
-        
-      </div><!-- new-method -->
-
-    
-    </section><!-- public-class-method-details -->
-  
-     <section id="public-instance-5Buntitled-5D-method-details" class="method-section section">
-      <h3 class="section-header">Public Instance Methods</h3>
-
-    
-      <div id="method-i-destroy" class="method-detail ">
-        
-        <div class="method-heading">
-          <span class="method-name">destroy</span><span
-            class="method-args">()</span>
-          <span class="method-click-advice">click to toggle source</span>
-        </div>
-        
-
-        <div class="method-description">
-          
-          <p>Deletes a categories directory</p>
-          
-
-          
-          <div class="method-source-code" id="destroy-source">
-            <pre><span class="ruby-comment"># File lib/repomate/database.rb, line 25</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier">destroy</span>
-  <span class="ruby-constant">FileUtils</span>.<span class="ruby-identifier">rm_r</span>(<span class="ruby-ivar">@dbfile</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">exists?</span>
-<span class="ruby-keyword">end</span></pre>
-          </div><!-- destroy-source -->
-          
-        </div>
-
-        
-
-        
-      </div><!-- destroy-method -->
-
-    
-      <div id="method-i-exists-3F" class="method-detail ">
-        
-        <div class="method-heading">
-          <span class="method-name">exists?</span><span
-            class="method-args">()</span>
-          <span class="method-click-advice">click to toggle source</span>
-        </div>
-        
-
-        <div class="method-description">
-          
-          <p>Checks if the database file already exists</p>
-          
-
-          
-          <div class="method-source-code" id="exists-3F-source">
-            <pre><span class="ruby-comment"># File lib/repomate/database.rb, line 15</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier">exists?</span>
-  <span class="ruby-constant">File</span>.<span class="ruby-identifier">exists?</span>(<span class="ruby-ivar">@dbfile</span>)
-<span class="ruby-keyword">end</span></pre>
-          </div><!-- exists-3F-source -->
-          
-        </div>
-
-        
-
-        
-      </div><!-- exists-3F-method -->
-
-    
-      <div id="method-i-query" class="method-detail ">
-        
-        <div class="method-heading">
-          <span class="method-name">query</span><span
-            class="method-args">(sql)</span>
-          <span class="method-click-advice">click to toggle source</span>
-        </div>
-        
-
-        <div class="method-description">
-          
-          <p>Executes a query</p>
-          
-
-          
-          <div class="method-source-code" id="query-source">
-            <pre><span class="ruby-comment"># File lib/repomate/database.rb, line 20</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier">query</span>(<span class="ruby-identifier">sql</span>)
-  <span class="ruby-ivar">@db</span>.<span class="ruby-identifier">execute</span>(<span class="ruby-identifier">sql</span>)
-<span class="ruby-keyword">end</span></pre>
-          </div><!-- query-source -->
-          
-        </div>
-
-        
-
-        
-      </div><!-- query-method -->
-
-    
-    </section><!-- public-instance-method-details -->
-  
-  </section><!-- 5Buntitled-5D -->
-
-</div><!-- documentation -->
-
-
-<footer id="validator-badges">
-  <p><a href="http://validator.w3.org/check/referer">[Validate]</a>
-  <p>Generated by <a href="https://github.com/rdoc/rdoc">RDoc</a> 3.12.
-  <p>Generated with the <a href="http://deveiate.org/projects/Darkfish-Rdoc/">Darkfish Rdoc Generator</a> 3.
-</footer>
+</body>
+</html>
 
