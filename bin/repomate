@@ -26,12 +26,13 @@ options = Slop.parse do
     load               - Load a checkpoint
     listpackages       - List packages
     setup              - Setup the pool
+    remove             - Removes a package from production
 
   Options:"
   on :s, :suitename=, "Set the name of the suite (lenny/squeeze...)", :argument => true
   on :c, :component=, "Set the name of the component (main/contrib...)", :default => "main"
   on :a, :architecture=, "Set the name of the component (main/contrib...)", :argument => true
-  on :r, :repodir, "Type of pool/category (stage/pool/production)", :argument => true
+  on :r, :repodir, "Type of pool/category (stage/pool/dists)", :argument => true
   on :force, "Force action", :default => false
   on :h, :help, 'Print this help message', :tail => true do
     puts help
@@ -59,8 +60,10 @@ elsif ARGV.include?("save")
   cli.save_checkpoint
 elsif ARGV.include?("load")
   cli.choose_checkpoint
+elsif ARGV.include?("remove")
+  cli.choose_package("remove")
 elsif ARGV.include?("listpackages")
-  cli.list_packages(options)
+  cli.list_packages(options[:repodir])
 elsif ARGV.include?("setup")
   cli.setup(options)
 else

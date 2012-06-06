@@ -75,6 +75,8 @@
 					
 					<li><a href="#method-i-create_table">#create_table</a></li>
 					
+					<li><a href="#method-i-delete_package">#delete_package</a></li>
+					
 					<li><a href="#method-i-list">#list</a></li>
 					
 					<li><a href="#method-i-load">#load</a></li>
@@ -311,6 +313,42 @@ Create the checkpoint table
 			</div>
 
 		
+			<div id="delete-package-method" class="method-detail ">
+				<a name="method-i-delete_package"></a>
+
+				<div class="method-heading">
+				
+					<span class="method-name">delete_package</span><span
+						class="method-args">(package)</span>
+					<span class="method-click-advice">click to toggle source</span>
+				
+				</div>
+
+				<div class="method-description">
+					
+					<p>
+Deletes a package from checkpoint table
+</p>
+					
+
+					
+					<div class="method-source-code"
+						id="delete-package-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/repomate/checkpoint.rb, line 91</span>
+91:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">delete_package</span>(<span class="ruby-identifier">package</span>)
+92:       <span class="ruby-ivar">@cpdb</span>.<span class="ruby-identifier">query</span>(<span class="ruby-node">&quot;delete from checkpoints where basename = '#{package[:basename]}' and suitename = '#{package[:suitename]}' and component = '#{package[:component]}' and architecture = '#{package[:architecture]}'&quot;</span>)
+93:     <span class="ruby-keyword kw">end</span></pre>
+					</div>
+					
+				</div>
+
+				
+
+				
+			</div>
+
+		
 			<div id="list-method" class="method-detail ">
 				<a name="method-i-list"></a>
 
@@ -333,23 +371,23 @@ Returns a list of checkpoints for the cli
 					<div class="method-source-code"
 						id="list-source">
 <pre>
-     <span class="ruby-comment cmt"># File lib/repomate/checkpoint.rb, line 91</span>
- 91:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">list</span>
- 92:       <span class="ruby-identifier">order</span> = <span class="ruby-value">0</span>
- 93:       <span class="ruby-identifier">dates</span> = []
- 94:       <span class="ruby-identifier">list</span>  = {}
- 95: 
- 96:       <span class="ruby-ivar">@cpdb</span>.<span class="ruby-identifier">query</span>(<span class="ruby-value str">&quot;select date from checkpoints group by date order by date asc&quot;</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">row</span><span class="ruby-operator">|</span>
- 97:         <span class="ruby-identifier">dates</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">row</span>.<span class="ruby-identifier">first</span>
- 98:       <span class="ruby-keyword kw">end</span>
- 99: 
-100:       <span class="ruby-identifier">dates</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">date</span><span class="ruby-operator">|</span>
-101:         <span class="ruby-identifier">order</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
-102:         <span class="ruby-identifier">list</span>[<span class="ruby-identifier">order</span>] = <span class="ruby-identifier">date</span>
+     <span class="ruby-comment cmt"># File lib/repomate/checkpoint.rb, line 96</span>
+ 96:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">list</span>
+ 97:       <span class="ruby-identifier">order</span> = <span class="ruby-value">0</span>
+ 98:       <span class="ruby-identifier">dates</span> = []
+ 99:       <span class="ruby-identifier">list</span>  = {}
+100: 
+101:       <span class="ruby-ivar">@cpdb</span>.<span class="ruby-identifier">query</span>(<span class="ruby-value str">&quot;select date from checkpoints group by date order by date asc&quot;</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">row</span><span class="ruby-operator">|</span>
+102:         <span class="ruby-identifier">dates</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">row</span>.<span class="ruby-identifier">first</span>
 103:       <span class="ruby-keyword kw">end</span>
 104: 
-105:       <span class="ruby-identifier">list</span>
-106:     <span class="ruby-keyword kw">end</span></pre>
+105:       <span class="ruby-identifier">dates</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">date</span><span class="ruby-operator">|</span>
+106:         <span class="ruby-identifier">order</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+107:         <span class="ruby-identifier">list</span>[<span class="ruby-identifier">order</span>] = <span class="ruby-identifier">date</span>
+108:       <span class="ruby-keyword kw">end</span>
+109: 
+110:       <span class="ruby-identifier">list</span>
+111:     <span class="ruby-keyword kw">end</span></pre>
 					</div>
 					
 				</div>

@@ -66,7 +66,7 @@ module RepoMate
             :architecture         => entry[:architecture]
           }
         end
-p action
+
         @repomate.publish(workload) unless workload.empty?
        end
     end
@@ -78,11 +78,11 @@ p action
     end
 
     # List all packages, see cli output
-    def list_packages(options)
-      if options.repodir?
+    def list_packages(repodir)
+      if repodir
         architecture = "unknown"
 
-        packages = @repomate.list_packages(options[:repodir])
+        packages = @repomate.list_packages(repodir)
         packages.each do |package|
             architecture = package[:architecture] if package[:architecture]
             printf "%-50s%-20s%s\n", package[:controlfile]['Package'], package[:controlfile]['Version'], "#{package[:suitename]}/#{package[:component]}/#{architecture}"
@@ -123,6 +123,29 @@ Everything between the last two \"publish (-P) commands\" will be lost if you pr
         exit 1
       else
         @checkpoint.load(number)
+      end
+    end
+
+    # Choose a package
+    def choose_package(action)
+      packages  = @repomate.list_packages("dists")
+      packages.each do |package|
+        printf "%d) %-50s%-20s%s\n", package[:number], package[:controlfile]['Package'], package[:controlfile]['Version'], "#{package[:suitename]}/#{package[:component]}"
+      end
+
+      printf "\n%s", "Enter number or [q|quit] to abord: "
+      input  = STDIN.gets
+      number = input.to_i
+
+      if input =~ /(q|quit)/
+        puts "Aborting..."
+        exit 0
+      else
+        packages.each do |package|
+          if package[:number].eql?(number)
+            @repomate.remove(package) if action.eql?("remove")
+          end
+        end
       end
     end
   end

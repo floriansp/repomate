@@ -14,6 +14,7 @@ module RepoMate
 
       @repository = Repository.new
       @link       = Link.new
+      @checkpoint = Checkpoint.new
     end
 
     # Add's a package to the staging area
@@ -119,14 +120,19 @@ module RepoMate
     # Returns a list of packages
     def list_packages(category)
       packages = []
+      number   = 0
       if category.eql?("stage")
         Component.dataset(category).each do |entry|
           source = Component.new(entry[:component], entry[:suitename], category)
           source.files.each do |fullname|
             package = Package.new(fullname, entry[:suitename], entry[:component])
 
+            number += 1
+
             packages << {
+              :number      => number,
               :fullname    => fullname,
+              :basename    => File.basename(fullname),
               :controlfile => package.controlfile,
               :component   => entry[:component],
               :suitename   => entry[:suitename]
@@ -139,8 +145,12 @@ module RepoMate
           source.files.each do |fullname|
             package = Package.new(fullname, entry[:suitename], entry[:component])
 
+            number += 1
+
             packages << {
+              :number       => number,
               :fullname     => fullname,
+              :basename     => File.basename(fullname),
               :controlfile  => package.controlfile,
               :component    => entry[:component],
               :suitename    => entry[:suitename],
@@ -150,6 +160,20 @@ module RepoMate
         end
       end
       packages
+    end
+
+    # Removes a package
+    def remove(package)
+      unlink_workload = []
+
+      path = File.join(Cfg.rootdir, "*", package[:suitename], package[:component], "*", package[:basename])
+
+      Dir.glob(path).each do |fullname|
+        unlink_workload << { :destination_fullname => fullname }
+      end
+
+      @checkpoint.delete_package(package)
+      @link.destroy(unlink_workload)
     end
   end
 end

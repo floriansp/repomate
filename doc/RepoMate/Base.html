@@ -79,6 +79,8 @@
 					
 					<li><a href="#method-i-publish">#publish</a></li>
 					
+					<li><a href="#method-i-remove">#remove</a></li>
+					
 					<li><a href="#method-i-stage">#stage</a></li>
 					
 				</ul>
@@ -204,8 +206,8 @@ Init
 13:       <span class="ruby-constant">FileUtils</span>.<span class="ruby-identifier">mkdir_p</span>(<span class="ruby-constant">Cfg</span>.<span class="ruby-identifier">rootdir</span>)
 14: 
 15:       <span class="ruby-ivar">@repository</span> = <span class="ruby-constant">Repository</span>.<span class="ruby-identifier">new</span>
-16:       <span class="ruby-ivar">@checkpoint</span> = <span class="ruby-constant">Checkpoint</span>.<span class="ruby-identifier">new</span>
-17:       <span class="ruby-ivar">@link</span>       = <span class="ruby-constant">Link</span>.<span class="ruby-identifier">new</span>
+16:       <span class="ruby-ivar">@link</span>       = <span class="ruby-constant">Link</span>.<span class="ruby-identifier">new</span>
+17:       <span class="ruby-ivar">@checkpoint</span> = <span class="ruby-constant">Checkpoint</span>.<span class="ruby-identifier">new</span>
 18:     <span class="ruby-keyword kw">end</span></pre>
 					</div>
 					
@@ -245,46 +247,46 @@ Does the link job after checking versions through dpkg
 					<div class="method-source-code"
 						id="check-versions-source">
 <pre>
-     <span class="ruby-comment cmt"># File lib/repomate/base.rb, line 82</span>
- 82:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">check_versions</span>(<span class="ruby-identifier">workload</span>)
- 83:       <span class="ruby-identifier">link_workload</span>   = []
- 84:       <span class="ruby-identifier">unlink_workload</span> = []
+     <span class="ruby-comment cmt"># File lib/repomate/base.rb, line 80</span>
+ 80:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">check_versions</span>(<span class="ruby-identifier">workload</span>)
+ 81:       <span class="ruby-identifier">link_workload</span>   = []
+ 82:       <span class="ruby-identifier">unlink_workload</span> = []
+ 83: 
+ 84:       <span class="ruby-identifier">dpkg</span> = <span class="ruby-constant">Cfg</span>.<span class="ruby-identifier">dpkg</span>
  85: 
- 86:       <span class="ruby-identifier">dpkg</span> = <span class="ruby-constant">Cfg</span>.<span class="ruby-identifier">dpkg</span>
- 87: 
- 88:       <span class="ruby-identifier">workload</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">entry</span><span class="ruby-operator">|</span>
- 89:         <span class="ruby-identifier">source_package</span>       = <span class="ruby-constant">Package</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">entry</span>[<span class="ruby-value">:source_fullname</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:suitename</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:component</span>])
- 90:         <span class="ruby-identifier">destination_fullname</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">entry</span>[<span class="ruby-value">:destination_dir</span>], <span class="ruby-identifier">source_package</span>.<span class="ruby-identifier">newbasename</span>)
- 91: 
- 92:         <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">glob</span>(<span class="ruby-node">&quot;#{entry[:destination_dir]}/#{source_package.name}*.deb&quot;</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">target_fullname</span><span class="ruby-operator">|</span>
- 93:           <span class="ruby-identifier">target_package</span> = <span class="ruby-constant">Package</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">target_fullname</span>, <span class="ruby-identifier">entry</span>[<span class="ruby-value">:suitename</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:component</span>] )
- 94: 
- 95:           <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">system</span>(<span class="ruby-node">&quot;#{dpkg} --compare-versions #{source_package.version} gt #{target_package.version}&quot;</span>)
- 96:             <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Package: #{target_package.newbasename} will be replaced with #{source_package.newbasename}&quot;</span>
- 97:             <span class="ruby-identifier">unlink_workload</span> <span class="ruby-operator">&lt;&lt;</span> {
- 98:               <span class="ruby-value">:destination_fullname</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">target_fullname</span>,
- 99:               <span class="ruby-value">:newbasename</span>          =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">target_package</span>.<span class="ruby-identifier">newbasename</span>
-100:             }
-101:           <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">system</span>(<span class="ruby-node">&quot;#{dpkg} --compare-versions #{source_package.version} eq #{target_package.version}&quot;</span>)
-102:             <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Package: #{source_package.newbasename} already exists with same version&quot;</span>
-103:             <span class="ruby-keyword kw">return</span>
-104:           <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">system</span>(<span class="ruby-node">&quot;#{dpkg} --compare-versions #{source_package.version} lt #{target_package.version}&quot;</span>)
-105:             <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Package: #{source_package.newbasename} already exists with higher version&quot;</span>
-106:             <span class="ruby-keyword kw">return</span>
-107:           <span class="ruby-keyword kw">end</span>
-108:         <span class="ruby-keyword kw">end</span>
-109: 
-110:         <span class="ruby-identifier">link_workload</span> <span class="ruby-operator">&lt;&lt;</span> {
-111:           <span class="ruby-value">:source_fullname</span>      =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">source_package</span>.<span class="ruby-identifier">fullname</span>,
-112:           <span class="ruby-value">:destination_fullname</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">destination_fullname</span>,
-113:           <span class="ruby-value">:suitename</span>            =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">source_package</span>.<span class="ruby-identifier">suitename</span>,
-114:           <span class="ruby-value">:component</span>            =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">source_package</span>.<span class="ruby-identifier">component</span>,
-115:           <span class="ruby-value">:newbasename</span>          =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">source_package</span>.<span class="ruby-identifier">newbasename</span>
-116:         }
-117:       <span class="ruby-keyword kw">end</span>
-118:       <span class="ruby-ivar">@link</span>.<span class="ruby-identifier">destroy</span>(<span class="ruby-identifier">unlink_workload</span>)
-119:       <span class="ruby-ivar">@link</span>.<span class="ruby-identifier">create</span>(<span class="ruby-identifier">link_workload</span>)
-120:     <span class="ruby-keyword kw">end</span></pre>
+ 86:       <span class="ruby-identifier">workload</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">entry</span><span class="ruby-operator">|</span>
+ 87:         <span class="ruby-identifier">source_package</span>       = <span class="ruby-constant">Package</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">entry</span>[<span class="ruby-value">:source_fullname</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:suitename</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:component</span>])
+ 88:         <span class="ruby-identifier">destination_fullname</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">entry</span>[<span class="ruby-value">:destination_dir</span>], <span class="ruby-identifier">source_package</span>.<span class="ruby-identifier">newbasename</span>)
+ 89: 
+ 90:         <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">glob</span>(<span class="ruby-node">&quot;#{entry[:destination_dir]}/#{source_package.name}*.deb&quot;</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">target_fullname</span><span class="ruby-operator">|</span>
+ 91:           <span class="ruby-identifier">target_package</span> = <span class="ruby-constant">Package</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">target_fullname</span>, <span class="ruby-identifier">entry</span>[<span class="ruby-value">:suitename</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:component</span>] )
+ 92: 
+ 93:           <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">system</span>(<span class="ruby-node">&quot;#{dpkg} --compare-versions #{source_package.version} gt #{target_package.version}&quot;</span>)
+ 94:             <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Package: #{target_package.newbasename} will be replaced with #{source_package.newbasename}&quot;</span>
+ 95:             <span class="ruby-identifier">unlink_workload</span> <span class="ruby-operator">&lt;&lt;</span> {
+ 96:               <span class="ruby-value">:destination_fullname</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">target_fullname</span>,
+ 97:               <span class="ruby-value">:newbasename</span>          =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">target_package</span>.<span class="ruby-identifier">newbasename</span>
+ 98:             }
+ 99:           <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">system</span>(<span class="ruby-node">&quot;#{dpkg} --compare-versions #{source_package.version} eq #{target_package.version}&quot;</span>)
+100:             <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Package: #{source_package.newbasename} already exists with same version&quot;</span>
+101:             <span class="ruby-keyword kw">return</span>
+102:           <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">system</span>(<span class="ruby-node">&quot;#{dpkg} --compare-versions #{source_package.version} lt #{target_package.version}&quot;</span>)
+103:             <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Package: #{source_package.newbasename} already exists with higher version&quot;</span>
+104:             <span class="ruby-keyword kw">return</span>
+105:           <span class="ruby-keyword kw">end</span>
+106:         <span class="ruby-keyword kw">end</span>
+107: 
+108:         <span class="ruby-identifier">link_workload</span> <span class="ruby-operator">&lt;&lt;</span> {
+109:           <span class="ruby-value">:source_fullname</span>      =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">source_package</span>.<span class="ruby-identifier">fullname</span>,
+110:           <span class="ruby-value">:destination_fullname</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">destination_fullname</span>,
+111:           <span class="ruby-value">:suitename</span>            =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">source_package</span>.<span class="ruby-identifier">suitename</span>,
+112:           <span class="ruby-value">:component</span>            =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">source_package</span>.<span class="ruby-identifier">component</span>,
+113:           <span class="ruby-value">:newbasename</span>          =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">source_package</span>.<span class="ruby-identifier">newbasename</span>
+114:         }
+115:       <span class="ruby-keyword kw">end</span>
+116:       <span class="ruby-ivar">@link</span>.<span class="ruby-identifier">destroy</span>(<span class="ruby-identifier">unlink_workload</span>)
+117:       <span class="ruby-ivar">@link</span>.<span class="ruby-identifier">create</span>(<span class="ruby-identifier">link_workload</span>)
+118:     <span class="ruby-keyword kw">end</span></pre>
 					</div>
 					
 				</div>
@@ -317,41 +319,50 @@ Returns a list of packages
 					<div class="method-source-code"
 						id="list-packages-source">
 <pre>
-     <span class="ruby-comment cmt"># File lib/repomate/base.rb, line 123</span>
-123:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">list_packages</span>(<span class="ruby-identifier">category</span>)
-124:       <span class="ruby-identifier">packages</span> = []
-125:       <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">category</span>.<span class="ruby-identifier">eql?</span>(<span class="ruby-value str">&quot;stage&quot;</span>)
-126:         <span class="ruby-constant">Component</span>.<span class="ruby-identifier">dataset</span>(<span class="ruby-identifier">category</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">entry</span><span class="ruby-operator">|</span>
-127:           <span class="ruby-identifier">source</span> = <span class="ruby-constant">Component</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">entry</span>[<span class="ruby-value">:component</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:suitename</span>], <span class="ruby-identifier">category</span>)
-128:           <span class="ruby-identifier">source</span>.<span class="ruby-identifier">files</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">fullname</span><span class="ruby-operator">|</span>
-129:             <span class="ruby-identifier">package</span> = <span class="ruby-constant">Package</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">fullname</span>, <span class="ruby-identifier">entry</span>[<span class="ruby-value">:suitename</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:component</span>])
-130: 
-131:             <span class="ruby-identifier">packages</span> <span class="ruby-operator">&lt;&lt;</span> {
-132:               <span class="ruby-value">:fullname</span>    =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">fullname</span>,
-133:               <span class="ruby-value">:controlfile</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">package</span>.<span class="ruby-identifier">controlfile</span>,
-134:               <span class="ruby-value">:component</span>   =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">entry</span>[<span class="ruby-value">:component</span>],
-135:               <span class="ruby-value">:suitename</span>   =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">entry</span>[<span class="ruby-value">:suitename</span>]
-136:             }
-137:           <span class="ruby-keyword kw">end</span>
-138:         <span class="ruby-keyword kw">end</span>
-139:       <span class="ruby-keyword kw">else</span>
-140:         <span class="ruby-constant">Architecture</span>.<span class="ruby-identifier">dataset</span>(<span class="ruby-identifier">category</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">entry</span><span class="ruby-operator">|</span>
-141:           <span class="ruby-identifier">source</span> = <span class="ruby-constant">Architecture</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">entry</span>[<span class="ruby-value">:architecture</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:component</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:suitename</span>], <span class="ruby-identifier">category</span>)
-142:           <span class="ruby-identifier">source</span>.<span class="ruby-identifier">files</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">fullname</span><span class="ruby-operator">|</span>
-143:             <span class="ruby-identifier">package</span> = <span class="ruby-constant">Package</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">fullname</span>, <span class="ruby-identifier">entry</span>[<span class="ruby-value">:suitename</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:component</span>])
-144: 
-145:             <span class="ruby-identifier">packages</span> <span class="ruby-operator">&lt;&lt;</span> {
-146:               <span class="ruby-value">:fullname</span>     =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">fullname</span>,
-147:               <span class="ruby-value">:controlfile</span>  =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">package</span>.<span class="ruby-identifier">controlfile</span>,
-148:               <span class="ruby-value">:component</span>    =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">entry</span>[<span class="ruby-value">:component</span>],
-149:               <span class="ruby-value">:suitename</span>    =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">entry</span>[<span class="ruby-value">:suitename</span>],
-150:               <span class="ruby-value">:architecture</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">entry</span>[<span class="ruby-value">:architecture</span>]
-151:             }
-152:           <span class="ruby-keyword kw">end</span>
-153:         <span class="ruby-keyword kw">end</span>
-154:       <span class="ruby-keyword kw">end</span>
-155:       <span class="ruby-identifier">packages</span>
-156:     <span class="ruby-keyword kw">end</span></pre>
+     <span class="ruby-comment cmt"># File lib/repomate/base.rb, line 121</span>
+121:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">list_packages</span>(<span class="ruby-identifier">category</span>)
+122:       <span class="ruby-identifier">packages</span> = []
+123:       <span class="ruby-identifier">number</span>   = <span class="ruby-value">0</span>
+124:       <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">category</span>.<span class="ruby-identifier">eql?</span>(<span class="ruby-value str">&quot;stage&quot;</span>)
+125:         <span class="ruby-constant">Component</span>.<span class="ruby-identifier">dataset</span>(<span class="ruby-identifier">category</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">entry</span><span class="ruby-operator">|</span>
+126:           <span class="ruby-identifier">source</span> = <span class="ruby-constant">Component</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">entry</span>[<span class="ruby-value">:component</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:suitename</span>], <span class="ruby-identifier">category</span>)
+127:           <span class="ruby-identifier">source</span>.<span class="ruby-identifier">files</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">fullname</span><span class="ruby-operator">|</span>
+128:             <span class="ruby-identifier">package</span> = <span class="ruby-constant">Package</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">fullname</span>, <span class="ruby-identifier">entry</span>[<span class="ruby-value">:suitename</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:component</span>])
+129: 
+130:             <span class="ruby-identifier">number</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+131: 
+132:             <span class="ruby-identifier">packages</span> <span class="ruby-operator">&lt;&lt;</span> {
+133:               <span class="ruby-value">:number</span>      =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">number</span>,
+134:               <span class="ruby-value">:fullname</span>    =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">fullname</span>,
+135:               <span class="ruby-value">:basename</span>    =<span class="ruby-operator">&gt;</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">basename</span>(<span class="ruby-identifier">fullname</span>),
+136:               <span class="ruby-value">:controlfile</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">package</span>.<span class="ruby-identifier">controlfile</span>,
+137:               <span class="ruby-value">:component</span>   =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">entry</span>[<span class="ruby-value">:component</span>],
+138:               <span class="ruby-value">:suitename</span>   =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">entry</span>[<span class="ruby-value">:suitename</span>]
+139:             }
+140:           <span class="ruby-keyword kw">end</span>
+141:         <span class="ruby-keyword kw">end</span>
+142:       <span class="ruby-keyword kw">else</span>
+143:         <span class="ruby-constant">Architecture</span>.<span class="ruby-identifier">dataset</span>(<span class="ruby-identifier">category</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">entry</span><span class="ruby-operator">|</span>
+144:           <span class="ruby-identifier">source</span> = <span class="ruby-constant">Architecture</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">entry</span>[<span class="ruby-value">:architecture</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:component</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:suitename</span>], <span class="ruby-identifier">category</span>)
+145:           <span class="ruby-identifier">source</span>.<span class="ruby-identifier">files</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">fullname</span><span class="ruby-operator">|</span>
+146:             <span class="ruby-identifier">package</span> = <span class="ruby-constant">Package</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">fullname</span>, <span class="ruby-identifier">entry</span>[<span class="ruby-value">:suitename</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:component</span>])
+147: 
+148:             <span class="ruby-identifier">number</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+149: 
+150:             <span class="ruby-identifier">packages</span> <span class="ruby-operator">&lt;&lt;</span> {
+151:               <span class="ruby-value">:number</span>       =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">number</span>,
+152:               <span class="ruby-value">:fullname</span>     =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">fullname</span>,
+153:               <span class="ruby-value">:basename</span>     =<span class="ruby-operator">&gt;</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">basename</span>(<span class="ruby-identifier">fullname</span>),
+154:               <span class="ruby-value">:controlfile</span>  =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">package</span>.<span class="ruby-identifier">controlfile</span>,
+155:               <span class="ruby-value">:component</span>    =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">entry</span>[<span class="ruby-value">:component</span>],
+156:               <span class="ruby-value">:suitename</span>    =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">entry</span>[<span class="ruby-value">:suitename</span>],
+157:               <span class="ruby-value">:architecture</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">entry</span>[<span class="ruby-value">:architecture</span>]
+158:             }
+159:           <span class="ruby-keyword kw">end</span>
+160:         <span class="ruby-keyword kw">end</span>
+161:       <span class="ruby-keyword kw">end</span>
+162:       <span class="ruby-identifier">packages</span>
+163:     <span class="ruby-keyword kw">end</span></pre>
 					</div>
 					
 				</div>
@@ -461,10 +472,53 @@ linked to dists
 73:         <span class="ruby-constant">FileUtils</span>.<span class="ruby-identifier">move</span>(<span class="ruby-identifier">entry</span>[<span class="ruby-value">:source_fullname</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:destination_fullname</span>])
 74:       <span class="ruby-keyword kw">end</span>
 75:       <span class="ruby-identifier">workload</span> = <span class="ruby-identifier">newworkload</span>
-76: 
-77:       <span class="ruby-ivar">@checkpoint</span>.<span class="ruby-identifier">create</span>
-78:       <span class="ruby-identifier">check_versions</span>(<span class="ruby-identifier">workload</span>)
-79:     <span class="ruby-keyword kw">end</span></pre>
+76:       <span class="ruby-identifier">check_versions</span>(<span class="ruby-identifier">workload</span>)
+77:     <span class="ruby-keyword kw">end</span></pre>
+					</div>
+					
+				</div>
+
+				
+
+				
+			</div>
+
+		
+			<div id="remove-method" class="method-detail ">
+				<a name="method-i-remove"></a>
+
+				<div class="method-heading">
+				
+					<span class="method-name">remove</span><span
+						class="method-args">(package)</span>
+					<span class="method-click-advice">click to toggle source</span>
+				
+				</div>
+
+				<div class="method-description">
+					
+					<p>
+Removes a package
+</p>
+					
+
+					
+					<div class="method-source-code"
+						id="remove-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/repomate/base.rb, line 166</span>
+166:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">remove</span>(<span class="ruby-identifier">package</span>)
+167:       <span class="ruby-identifier">unlink_workload</span> = []
+168: 
+169:       <span class="ruby-identifier">path</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-constant">Cfg</span>.<span class="ruby-identifier">rootdir</span>, <span class="ruby-value str">&quot;*&quot;</span>, <span class="ruby-identifier">package</span>[<span class="ruby-value">:suitename</span>], <span class="ruby-identifier">package</span>[<span class="ruby-value">:component</span>], <span class="ruby-value str">&quot;*&quot;</span>, <span class="ruby-identifier">package</span>[<span class="ruby-value">:basename</span>])
+170: 
+171:       <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">glob</span>(<span class="ruby-identifier">path</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">fullname</span><span class="ruby-operator">|</span>
+172:         <span class="ruby-identifier">unlink_workload</span> <span class="ruby-operator">&lt;&lt;</span> { <span class="ruby-value">:destination_fullname</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">fullname</span> }
+173:       <span class="ruby-keyword kw">end</span>
+174: 
+175:       <span class="ruby-ivar">@checkpoint</span>.<span class="ruby-identifier">delete_package</span>(<span class="ruby-identifier">package</span>)
+176:       <span class="ruby-ivar">@link</span>.<span class="ruby-identifier">destroy</span>(<span class="ruby-identifier">unlink_workload</span>)
+177:     <span class="ruby-keyword kw">end</span></pre>
 					</div>
 					
 				</div>

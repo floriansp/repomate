@@ -87,6 +87,11 @@ module RepoMate
       @link.create(link_workload)
     end
 
+    # Deletes a package from checkpoint table
+    def delete_package(package)
+      @cpdb.query("delete from checkpoints where basename = '#{package[:basename]}' and suitename = '#{package[:suitename]}' and component = '#{package[:component]}' and architecture = '#{package[:architecture]}'")
+    end
+
     # Returns a list of checkpoints for the cli
     def list
       order = 0
