@@ -50,20 +50,19 @@ Please make sure you have the following packages installed:
 * libsqlite3-dev
 
 #### Get RepoMate
-    
+
     gem install repomate
-    
+
 #### Configure RepoMate
 
 Create your own config file.
-    
+
     vi ~/.repomate
-    
+
 Default config:
-       
+
     ---
     :rootdir: /var/lib/repomate/repository
-    :logdir: /var/log/repomate
     :dpkg: /usr/bin/dpkg
     :suites:
         - lenny
@@ -76,12 +75,12 @@ Default config:
         - amd64
     :origin: Repository
     :label: Repository
-    :gpg_enable: no
+    :gpg_enable: false
     :gpg_email: someone@example.net
     :gpg_password: secret
- 
+
 I recommend you to enable GPG support. I'm sure you will find a lot of tutorials which describe the process of creating a GPG keypair.
-    
+
 #### Configure webserver
 
 Configure your favorite webserver by adding RepoMate's rootdirectory to a site or vhost.
@@ -92,14 +91,14 @@ Pretty basic apache2 example:
         ServerAdmin webmaster@example.net
         ServerName  repository.example.net
         DocumentRoot /var/lib/repomate
-    
+
         <Directory /var/lib/repomate/>
             Options Indexes FollowSymLinks MultiViews
             AllowOverride None
             Order allow,deny
             allow from all
         </Directory>
-    
+
         ErrorLog  /var/log/apache2/error.log
         CustomLog /var/log/apache2/access.log combined
     </VirtualHost>
@@ -113,9 +112,9 @@ Pretty basic apache2 example:
 ### Client
 
 Add something like this to your machines /etc/apt/sources.list:
-    
-    deb [arch=all,amd64] http://server/repository squeeze main    
-    
+
+    deb [arch=all,amd64] http://server/repository squeeze main
+
 
 ### Examples
 
