@@ -166,7 +166,7 @@ module RepoMate
     def remove(package)
       unlink_workload = []
 
-      path = File.join(Cfg.rootdir, "*", package[:suitename], package[:component], "*", package[:basename])
+      path = Dir.glob(File.join(Cfg.rootdir, "dists", package[:suitename], package[:component], "*", package[:basename]))
 
       Dir.glob(path).each do |fullname|
         unlink_workload << { :destination_fullname => fullname }
