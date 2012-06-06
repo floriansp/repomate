@@ -85,7 +85,6 @@ module RepoMate
     def create_release
       source_category = "dists"
       suites          = []
-p Cfg
       archrelease_template  = ERB.new File.new(File.join(File.dirname(__FILE__), "templates/archrelease.erb")).read, nil, "%"
       suiterelease_template = ERB.new File.new(File.join(File.dirname(__FILE__), "templates/suiterelease.erb")).read, nil, "%"
 

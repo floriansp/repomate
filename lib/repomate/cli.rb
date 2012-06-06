@@ -41,6 +41,7 @@ module RepoMate
 
     # Get's all packages from the staging area. Packages need to be confirmed here.
     def publish(options)
+      action = true
       @repomate.prepare_publish.each do |entry|
         workload  = []
         basename  = File.basename(entry[:source_fullname])
@@ -53,6 +54,10 @@ module RepoMate
         end
 
         if options.force? || input =~ /(y|yes)/
+          @checkpoint.create if action
+
+          action = false
+
           workload << {
             :source_fullname      => entry[:source_fullname],
             :destination_fullname => entry[:destination_fullname],
@@ -61,6 +66,7 @@ module RepoMate
             :architecture         => entry[:architecture]
           }
         end
+p action
         @repomate.publish(workload) unless workload.empty?
        end
     end

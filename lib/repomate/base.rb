@@ -13,7 +13,6 @@ module RepoMate
       FileUtils.mkdir_p(Cfg.rootdir)
 
       @repository = Repository.new
-      @checkpoint = Checkpoint.new
       @link       = Link.new
     end
 
@@ -73,8 +72,6 @@ module RepoMate
         FileUtils.move(entry[:source_fullname], entry[:destination_fullname])
       end
       workload = newworkload
-
-      @checkpoint.create
       check_versions(workload)
     end
 
