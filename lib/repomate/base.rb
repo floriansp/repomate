@@ -101,7 +101,6 @@ module RepoMate
               :destination_fullname => fullname,
               :suitename            => package.suitename,
               :component            => package.component,
-              :architecture         => package.architecture,
               :category             => 'dists'
             }
           end
@@ -116,8 +115,8 @@ module RepoMate
           FileUtils.move(stage_fullname, pool_fullname)
         end
       end
-        @link.destroy(unlink_workload)
-        @link.create(link_workload)
+      @link.destroy(unlink_workload)
+      @link.create(link_workload)
     end
 
     # Returns a list of packages

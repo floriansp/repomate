@@ -101,7 +101,7 @@ module RepoMate
 
         File.open(fullname) do |file|
           while(line = file.gets)
-            line =~ %r{([a-zA-Z]+):\s(.*)}
+            line =~ %r{([a-zA-Z\-]+):\s(.*)}
             controlfile[$1] = $2
           end
         end
