@@ -130,7 +130,7 @@ Everything between the last two \"publish (-P) commands\" will be lost if you pr
     def choose_package(action)
       packages  = @repomate.list_packages("dists")
       packages.each do |package|
-        printf "%d) %-50s%-20s%s\n", package[:number], package[:controlfile]['Package'], package[:controlfile]['Version'], "#{package[:suitename]}/#{package[:component]}"
+        printf "%-7s%-50s%-20s%s\n", "#{package[:number]})", package[:controlfile]['Package'], package[:controlfile]['Version'], "#{package[:suitename]}/#{package[:component]}"
       end
 
       printf "\n%s", "Enter number or [q|quit] to abord: "
