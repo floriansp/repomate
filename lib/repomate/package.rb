@@ -47,12 +47,11 @@ module RepoMate
     end
 
     # Gets checksums for the given package
-    def get_checksums
+    def load_checksums
       result = []
 
       @pkgdb.query("select md5, sha1, sha256 from checksums where basename = '#{@basename}' and mtime = '#{@mtime.iso8601}'").each do |row|
         result = row
-        # puts "Hit: #{@basename} #{result}"
       end
       result
     end

@@ -49,7 +49,7 @@ module RepoMate
 
         if File.exists?(entry[:destination_fullname])
           File.unlink(entry[:destination_fullname])
-          puts "Package: #{package.newbasename} unlinked from category #{entry[:category]}"
+          puts "Package: #{package.newbasename} unlinked from #{entry[:category]} => #{entry[:suitename]}/#{entry[:component]}"
           action = true
         else
           puts "Package: #{package.newbasename} was not linked"
@@ -91,7 +91,6 @@ module RepoMate
         end
       end
       if action
-        puts "Cleaning structure"
         @metafile.create
       end
     end

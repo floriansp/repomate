@@ -10,7 +10,7 @@ module RepoMate
 
     # Init
     def initialize
-      FileUtils.mkdir_p(Cfg.rootdir)
+      FileUtils.mkdir_p(Cfg.rootdir) unless File.exists?(Cfg.rootdir)
 
       @repository = Repository.new
       @link       = Link.new
@@ -56,67 +56,68 @@ module RepoMate
 
     # Publish all staged packages. Packages will be moved from stage to pool and linked to dists
     def publish(workload)
-      newworkload = []
-      workload.each do |entry|
-        destination = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], "dists")
-        basename    = File.basename(entry[:source_fullname])
-
-        @repository.create(entry[:suitename], entry[:component], entry[:architecture])
-
-        newworkload << {
-          :source_fullname => entry[:destination_fullname],
-          :destination_dir => destination.directory,
-          :component       => entry[:component],
-          :suitename       => entry[:suitename],
-          :architecture    => entry[:architecture]
-        }
-        FileUtils.move(entry[:source_fullname], entry[:destination_fullname])
-      end
-      workload = newworkload
-      check_versions(workload)
-    end
-
-    # Does the link job after checking versions through dpkg
-    def check_versions(workload)
       link_workload   = []
       unlink_workload = []
 
-      dpkg = Cfg.dpkg
-
       workload.each do |entry|
-        source_package       = Package.new(entry[:source_fullname], entry[:suitename], entry[:component])
-        destination_fullname = File.join(entry[:destination_dir], source_package.newbasename)
 
-        Dir.glob("#{entry[:destination_dir]}/#{source_package.name}*.deb") do |target_fullname|
-          target_package = Package.new(target_fullname, entry[:suitename], entry[:component] )
+        action = true
 
-          if system("#{dpkg} --compare-versions #{source_package.version} gt #{target_package.version}")
-            puts "Package: #{target_package.newbasename} will be replaced with #{source_package.newbasename}"
-            unlink_workload << {
-              :destination_fullname => target_fullname,
-              :newbasename          => target_package.newbasename,
-              :suitename            => target_package.suitename,
-              :component            => target_package.component
-            }
-          elsif system("#{dpkg} --compare-versions #{source_package.version} eq #{target_package.version}")
-            puts "Package: #{source_package.newbasename} already exists with same version"
-            return
-          elsif system("#{dpkg} --compare-versions #{source_package.version} lt #{target_package.version}")
-            puts "Package: #{source_package.newbasename} already exists with higher version"
-            return
+        @repository.create(entry[:suitename], entry[:component], entry[:architecture])
+
+        package        = Package.new(entry[:source_fullname], entry[:suitename], entry[:component])
+        pool           = Architecture.new(package.architecture, entry[:component], entry[:suitename], "pool")
+        dists          = Architecture.new(package.architecture, entry[:component], entry[:suitename], "dists")
+        pool_fullname  = File.join(pool.directory, package.basename)
+        dists_fullname = File.join(dists.directory, package.basename)
+        stage_fullname = package.fullname
+
+        Dir.glob("#{pool.directory}/#{package.name}*.deb") do |pool_fullname|
+          pool_package = Package.new(pool_fullname, entry[:suitename], entry[:component] )
+          if system("#{Cfg.dpkg} --compare-versions #{package.version} gt #{pool_package.version}")
+            puts "Package: #{pool_package.newbasename} will be replaced with #{package.newbasename}"
+          elsif system("#{Cfg.dpkg} --compare-versions #{package.version} eq #{pool_package.version}")
+            puts "Package: #{pool_package.newbasename} already exists with same version"
+            action = false
+            next
+          elsif system("#{Cfg.dpkg} --compare-versions #{package.version} lt #{pool_package.version}")
+            puts "Package: #{pool_package.newbasename} already exists with higher version"
+            File.unlink(package.fullname)
+            action = false
+            next
           end
         end
 
-        link_workload << {
-          :source_fullname      => source_package.fullname,
-          :destination_fullname => destination_fullname,
-          :suitename            => source_package.suitename,
-          :component            => source_package.component,
-          :newbasename          => source_package.newbasename
-        }
+        if action
+          link_workload << {
+            :source_fullname      => pool_fullname,
+            :destination_fullname => dists_fullname,
+            :suitename            => package.suitename,
+            :component            => package.component,
+            :architecture         => package.architecture
+          }
+          Dir.glob("#{dists.directory}/#{package.name}*.deb") do |fullname|
+            unlink_workload << {
+              :destination_fullname => fullname,
+              :suitename            => package.suitename,
+              :component            => package.component,
+              :architecture         => package.architecture,
+              :category             => 'dists'
+            }
+          end
+          Dir.glob("#{pool.directory}/#{package.name}*.deb") do |fullname|
+            unlink_workload << {
+              :destination_fullname => fullname,
+              :suitename            => package.suitename,
+              :component            => package.component,
+              :category             => 'pool'
+            }
+          end
+          FileUtils.move(stage_fullname, pool_fullname)
+        end
       end
-      @link.destroy(unlink_workload)
-      @link.create(link_workload)
+        @link.destroy(unlink_workload)
+        @link.create(link_workload)
     end
 
     # Returns a list of packages
@@ -174,9 +175,9 @@ module RepoMate
         Dir.glob(path).each do |fullname|
           unlink_workload << {
             :destination_fullname => fullname,
-            :category  => category,
-            :suitename => package[:suitename],
-            :component => package[:component]
+            :category             => category,
+            :suitename            => package[:suitename],
+            :component            => package[:component]
           }
         end
       end

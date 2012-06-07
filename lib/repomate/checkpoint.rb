@@ -24,8 +24,8 @@ module RepoMate
               suitename varchar(10),
               component varchar(10),
               architecture varchar(10),
-              basename varchar(70)
-      )"
+              basename varchar(70))"
+
       @cpdb.query(sql)
     end
 
@@ -38,7 +38,15 @@ module RepoMate
         source = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], source_category)
         source.files.each do |fullname|
           basename = File.basename(fullname)
-          @cpdb.query("insert into checkpoints values ( '#{datetime}', '#{entry[:suitename]}', '#{entry[:component]}', '#{entry[:architecture]}', '#{basename}' )")
+
+          sql = "insert into checkpoints values (
+                  '#{datetime}',
+                  '#{entry[:suitename]}',
+                  '#{entry[:component]}',
+                  '#{entry[:architecture]}',
+                  '#{basename}')"
+
+          @cpdb.query(sql)
         end
       end
 
@@ -89,7 +97,13 @@ module RepoMate
 
     # Deletes a package from checkpoint table
     def delete_package(package)
-      @cpdb.query("delete from checkpoints where basename = '#{package[:basename]}' and suitename = '#{package[:suitename]}' and component = '#{package[:component]}' and architecture = '#{package[:architecture]}'")
+      sql = "delete from checkpoints where
+              basename = '#{package[:basename]}' and
+              suitename = '#{package[:suitename]}' and
+              component = '#{package[:component]}' and
+              architecture = '#{package[:architecture]}'"
+
+      @cpdb.query(sql)
     end
 
     # Returns a list of checkpoints for the cli
