@@ -350,7 +350,7 @@ Create Packages* files
 66:         <span class="ruby-identifier">source</span>.<span class="ruby-identifier">files</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">fullname</span><span class="ruby-operator">|</span>
 67:           <span class="ruby-identifier">package</span> = <span class="ruby-constant">Package</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">fullname</span>, <span class="ruby-identifier">entry</span>[<span class="ruby-value">:suitename</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:component</span>])
 68: 
-69:           <span class="ruby-identifier">checksums</span> = <span class="ruby-identifier">package</span>.<span class="ruby-identifier">get_checksums</span>
+69:           <span class="ruby-identifier">checksums</span> = <span class="ruby-identifier">package</span>.<span class="ruby-identifier">load_checksums</span>
 70: 
 71:           <span class="ruby-identifier">packagesfile</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">entry</span>[<span class="ruby-value">:fullpath</span>], <span class="ruby-value str">&quot;Packages&quot;</span>)
 72:           <span class="ruby-identifier">size</span>         = <span class="ruby-constant">File</span>.<span class="ruby-identifier">size</span>(<span class="ruby-identifier">fullname</span>)

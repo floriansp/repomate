@@ -269,10 +269,9 @@ cleans up unused directories
 91:         <span class="ruby-keyword kw">end</span>
 92:       <span class="ruby-keyword kw">end</span>
 93:       <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">action</span>
-94:         <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;Cleaning structure&quot;</span>
-95:         <span class="ruby-ivar">@metafile</span>.<span class="ruby-identifier">create</span>
-96:       <span class="ruby-keyword kw">end</span>
-97:     <span class="ruby-keyword kw">end</span></pre>
+94:         <span class="ruby-ivar">@metafile</span>.<span class="ruby-identifier">create</span>
+95:       <span class="ruby-keyword kw">end</span>
+96:     <span class="ruby-keyword kw">end</span></pre>
 					</div>
 					
 				</div>
@@ -368,7 +367,7 @@ unlinks workload
 49: 
 50:         <span class="ruby-keyword kw">if</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">exists?</span>(<span class="ruby-identifier">entry</span>[<span class="ruby-value">:destination_fullname</span>])
 51:           <span class="ruby-constant">File</span>.<span class="ruby-identifier">unlink</span>(<span class="ruby-identifier">entry</span>[<span class="ruby-value">:destination_fullname</span>])
-52:           <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Package: #{package.newbasename} unlinked from category #{entry[:category]}&quot;</span>
+52:           <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Package: #{package.newbasename} unlinked from #{entry[:category]} =&gt; #{entry[:suitename]}/#{entry[:component]}&quot;</span>
 53:           <span class="ruby-identifier">action</span> = <span class="ruby-keyword kw">true</span>
 54:         <span class="ruby-keyword kw">else</span>
 55:           <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Package: #{package.newbasename} was not linked&quot;</span>
