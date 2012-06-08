@@ -1,17 +1,17 @@
-Thu, 07 Jun 2012 18:39:21 +0200
-./bin/repomate	Wed, 06 Jun 2012 18:11:46 +0200
+Fri, 08 Jun 2012 14:51:41 +0200
+./bin/repomate	Fri, 08 Jun 2012 14:45:36 +0200
 ./Gemfile	Tue, 05 Jun 2012 07:33:51 +0200
 ./lib/repomate/architecture.rb	Fri, 11 May 2012 20:35:20 +0200
-./lib/repomate/base.rb	Thu, 07 Jun 2012 18:03:01 +0200
+./lib/repomate/base.rb	Fri, 08 Jun 2012 14:43:52 +0200
 ./lib/repomate/category.rb	Fri, 11 May 2012 20:35:20 +0200
-./lib/repomate/checkpoint.rb	Wed, 06 Jun 2012 19:28:34 +0200
-./lib/repomate/cli.rb	Wed, 06 Jun 2012 22:37:03 +0200
+./lib/repomate/checkpoint.rb	Fri, 08 Jun 2012 14:30:55 +0200
+./lib/repomate/cli.rb	Fri, 08 Jun 2012 14:03:07 +0200
 ./lib/repomate/component.rb	Fri, 11 May 2012 20:35:20 +0200
-./lib/repomate/configuration.rb	Wed, 06 Jun 2012 13:59:52 +0200
+./lib/repomate/configuration.rb	Fri, 08 Jun 2012 11:39:44 +0200
 ./lib/repomate/database.rb	Fri, 11 May 2012 21:44:19 +0200
-./lib/repomate/link.rb	Thu, 07 Jun 2012 17:57:54 +0200
-./lib/repomate/metafile.rb	Wed, 06 Jun 2012 19:09:06 +0200
-./lib/repomate/package.rb	Wed, 06 Jun 2012 19:08:49 +0200
+./lib/repomate/link.rb	Thu, 07 Jun 2012 18:39:38 +0200
+./lib/repomate/metafile.rb	Fri, 08 Jun 2012 08:52:35 +0200
+./lib/repomate/package.rb	Thu, 07 Jun 2012 19:35:12 +0200
 ./lib/repomate/repository.rb	Wed, 06 Jun 2012 18:11:46 +0200
 ./lib/repomate/suite.rb	Fri, 11 May 2012 20:35:20 +0200
 ./lib/repomate.rb	Sat, 12 May 2012 10:50:15 +0200

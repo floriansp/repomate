@@ -327,7 +327,7 @@ Create the checkpoint table
 				<div class="method-heading">
 				
 					<span class="method-name">delete_package</span><span
-						class="method-args">(package)</span>
+						class="method-args">(entry)</span>
 					<span class="method-click-advice">click to toggle source</span>
 				
 				</div>
@@ -344,12 +344,12 @@ Deletes a package from checkpoint table
 						id="delete-package-source">
 <pre>
      <span class="ruby-comment cmt"># File lib/repomate/checkpoint.rb, line 99</span>
- 99:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">delete_package</span>(<span class="ruby-identifier">package</span>)
+ 99:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">delete_package</span>(<span class="ruby-identifier">entry</span>)
 100:       <span class="ruby-identifier">sql</span> = <span class="ruby-node">&quot;delete from checkpoints where
-101:               basename = '#{package[:basename]}' and
-102:               suitename = '#{package[:suitename]}' and
-103:               component = '#{package[:component]}' and
-104:               architecture = '#{package[:architecture]}'&quot;</span>
+101:               basename = '#{entry[:basename]}' and
+102:               suitename = '#{entry[:suitename]}' and
+103:               component = '#{entry[:component]}' and
+104:               architecture = '#{entry[:architecture]}'&quot;</span>
 105: 
 106:       <span class="ruby-ivar">@cpdb</span>.<span class="ruby-identifier">query</span>(<span class="ruby-identifier">sql</span>)
 107:     <span class="ruby-keyword kw">end</span></pre>

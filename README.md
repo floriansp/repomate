@@ -75,7 +75,7 @@ Default config:
         - amd64
     :origin: Repository
     :label: Repository
-    :gpg_enable: false
+    :gpg: false
     :gpg_email: someone@example.net
     :gpg_password: secret
 
@@ -145,3 +145,15 @@ List all packages in pool:
 List all packages in stage:
 
     repomate listpackages -r stage
+
+Choose a package to you want to activate (The package will be linked from the pool to the dists directory):
+
+    repomate activate
+
+Choose a package to you want to deactivate (The package will be unlinked from the dists directory but still kept in the pool):
+
+    repomate deactivate
+
+Remove/Purge a package:
+
+    repomate remove

@@ -247,38 +247,38 @@ Choose a checkpoint to restore.
 					<div class="method-source-code"
 						id="choose-checkpoint-source">
 <pre>
-     <span class="ruby-comment cmt"># File lib/repomate/cli.rb, line 97</span>
- 97:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">choose_checkpoint</span>
- 98:       <span class="ruby-identifier">list</span> = <span class="ruby-ivar">@checkpoint</span>.<span class="ruby-identifier">list</span>
- 99: 
-100:       <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">list</span>.<span class="ruby-identifier">empty?</span>
-101:         <span class="ruby-constant">STDERR</span>.<span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;We can't restore because we don't have checkpoints&quot;</span>
-102:         <span class="ruby-identifier">exit</span> <span class="ruby-value">1</span>
-103:       <span class="ruby-keyword kw">end</span>
-104: 
-105:       <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;\n*** Restore production links to a date below. ***
-106: Remember: If you need to restore, the last entry might be the one you want!
-107: Everything between the last two \&quot;publish (-P) commands\&quot; will be lost if you proceed!\n\n&quot;</span>
-108: 
-109:       <span class="ruby-identifier">list</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">num</span>, <span class="ruby-identifier">date</span><span class="ruby-operator">|</span>
-110:         <span class="ruby-identifier">datetime</span> = <span class="ruby-constant">DateTime</span>.<span class="ruby-identifier">parse</span>(<span class="ruby-identifier">date</span>)
-111:         <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;#{num}) #{datetime.strftime(&quot;%F %T&quot;)}&quot;</span>
-112:       <span class="ruby-keyword kw">end</span>
-113: 
-114:       <span class="ruby-identifier">printf</span> <span class="ruby-value str">&quot;\n%s&quot;</span>, <span class="ruby-value str">&quot;Enter number or [q|quit] to abord: &quot;</span>
-115:       <span class="ruby-identifier">input</span>  = <span class="ruby-constant">STDIN</span>.<span class="ruby-identifier">gets</span>
-116:       <span class="ruby-identifier">number</span> = <span class="ruby-identifier">input</span>.<span class="ruby-identifier">to_i</span>
-117: 
-118:       <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">input</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp re">/(q|quit)/</span>
-119:         <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;Aborting...&quot;</span>
-120:         <span class="ruby-identifier">exit</span> <span class="ruby-value">0</span>
-121:       <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">list</span>[<span class="ruby-identifier">number</span>].<span class="ruby-identifier">nil?</span>
-122:         <span class="ruby-constant">STDERR</span>.<span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;Invalid number&quot;</span>
-123:         <span class="ruby-identifier">exit</span> <span class="ruby-value">1</span>
-124:       <span class="ruby-keyword kw">else</span>
-125:         <span class="ruby-ivar">@checkpoint</span>.<span class="ruby-identifier">load</span>(<span class="ruby-identifier">number</span>)
-126:       <span class="ruby-keyword kw">end</span>
-127:     <span class="ruby-keyword kw">end</span></pre>
+     <span class="ruby-comment cmt"># File lib/repomate/cli.rb, line 96</span>
+ 96:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">choose_checkpoint</span>
+ 97:       <span class="ruby-identifier">list</span> = <span class="ruby-ivar">@checkpoint</span>.<span class="ruby-identifier">list</span>
+ 98: 
+ 99:       <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">list</span>.<span class="ruby-identifier">empty?</span>
+100:         <span class="ruby-constant">STDERR</span>.<span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;We can't restore because we don't have checkpoints&quot;</span>
+101:         <span class="ruby-identifier">exit</span> <span class="ruby-value">1</span>
+102:       <span class="ruby-keyword kw">end</span>
+103: 
+104:       <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;\n*** Restore production links to a date below. ***
+105: Remember: If you need to restore, the last entry might be the one you want!
+106: Everything between the last two \&quot;publish (-P) commands\&quot; will be lost if you proceed!\n\n&quot;</span>
+107: 
+108:       <span class="ruby-identifier">list</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">num</span>, <span class="ruby-identifier">date</span><span class="ruby-operator">|</span>
+109:         <span class="ruby-identifier">datetime</span> = <span class="ruby-constant">DateTime</span>.<span class="ruby-identifier">parse</span>(<span class="ruby-identifier">date</span>)
+110:         <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;#{num}) #{datetime.strftime(&quot;%F %T&quot;)}&quot;</span>
+111:       <span class="ruby-keyword kw">end</span>
+112: 
+113:       <span class="ruby-identifier">printf</span> <span class="ruby-value str">&quot;\n%s&quot;</span>, <span class="ruby-value str">&quot;Enter number or [q|quit] to abord: &quot;</span>
+114:       <span class="ruby-identifier">input</span>  = <span class="ruby-constant">STDIN</span>.<span class="ruby-identifier">gets</span>
+115:       <span class="ruby-identifier">number</span> = <span class="ruby-identifier">input</span>.<span class="ruby-identifier">to_i</span>
+116: 
+117:       <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">input</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp re">/(q|quit)/</span>
+118:         <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;Aborting...&quot;</span>
+119:         <span class="ruby-identifier">exit</span> <span class="ruby-value">0</span>
+120:       <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">list</span>[<span class="ruby-identifier">number</span>].<span class="ruby-identifier">nil?</span>
+121:         <span class="ruby-constant">STDERR</span>.<span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;Invalid number&quot;</span>
+122:         <span class="ruby-identifier">exit</span> <span class="ruby-value">1</span>
+123:       <span class="ruby-keyword kw">else</span>
+124:         <span class="ruby-ivar">@checkpoint</span>.<span class="ruby-identifier">load</span>(<span class="ruby-identifier">number</span>)
+125:       <span class="ruby-keyword kw">end</span>
+126:     <span class="ruby-keyword kw">end</span></pre>
 					</div>
 					
 				</div>
@@ -295,7 +295,7 @@ Choose a checkpoint to restore.
 				<div class="method-heading">
 				
 					<span class="method-name">choose_package</span><span
-						class="method-args">(action)</span>
+						class="method-args">(mode)</span>
 					<span class="method-click-advice">click to toggle source</span>
 				
 				</div>
@@ -311,28 +311,40 @@ Choose a package
 					<div class="method-source-code"
 						id="choose-package-source">
 <pre>
-     <span class="ruby-comment cmt"># File lib/repomate/cli.rb, line 130</span>
-130:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">choose_package</span>(<span class="ruby-identifier">action</span>)
-131:       <span class="ruby-identifier">packages</span>  = <span class="ruby-ivar">@repomate</span>.<span class="ruby-identifier">list_packages</span>(<span class="ruby-value str">&quot;dists&quot;</span>)
-132:       <span class="ruby-identifier">packages</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">package</span><span class="ruby-operator">|</span>
-133:         <span class="ruby-identifier">printf</span> <span class="ruby-value str">&quot;%d) %-50s%-20s%s\n&quot;</span>, <span class="ruby-identifier">package</span>[<span class="ruby-value">:number</span>], <span class="ruby-identifier">package</span>[<span class="ruby-value">:controlfile</span>][<span class="ruby-value str">'Package'</span>], <span class="ruby-identifier">package</span>[<span class="ruby-value">:controlfile</span>][<span class="ruby-value str">'Version'</span>], <span class="ruby-node">&quot;#{package[:suitename]}/#{package[:component]}&quot;</span>
-134:       <span class="ruby-keyword kw">end</span>
-135: 
-136:       <span class="ruby-identifier">printf</span> <span class="ruby-value str">&quot;\n%s&quot;</span>, <span class="ruby-value str">&quot;Enter number or [q|quit] to abord: &quot;</span>
-137:       <span class="ruby-identifier">input</span>  = <span class="ruby-constant">STDIN</span>.<span class="ruby-identifier">gets</span>
-138:       <span class="ruby-identifier">number</span> = <span class="ruby-identifier">input</span>.<span class="ruby-identifier">to_i</span>
-139: 
-140:       <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">input</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp re">/(q|quit)/</span>
-141:         <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;Aborting...&quot;</span>
-142:         <span class="ruby-identifier">exit</span> <span class="ruby-value">0</span>
-143:       <span class="ruby-keyword kw">else</span>
-144:         <span class="ruby-identifier">packages</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">package</span><span class="ruby-operator">|</span>
-145:           <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">package</span>[<span class="ruby-value">:number</span>].<span class="ruby-identifier">eql?</span>(<span class="ruby-identifier">number</span>)
-146:             <span class="ruby-ivar">@repomate</span>.<span class="ruby-identifier">remove</span>(<span class="ruby-identifier">package</span>) <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">action</span>.<span class="ruby-identifier">eql?</span>(<span class="ruby-value str">&quot;remove&quot;</span>)
-147:           <span class="ruby-keyword kw">end</span>
-148:         <span class="ruby-keyword kw">end</span>
-149:       <span class="ruby-keyword kw">end</span>
-150:     <span class="ruby-keyword kw">end</span></pre>
+     <span class="ruby-comment cmt"># File lib/repomate/cli.rb, line 129</span>
+129:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">choose_package</span>(<span class="ruby-identifier">mode</span>)
+130: 
+131:       <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">mode</span>.<span class="ruby-identifier">eql?</span>(<span class="ruby-value str">&quot;activate&quot;</span>)
+132:         <span class="ruby-identifier">packages</span>  = <span class="ruby-ivar">@repomate</span>.<span class="ruby-identifier">list_packages</span>(<span class="ruby-value str">&quot;pool&quot;</span>)
+133:       <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">mode</span>.<span class="ruby-identifier">eql?</span>(<span class="ruby-value str">&quot;deactivate&quot;</span>)
+134:         <span class="ruby-identifier">packages</span>  = <span class="ruby-ivar">@repomate</span>.<span class="ruby-identifier">list_packages</span>(<span class="ruby-value str">&quot;dists&quot;</span>)
+135:       <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">mode</span>.<span class="ruby-identifier">eql?</span>(<span class="ruby-value str">&quot;remove&quot;</span>)
+136:         <span class="ruby-identifier">packages</span>  = <span class="ruby-ivar">@repomate</span>.<span class="ruby-identifier">list_packages</span>(<span class="ruby-value str">&quot;pool&quot;</span>)
+137:       <span class="ruby-keyword kw">end</span>
+138: 
+139:       <span class="ruby-identifier">packages</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">entry</span><span class="ruby-operator">|</span>
+140:         <span class="ruby-identifier">printf</span> <span class="ruby-value str">&quot;%-6s%-50s%-20s%s\n&quot;</span>, <span class="ruby-node">&quot;#{entry[:number]})&quot;</span>, <span class="ruby-identifier">entry</span>[<span class="ruby-value">:controlfile</span>][<span class="ruby-value str">'Package'</span>], <span class="ruby-identifier">entry</span>[<span class="ruby-value">:controlfile</span>][<span class="ruby-value str">'Version'</span>], <span class="ruby-node">&quot;#{entry[:suitename]}/#{entry[:component]}&quot;</span>
+141:       <span class="ruby-keyword kw">end</span>
+142: 
+143:       <span class="ruby-identifier">printf</span> <span class="ruby-value str">&quot;\n%s&quot;</span>, <span class="ruby-value str">&quot;Enter number or [q|quit] to abord: &quot;</span>
+144:       <span class="ruby-identifier">input</span>  = <span class="ruby-constant">STDIN</span>.<span class="ruby-identifier">gets</span>
+145:       <span class="ruby-identifier">number</span> = <span class="ruby-identifier">input</span>.<span class="ruby-identifier">to_i</span>
+146: 
+147:       <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">input</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp re">/(q|quit)/</span>
+148:         <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;Aborting...&quot;</span>
+149:         <span class="ruby-identifier">exit</span> <span class="ruby-value">0</span>
+150:       <span class="ruby-keyword kw">else</span>
+151:         <span class="ruby-identifier">packages</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">entry</span><span class="ruby-operator">|</span>
+152:           <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">entry</span>[<span class="ruby-value">:number</span>].<span class="ruby-identifier">eql?</span>(<span class="ruby-identifier">number</span>)
+153:             <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">mode</span>.<span class="ruby-identifier">eql?</span>(<span class="ruby-value str">&quot;activate&quot;</span>)
+154:               <span class="ruby-ivar">@repomate</span>.<span class="ruby-identifier">activate</span>(<span class="ruby-identifier">entry</span>)
+155:             <span class="ruby-keyword kw">else</span>
+156:               <span class="ruby-ivar">@repomate</span>.<span class="ruby-identifier">deactivate</span>(<span class="ruby-identifier">entry</span>, <span class="ruby-identifier">mode</span>)
+157:             <span class="ruby-keyword kw">end</span>
+158:           <span class="ruby-keyword kw">end</span>
+159:         <span class="ruby-keyword kw">end</span>
+160:       <span class="ruby-keyword kw">end</span>
+161:     <span class="ruby-keyword kw">end</span></pre>
 					</div>
 					
 				</div>
@@ -365,21 +377,21 @@ List all packages, see cli output
 					<div class="method-source-code"
 						id="list-packages-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/repomate/cli.rb, line 81</span>
-81:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">list_packages</span>(<span class="ruby-identifier">options</span>)
-82:       <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">options</span>.<span class="ruby-identifier">category?</span>
-83:         <span class="ruby-identifier">architecture</span> = <span class="ruby-value str">&quot;unknown&quot;</span>
-84: 
-85:         <span class="ruby-identifier">packages</span> = <span class="ruby-ivar">@repomate</span>.<span class="ruby-identifier">list_packages</span>(<span class="ruby-identifier">options</span>[<span class="ruby-value">:category</span>])
-86:         <span class="ruby-identifier">packages</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">package</span><span class="ruby-operator">|</span>
-87:             <span class="ruby-identifier">architecture</span> = <span class="ruby-identifier">package</span>[<span class="ruby-value">:architecture</span>] <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">package</span>[<span class="ruby-value">:architecture</span>]
-88:             <span class="ruby-identifier">printf</span> <span class="ruby-value str">&quot;%-50s%-20s%s\n&quot;</span>, <span class="ruby-identifier">package</span>[<span class="ruby-value">:controlfile</span>][<span class="ruby-value str">'Package'</span>], <span class="ruby-identifier">package</span>[<span class="ruby-value">:controlfile</span>][<span class="ruby-value str">'Version'</span>], <span class="ruby-node">&quot;#{package[:suitename]}/#{package[:component]}/#{architecture}&quot;</span>
-89:         <span class="ruby-keyword kw">end</span>
-90:       <span class="ruby-keyword kw">else</span>
-91:         <span class="ruby-constant">STDERR</span>.<span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;Specify a category with [-r|--category]&quot;</span>
-92:         <span class="ruby-identifier">exit</span> <span class="ruby-value">1</span>
-93:       <span class="ruby-keyword kw">end</span>
-94:     <span class="ruby-keyword kw">end</span></pre>
+    <span class="ruby-comment cmt"># File lib/repomate/cli.rb, line 80</span>
+80:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">list_packages</span>(<span class="ruby-identifier">options</span>)
+81:       <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">options</span>.<span class="ruby-identifier">category?</span>
+82:         <span class="ruby-identifier">architecture</span> = <span class="ruby-value str">&quot;unknown&quot;</span>
+83: 
+84:         <span class="ruby-identifier">packages</span> = <span class="ruby-ivar">@repomate</span>.<span class="ruby-identifier">list_packages</span>(<span class="ruby-identifier">options</span>[<span class="ruby-value">:category</span>])
+85:         <span class="ruby-identifier">packages</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">package</span><span class="ruby-operator">|</span>
+86:             <span class="ruby-identifier">architecture</span> = <span class="ruby-identifier">package</span>[<span class="ruby-value">:architecture</span>] <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">package</span>[<span class="ruby-value">:architecture</span>]
+87:             <span class="ruby-identifier">printf</span> <span class="ruby-value str">&quot;%-50s%-20s%s\n&quot;</span>, <span class="ruby-identifier">package</span>[<span class="ruby-value">:controlfile</span>][<span class="ruby-value str">'Package'</span>], <span class="ruby-identifier">package</span>[<span class="ruby-value">:controlfile</span>][<span class="ruby-value str">'Version'</span>], <span class="ruby-node">&quot;#{package[:suitename]}/#{package[:component]}/#{architecture}&quot;</span>
+88:         <span class="ruby-keyword kw">end</span>
+89:       <span class="ruby-keyword kw">else</span>
+90:         <span class="ruby-constant">STDERR</span>.<span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;Specify a category with [-r|--category]&quot;</span>
+91:         <span class="ruby-identifier">exit</span> <span class="ruby-value">1</span>
+92:       <span class="ruby-keyword kw">end</span>
+93:     <span class="ruby-keyword kw">end</span></pre>
 					</div>
 					
 				</div>
@@ -478,9 +490,8 @@ Save a checkpoint
 <pre>
     <span class="ruby-comment cmt"># File lib/repomate/cli.rb, line 75</span>
 75:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">save_checkpoint</span>
-76:       <span class="ruby-comment cmt"># Add verification and some output here</span>
-77:       <span class="ruby-ivar">@checkpoint</span>.<span class="ruby-identifier">create</span>
-78:     <span class="ruby-keyword kw">end</span></pre>
+76:       <span class="ruby-ivar">@checkpoint</span>.<span class="ruby-identifier">create</span>
+77:     <span class="ruby-keyword kw">end</span></pre>
 					</div>
 					
 				</div>

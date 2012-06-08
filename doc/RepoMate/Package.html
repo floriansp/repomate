@@ -626,7 +626,7 @@ Extracts the controlfile and returns is
 101: 
 102:         <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">fullname</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">file</span><span class="ruby-operator">|</span>
 103:           <span class="ruby-keyword kw">while</span>(<span class="ruby-identifier">line</span> = <span class="ruby-identifier">file</span>.<span class="ruby-identifier">gets</span>)
-104:             <span class="ruby-identifier">line</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp re">%{([a-zA-Z]+):\s(.*)}</span>
+104:             <span class="ruby-identifier">line</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp re">%{([a-zA-Z\-]+):\s(.*)}</span>
 105:             <span class="ruby-identifier">controlfile</span>[<span class="ruby-node">$1</span>] = <span class="ruby-node">$2</span>
 106:           <span class="ruby-keyword kw">end</span>
 107:         <span class="ruby-keyword kw">end</span>
