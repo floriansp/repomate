@@ -76,22 +76,6 @@ module RepoMate
       @checkpoint.create
     end
 
-    # List all packages, see cli output
-    def list_packages(options)
-      if options.category?
-        architecture = "unknown"
-
-        packages = @repomate.list_packages(options[:category])
-        packages.each do |package|
-            architecture = package[:architecture] if package[:architecture]
-            printf "%-50s%-20s%s\n", package[:controlfile]['Package'], package[:controlfile]['Version'], "#{package[:suitename]}/#{package[:component]}/#{architecture}"
-        end
-      else
-        STDERR.puts "Specify a category with [-r|--category]"
-        exit 1
-      end
-    end
-
     # Choose a checkpoint to restore.
     def choose_checkpoint
       list = @checkpoint.list
@@ -125,15 +109,39 @@ Everything between the last two \"publish (-P) commands\" will be lost if you pr
       end
     end
 
+    # List all packages, see cli output
+    def listpackages
+      @repomate.listpackages.each do |entry|
+        architecture = entry[:architecture] if entry[:architecture]
+        printf "%-50s%-20s%-10s%s\n", entry[:controlfile]['Package'], entry[:controlfile]['Version'], "#{entry[:category]}", "#{entry[:suitename]}/#{entry[:component]}/#{architecture}"
+      end
+    end
+
     # Choose a package
     def choose_package(mode)
+      puts "Select a package by entering the appropriate number\n\n"
 
-      if mode.eql?("activate")
-        packages  = @repomate.list_packages("pool")
-      elsif mode.eql?("deactivate")
-        packages  = @repomate.list_packages("dists")
-      elsif mode.eql?("remove")
-        packages  = @repomate.list_packages("pool")
+      packages = []
+      number   = 0
+
+      @repomate.listpackages.each do |entry|
+        if mode.eql?("activate")
+          file = File.join(Cfg.rootdir, "dists", entry[:suitename], entry[:component], "binary-#{entry[:architecture]}", entry[:basename])
+          next if File.exists?(file)
+        elsif mode.eql?("deactivate")
+          next unless entry[:category].eql?("dists")
+        end
+        number += 1
+        packages << {
+          :number       => number,
+          :basename     => entry[:basename],
+          :fullname     => entry[:fullname],
+          :category     => entry[:category],
+          :suitename    => entry[:suitename],
+          :component    => entry[:component],
+          :architecture => entry[:architecture],
+          :controlfile  => entry[:controlfile]
+        }
       end
 
       packages.each do |entry|
