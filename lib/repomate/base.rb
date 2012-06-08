@@ -104,15 +104,15 @@ module RepoMate
               :category             => 'dists'
             }
           end
-          Dir.glob("#{pool.directory}/#{package.name}*.deb") do |fullname|
-            unlink_workload << {
-              :destination_fullname => fullname,
-              :suitename            => package.suitename,
-              :component            => package.component,
-              :category             => 'pool'
-            }
-          end
-          FileUtils.move(stage_fullname, pool_fullname)
+          # Dir.glob("#{pool.directory}/#{package.name}*.deb") do |fullname|
+          #   unlink_workload << {
+          #     :destination_fullname => fullname,
+          #     :suitename            => package.suitename,
+          #     :component            => package.component,
+          #     :category             => 'pool'
+          #   }
+          # end
+          FileUtils.move(stage_fullname, pool_fullname) unless File.exists?(pool_fullname)
         end
       end
       @link.destroy(unlink_workload)
