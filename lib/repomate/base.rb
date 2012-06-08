@@ -171,7 +171,7 @@ module RepoMate
         :component            => package.component,
         :architecture         => package.architecture
       }
-      if File.exists?(entry[:fullname])
+      if File.exists?(dists_fullname)
         puts "Package already activated"
       else
         @link.create(link_workload)
