@@ -34,9 +34,10 @@ module RepoMate
         :architectures => [ "all", "amd64" ],
         :origin        => 'Repository',
         :label         => 'Repository',
-        :gpg_enable    => 'no',
+        :gpg           => false,
+        :gpg_enable    => false, # obsolete in a while
         :gpg_email     => 'someone@example.net',
-        :gpg_password  => 'secret',
+        :gpg_password  => 'secret'
       }
 
       unless filecontent.empty?

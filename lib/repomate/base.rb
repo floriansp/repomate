@@ -104,14 +104,6 @@ module RepoMate
               :category             => 'dists'
             }
           end
-          # Dir.glob("#{pool.directory}/#{package.name}*.deb") do |fullname|
-          #   unlink_workload << {
-          #     :destination_fullname => fullname,
-          #     :suitename            => package.suitename,
-          #     :component            => package.component,
-          #     :category             => 'pool'
-          #   }
-          # end
           FileUtils.move(stage_fullname, pool_fullname) unless File.exists?(pool_fullname)
         end
       end
@@ -165,23 +157,47 @@ module RepoMate
     end
 
     # Removes a package
-    def remove(package)
+    def activate(entry)
+      link_workload = []
+
+      package        = Package.new(entry[:fullname], entry[:suitename], entry[:component])
+      dists          = Architecture.new(package.architecture, entry[:component], entry[:suitename], "dists")
+      dists_fullname = File.join(dists.directory, package.basename)
+
+      link_workload << {
+        :source_fullname      => entry[:fullname],
+        :destination_fullname => dists_fullname,
+        :suitename            => package.suitename,
+        :component            => package.component,
+        :architecture         => package.architecture
+      }
+      if File.exists?(entry[:fullname])
+        puts "Package already activated"
+      else
+        @link.create(link_workload)
+      end
+    end
+
+    # Removes a package
+    def deactivate(entry, mode)
       unlink_workload = []
 
       @repository.categories.each do |category|
-        path = Dir.glob(File.join(Cfg.rootdir, category, package[:suitename], package[:component], "*", package[:basename]))
+        next if mode.eql?("deactivate") && category.eql?("pool")
+
+        path = Dir.glob(File.join(Cfg.rootdir, category, entry[:suitename], entry[:component], "*", entry[:basename]))
 
         Dir.glob(path).each do |fullname|
           unlink_workload << {
             :destination_fullname => fullname,
             :category             => category,
-            :suitename            => package[:suitename],
-            :component            => package[:component]
+            :suitename            => entry[:suitename],
+            :component            => entry[:component]
           }
         end
       end
 
-      @checkpoint.delete_package(package)
+      @checkpoint.delete_package(entry) if mode.eql?("remove")
       @link.destroy(unlink_workload)
     end
   end

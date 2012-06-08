@@ -96,12 +96,12 @@ module RepoMate
     end
 
     # Deletes a package from checkpoint table
-    def delete_package(package)
+    def delete_package(entry)
       sql = "delete from checkpoints where
-              basename = '#{package[:basename]}' and
-              suitename = '#{package[:suitename]}' and
-              component = '#{package[:component]}' and
-              architecture = '#{package[:architecture]}'"
+              basename = '#{entry[:basename]}' and
+              suitename = '#{entry[:suitename]}' and
+              component = '#{entry[:component]}' and
+              architecture = '#{entry[:architecture]}'"
 
       @cpdb.query(sql)
     end

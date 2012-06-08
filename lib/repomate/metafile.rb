@@ -45,7 +45,7 @@ module RepoMate
       destroy
       create_packages
 
-      if Cfg.gpg_enable.eql?(true)
+      if Cfg.gpg
         if Cfg.gpg_password.nil? || Cfg.gpg_email.nil?
           puts "Configure password and email for GPG!"
           exit 1

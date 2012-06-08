@@ -73,7 +73,6 @@ module RepoMate
 
     # Save a checkpoint
     def save_checkpoint
-      # Add verification and some output here
       @checkpoint.create
     end
 
@@ -127,10 +126,18 @@ Everything between the last two \"publish (-P) commands\" will be lost if you pr
     end
 
     # Choose a package
-    def choose_package(action)
-      packages  = @repomate.list_packages("dists")
-      packages.each do |package|
-        printf "%-7s%-50s%-20s%s\n", "#{package[:number]})", package[:controlfile]['Package'], package[:controlfile]['Version'], "#{package[:suitename]}/#{package[:component]}"
+    def choose_package(mode)
+
+      if mode.eql?("activate")
+        packages  = @repomate.list_packages("pool")
+      elsif mode.eql?("deactivate")
+        packages  = @repomate.list_packages("dists")
+      elsif mode.eql?("remove")
+        packages  = @repomate.list_packages("pool")
+      end
+
+      packages.each do |entry|
+        printf "%-6s%-50s%-20s%s\n", "#{entry[:number]})", entry[:controlfile]['Package'], entry[:controlfile]['Version'], "#{entry[:suitename]}/#{entry[:component]}"
       end
 
       printf "\n%s", "Enter number or [q|quit] to abord: "
@@ -141,9 +148,13 @@ Everything between the last two \"publish (-P) commands\" will be lost if you pr
         puts "Aborting..."
         exit 0
       else
-        packages.each do |package|
-          if package[:number].eql?(number)
-            @repomate.remove(package) if action.eql?("remove")
+        packages.each do |entry|
+          if entry[:number].eql?(number)
+            if mode.eql?("activate")
+              @repomate.activate(entry)
+            else
+              @repomate.deactivate(entry, mode)
+            end
           end
         end
       end

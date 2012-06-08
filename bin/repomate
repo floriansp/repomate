@@ -17,7 +17,7 @@ options = Slop.parse do
 
   Usage: #{$0} add -s squeeze [-c main] <package>
          #{$0} publish
-         #{$0} listpackages -r production
+         #{$0} listpackages -r stage
 
   Actions:
     add                - Add a package to the staging area
@@ -26,7 +26,10 @@ options = Slop.parse do
     load               - Load a checkpoint
     listpackages       - List packages
     setup              - Setup the pool
-    remove             - Removes a package from production
+    activate           - Activate (link) a package from pool
+    deactivate         - Deactivate (unlink) a package from production
+    remove             - Removes a package from production and pool
+
 
   Options:"
   on :s, :suitename=, "Set the name of the suite (lenny/squeeze...)", :argument => true
@@ -60,6 +63,10 @@ elsif ARGV.include?("save")
   cli.save_checkpoint
 elsif ARGV.include?("load")
   cli.choose_checkpoint
+elsif ARGV.include?("activate")
+  cli.choose_package("activate")
+elsif ARGV.include?("deactivate")
+  cli.choose_package("deactivate")
 elsif ARGV.include?("remove")
   cli.choose_package("remove")
 elsif ARGV.include?("listpackages")
