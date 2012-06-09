@@ -112,7 +112,7 @@ Everything between the last two \"publish (-P) commands\" will be lost if you pr
     # List all packages, see cli output
     def listpackages(options)
       @repomate.listpackages.each do |entry|
-        next unless entry[:category].eql?(options[:category])
+        next unless entry[:category].eql?(options[:category]) unless options[:category].nil?
         architecture = entry[:architecture] if entry[:architecture]
         printf "%-50s%-20s%-10s%s\n", entry[:controlfile]['Package'], entry[:controlfile]['Version'], "#{entry[:category]}", "#{entry[:suitename]}/#{entry[:component]}/#{architecture}"
       end
