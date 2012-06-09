@@ -110,8 +110,9 @@ Everything between the last two \"publish (-P) commands\" will be lost if you pr
     end
 
     # List all packages, see cli output
-    def listpackages
+    def listpackages(options)
       @repomate.listpackages.each do |entry|
+        next unless entry[:category].eql?(options[:category])
         architecture = entry[:architecture] if entry[:architecture]
         printf "%-50s%-20s%-10s%s\n", entry[:controlfile]['Package'], entry[:controlfile]['Version'], "#{entry[:category]}", "#{entry[:suitename]}/#{entry[:component]}/#{architecture}"
       end
@@ -119,17 +120,18 @@ Everything between the last two \"publish (-P) commands\" will be lost if you pr
 
     # Choose a package
     def choose_package(mode)
-      puts "Select a package by entering the appropriate number\n\n"
-
       packages = []
       number   = 0
 
       @repomate.listpackages.each do |entry|
+        next if entry[:category].eql?("stage")
         if mode.eql?("activate")
           file = File.join(Cfg.rootdir, "dists", entry[:suitename], entry[:component], "binary-#{entry[:architecture]}", entry[:basename])
           next if File.exists?(file)
         elsif mode.eql?("deactivate")
           next unless entry[:category].eql?("dists")
+        elsif mode.eql?("remove")
+          next unless entry[:category].eql?("pool")
         end
         number += 1
         packages << {
@@ -144,24 +146,30 @@ Everything between the last two \"publish (-P) commands\" will be lost if you pr
         }
       end
 
-      packages.each do |entry|
-        printf "%-6s%-50s%-20s%s\n", "#{entry[:number]})", entry[:controlfile]['Package'], entry[:controlfile]['Version'], "#{entry[:suitename]}/#{entry[:component]}"
-      end
-
-      printf "\n%s", "Enter number or [q|quit] to abord: "
-      input  = STDIN.gets
-      number = input.to_i
-
-      if input =~ /(q|quit)/
-        puts "Aborting..."
-        exit 0
+      if number.zero?
+        puts "There are no packages to #{mode}"
       else
+        puts "Select a package by entering the appropriate number\n\n"
+
         packages.each do |entry|
-          if entry[:number].eql?(number)
-            if mode.eql?("activate")
-              @repomate.activate(entry)
-            else
-              @repomate.deactivate(entry, mode)
+          printf "%-6s%-50s%-20s%s\n", "#{entry[:number]})", entry[:controlfile]['Package'], entry[:controlfile]['Version'], "#{entry[:suitename]}/#{entry[:component]}"
+        end
+
+        printf "\n%s", "Enter number or [q|quit] to abord: "
+        input  = STDIN.gets
+        number = input.to_i
+
+        if input =~ /(q|quit)/
+          puts "Aborting..."
+          exit 0
+        else
+          packages.each do |entry|
+            if entry[:number].eql?(number)
+              if mode.eql?("activate")
+                @repomate.activate(entry)
+              else
+                @repomate.deactivate(entry, mode)
+              end
             end
           end
         end

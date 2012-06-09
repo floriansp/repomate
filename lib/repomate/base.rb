@@ -131,6 +131,23 @@ module RepoMate
             }
           end
         end
+        if category.eql? "stage"
+          Component.dataset(category).each do |entry|
+            source = Component.new(entry[:component], entry[:suitename], category)
+            source.files.each do |fullname|
+              package = Package.new(fullname, entry[:suitename], entry[:component])
+              packages << {
+                :fullname    => fullname,
+                :category    => category,
+                :basename    => File.basename(fullname),
+                :controlfile => package.controlfile,
+                :component   => entry[:component],
+                :suitename   => entry[:suitename],
+                :architecture => "unknown"
+              }
+            end
+          end
+        end
       end
       packages
     end
