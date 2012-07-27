@@ -36,7 +36,7 @@ options = Slop.parse do
   on :c, :component=, "Set the name of the component (main/contrib...)", :default => "main"
   on :a, :architecture=, "Set the name of the component (main/contrib...)", :argument => true
   on :r, :category, "Category (stage/pool/dists)", :argument => true
-  on :force, "Force action", :default => false
+  on :yes, "Always answer with yes", :default => false
   on :h, :help, 'Print this help message', :tail => true do
     puts help
     exit

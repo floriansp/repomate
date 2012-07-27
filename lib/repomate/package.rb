@@ -62,7 +62,7 @@ module RepoMate
       now      = DateTime.now
       md5      = Digest::MD5.file(@fullname).to_s
       sha1     = Digest::SHA1.file(@fullname).to_s
-      sha256   = Digest::SHA256.new(256).file(@fullname).to_s
+      sha256   = Digest::SHA2.new(256).file(@fullname).to_s
       @pkgdb.query("insert into checksums values ( '#{now}', '#{@basename}', '#{@mtime.iso8601}', '#{md5}', '#{sha1}', '#{sha256}' )")
     end
 

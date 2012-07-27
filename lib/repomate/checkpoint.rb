@@ -13,7 +13,8 @@ module RepoMate
       @link       = Link.new
       @cpdbfile   = File.join(Cfg.rootdir, "checkpoints.db")
       @cpdb       = Database.new(@cpdbfile)
-
+      @metafile   = Metafile.new
+      
       create_table
     end
 
@@ -93,6 +94,7 @@ module RepoMate
 
       @link.destroy(unlink_workload)
       @link.create(link_workload)
+      @metafile.create
     end
 
     # Deletes a package from checkpoint table

@@ -41,23 +41,18 @@ module RepoMate
 
     # Get's all packages from the staging area. Packages need to be confirmed here.
     def publish(options)
-      action = true
+      workload  = []
       @repomate.prepare_publish.each do |entry|
-        workload  = []
         basename  = File.basename(entry[:source_fullname])
         suitename = entry[:suitename]
         component = entry[:component]
 
-        unless options.force?
+        unless options.yes?
           printf "\n%s", "Link #{basename} to production => #{suitename}/#{component}? [y|yes|n|no]: "
           input = STDIN.gets
         end
 
-        if options.force? || input =~ /(y|yes)/
-          @checkpoint.create if action
-
-          action = false
-
+        if options.yes? || input =~ /(y|yes)/
           workload << {
             :source_fullname      => entry[:source_fullname],
             :destination_fullname => entry[:destination_fullname],
@@ -66,9 +61,12 @@ module RepoMate
             :architecture         => entry[:architecture]
           }
         end
-
-        @repomate.publish(workload) unless workload.empty?
-       end
+      end
+      
+      unless workload.empty?
+        @checkpoint.create
+        @repomate.publish(workload)
+      end
     end
 
     # Save a checkpoint
@@ -126,7 +124,7 @@ Everything between the last two \"publish (-P) commands\" will be lost if you pr
       @repomate.listpackages.each do |entry|
         next if entry[:category].eql?("stage")
         if mode.eql?("activate")
-          file = File.join(Cfg.rootdir, "dists", entry[:suitename], entry[:component], "binary-#{entry[:architecture]}", entry[:basename])
+          file = File.join(Architecture.new(entry[:architecture], entry[:component], entry[:suitename], "dists").directory, entry[:basename])
           next if File.exists?(file)
         elsif mode.eql?("deactivate")
           next unless entry[:category].eql?("dists")
@@ -167,7 +165,7 @@ Everything between the last two \"publish (-P) commands\" will be lost if you pr
             if entry[:number].eql?(number)
               if mode.eql?("activate")
                 @repomate.activate(entry)
-              else
+              elsif mode.eql?("deactivate")
                 @repomate.deactivate(entry, mode)
               end
             end

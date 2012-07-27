@@ -19,30 +19,22 @@ module RepoMate
 
     # links the workload
     def create(workload)
-      action = false
-
       workload.each do |entry|
         @repository.create(entry[:suitename], entry[:component], entry[:architecture])
 
         unless File.exists?(entry[:destination_fullname])
           package = Package.new(entry[:source_fullname], entry[:suitename], entry[:component])
+          
           package.create_checksums
 
           File.symlink(entry[:source_fullname], entry[:destination_fullname])
           puts "Package: #{package.newbasename} linked to production => #{entry[:suitename]}/#{entry[:component]}"
-          action = true
         end
-      end
-
-      if action
-        @metafile.create
       end
     end
 
     # unlinks workload
     def destroy(workload)
-      action = false
-
       workload.each do |entry|
         package = Package.new(entry[:destination_fullname], entry[:suitename], entry[:component])
         package.delete_checksums
@@ -50,16 +42,12 @@ module RepoMate
         if File.exists?(entry[:destination_fullname])
           File.unlink(entry[:destination_fullname])
           puts "Package: #{package.newbasename} unlinked from #{entry[:category]} => #{entry[:suitename]}/#{entry[:component]}"
-          action = true
         else
           puts "Package: #{package.newbasename} was not linked"
         end
       end
-
-      if action
-        cleanup
-        @metafile.create
-      end
+      
+      cleanup unless workload.empty?
     end
 
     # cleans up unused directories
@@ -90,9 +78,8 @@ module RepoMate
           end
         end
       end
-      if action
-        @metafile.create
-      end
+      
+      @metafile.create if action
     end
   end
 end

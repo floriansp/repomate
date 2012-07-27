@@ -42,6 +42,8 @@ module RepoMate
 
     # Creates all metafiles
     def create
+      puts "Creating Metafiles..."
+      
       destroy
       create_packages
 
@@ -110,8 +112,8 @@ module RepoMate
         end
 
         releasefile = File.join(Cfg.rootdir, source_category, suite, "Release")
-
         File.open(releasefile, 'w') { |file| file.puts suiterelease_template.result(binding).gsub(/^\s+\n|^\n|^\s{3}/, '') }
+        
         begin
           sign(releasefile)
         rescue

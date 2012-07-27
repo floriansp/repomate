@@ -15,6 +15,7 @@ module RepoMate
       @repository = Repository.new
       @link       = Link.new
       @checkpoint = Checkpoint.new
+      @metafile   = Metafile.new
     end
 
     # Add's a package to the staging area
@@ -25,7 +26,7 @@ module RepoMate
         package     = Package.new(entry[:package_fullname], entry[:suitename], entry[:component])
         destination = Component.new(entry[:component], entry[:suitename], "stage")
 
-        FileUtils.move(entry[:package_fullname], File.join(destination.directory, package.newbasename))
+        FileUtils.copy(entry[:package_fullname], File.join(destination.directory, package.newbasename))
       end
     end
 
@@ -51,6 +52,7 @@ module RepoMate
           }
         end
       end
+      
       workload
     end
 
@@ -96,6 +98,7 @@ module RepoMate
             :component            => package.component,
             :architecture         => package.architecture
           }
+                    
           Dir.glob("#{dists.directory}/#{package.name}*.deb") do |fullname|
             unlink_workload << {
               :destination_fullname => fullname,
@@ -104,11 +107,14 @@ module RepoMate
               :category             => 'dists'
             }
           end
+          
           FileUtils.move(stage_fullname, pool_fullname) unless File.exists?(pool_fullname)
+          @link.destroy(unlink_workload) unless unlink_workload.empty?
+          @link.create(link_workload) unless link_workload.empty?
         end
       end
-      @link.destroy(unlink_workload)
-      @link.create(link_workload)
+      
+      @metafile.create unless link_workload.empty?
     end
 
     # Returns a list of packages
@@ -152,7 +158,7 @@ module RepoMate
       packages
     end
 
-    # Removes a package
+    # Activates a package
     def activate(entry)
       link_workload = []
 
@@ -171,10 +177,11 @@ module RepoMate
         puts "Package already activated"
       else
         @link.create(link_workload)
+        @metafile.create
       end
     end
 
-    # Removes a package
+    # Deactivates a package
     def deactivate(entry, mode)
       unlink_workload = []
 
@@ -195,6 +202,7 @@ module RepoMate
 
       @checkpoint.delete_package(entry) if mode.eql?("remove")
       @link.destroy(unlink_workload)
+      @metafile.create
     end
   end
 end
