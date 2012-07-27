@@ -109,11 +109,11 @@ module RepoMate
           end
           
           FileUtils.move(stage_fullname, pool_fullname) unless File.exists?(pool_fullname)
-          @link.destroy(unlink_workload) unless unlink_workload.empty?
-          @link.create(link_workload) unless link_workload.empty?
         end
       end
-
+      
+      @link.destroy(unlink_workload) unless unlink_workload.empty?
+      @link.create(link_workload) unless link_workload.empty?
       @metafile.create unless link_workload.empty?
     end
 
