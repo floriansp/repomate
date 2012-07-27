@@ -17,7 +17,7 @@ module RepoMate
       @repository = Repository.new
     end
 
-    # Returns a lit of all existing metafiles as array
+    # Returns a list of all existing metafiles as array
     def all
       rootdir  = Cfg.rootdir
       dirlist  = ["#{rootdir}/*/*", "#{rootdir}/*/*/*/*"]

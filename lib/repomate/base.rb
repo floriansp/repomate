@@ -26,7 +26,7 @@ module RepoMate
         package     = Package.new(entry[:package_fullname], entry[:suitename], entry[:component])
         destination = Component.new(entry[:component], entry[:suitename], "stage")
 
-        FileUtils.copy(entry[:package_fullname], File.join(destination.directory, package.newbasename))
+        FileUtils.move(entry[:package_fullname], File.join(destination.directory, package.newbasename))
       end
     end
 
@@ -113,8 +113,8 @@ module RepoMate
           @link.create(link_workload) unless link_workload.empty?
         end
       end
-      @metafile.create
-      # @metafile.create unless link_workload.empty?
+
+      @metafile.create unless link_workload.empty?
     end
 
     # Returns a list of packages
