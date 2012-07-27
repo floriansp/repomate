@@ -33,9 +33,9 @@ SHA256:
   <% source = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], source_category) %>
   <% Dir.glob(File.join(entry[:fullpath], "Packages*")).each do |file| %>
     <% path = File.join(entry[:component], entry[:architecture_dir], File.basename(file)) %>
-    <%= Digest::SHA256.new(256).file(file) %> <%= File.size(file) %> <%= path %>
+    <%= Digest::SHA2.new(256).file(file) %> <%= File.size(file) %> <%= path %>
   <% end %>
   <% file = File.join(entry[:fullpath], "Release") %>
   <% path = File.join(entry[:component], entry[:architecture_dir], File.basename(file)) %>
-    <%= Digest::SHA256.new(256).file(file) %> <%= File.size(file) %> <%= path %>
+    <%= Digest::SHA2.new(256).file(file) %> <%= File.size(file) %> <%= path %>
 <% end %>

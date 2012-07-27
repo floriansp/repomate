@@ -113,8 +113,8 @@ module RepoMate
           @link.create(link_workload) unless link_workload.empty?
         end
       end
-      
-      @metafile.create unless link_workload.empty?
+      @metafile.create
+      # @metafile.create unless link_workload.empty?
     end
 
     # Returns a list of packages
