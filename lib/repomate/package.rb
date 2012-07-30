@@ -38,7 +38,7 @@ module RepoMate
       sql = "create table if not exists checksums (
               date varchar(25),
               basename varchar(70),
-              suite varchar(20),
+              suitename varchar(20),
               mtime varchar(25),
               md5 varchar(32),
               sha1 varchar(40),
@@ -51,7 +51,7 @@ module RepoMate
     def load_checksums
       result = []
 
-      @pkgdb.query("select md5, sha1, sha256 from checksums where basename = '#{@basename}' and mtime = '#{@mtime.iso8601}' and suite = '#{@suite}'").each do |row|
+      @pkgdb.query("select md5, sha1, sha256 from checksums where basename = '#{@basename}' and mtime = '#{@mtime.iso8601}' and suitename = '#{@suitename}'").each do |row|
         result = row
       end
       result
@@ -64,7 +64,7 @@ module RepoMate
       md5      = Digest::MD5.file(@fullname).to_s
       sha1     = Digest::SHA1.file(@fullname).to_s
       sha256   = Digest::SHA2.new(256).file(@fullname).to_s
-      @pkgdb.query("insert into checksums values ( '#{now}', '#{@basename}', '#{@suite}', '#{@mtime.iso8601}', '#{md5}', '#{sha1}', '#{sha256}' )")
+      @pkgdb.query("insert into checksums values ( '#{now}', '#{@basename}', '#{@suitename}', '#{@mtime.iso8601}', '#{md5}', '#{sha1}', '#{sha256}' )")
     end
 
     # Gets checksums for the given package
