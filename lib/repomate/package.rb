@@ -51,7 +51,7 @@ module RepoMate
     def load_checksums
       result = []
 
-      @pkgdb.query("select md5, sha1, sha256 from checksums where basename = '#{@basename}' and mtime = '#{@mtime.iso8601}' and suite = #{@suite}").each do |row|
+      @pkgdb.query("select md5, sha1, sha256 from checksums where basename = '#{@basename}' and mtime = '#{@mtime.iso8601}' and suite = '#{@suite}'").each do |row|
         result = row
       end
       result
