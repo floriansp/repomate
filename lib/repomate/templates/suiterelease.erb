@@ -8,6 +8,7 @@ Components: <%= component.join(', ') %>
 Description: Repository for debian
 MD5Sum:
 <% Architecture.dataset(source_category).each do |entry| %>
+  <% next unless entry[:suitename].eql?(suite) %>
   <% source = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], source_category) %>
   <% Dir.glob(File.join(entry[:fullpath], "Packages*")).each do |file| %>
     <% path = File.join(entry[:component], entry[:architecture_dir], File.basename(file)) %>
@@ -19,6 +20,7 @@ MD5Sum:
 <% end %>
 SHA1:
 <% Architecture.dataset(source_category).each do |entry| %>
+  <% next unless entry[:suitename].eql?(suite) %>
   <% source = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], source_category) %>
   <% Dir.glob(File.join(entry[:fullpath], "Packages*")).each do |file| %>
     <% path = File.join(entry[:component], entry[:architecture_dir], File.basename(file)) %>
@@ -30,6 +32,7 @@ SHA1:
 <% end %>
 SHA256:
 <% Architecture.dataset(source_category).each do |entry| %>
+  <% next unless entry[:suitename].eql?(suite) %>
   <% source = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], source_category) %>
   <% Dir.glob(File.join(entry[:fullpath], "Packages*")).each do |file| %>
     <% path = File.join(entry[:component], entry[:architecture_dir], File.basename(file)) %>

@@ -60,9 +60,10 @@ module RepoMate
     # Create Packages* files
     def create_packages
       source_category = "dists"
+
+      packages_template = ERB.new File.new(File.join(File.dirname(__FILE__), "templates/packages.erb")).read, nil, "%"
       
       Architecture.dataset(source_category).each do |entry|
-        packages_template = ERB.new File.new(File.join(File.dirname(__FILE__), "templates/packages.erb")).read, nil, "%"
         
         source  = Architecture.new(entry[:architecture], entry[:component], entry[:suitename], source_category)
         source.files.each do |fullname|
