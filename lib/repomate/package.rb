@@ -60,11 +60,10 @@ module RepoMate
     # Creates the checksums for a package
     def create_checksums
       # puts "Ins: #{@basename}"
-      now      = DateTime.now
       md5      = Digest::MD5.file(@fullname).to_s
       sha1     = Digest::SHA1.file(@fullname).to_s
       sha256   = Digest::SHA2.new(256).file(@fullname).to_s
-      @pkgdb.query("insert into checksums values ( '#{now}', '#{@basename}', '#{@suitename}', '#{@mtime.iso8601}', '#{md5}', '#{sha1}', '#{sha256}' )")
+      @pkgdb.query("insert into checksums values ( datetime('now'), '#{@basename}', '#{@suitename}', '#{@mtime.iso8601}', '#{md5}', '#{sha1}', '#{sha256}' )")
     end
 
     # Gets checksums for the given package
